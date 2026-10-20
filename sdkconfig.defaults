@@ -1,0 +1,6 @@
+# ONX2432G028: 16 MB flash, PSRAM not used in this project.
+# Flash mode and flash frequency are not guessed here; confirm from the
+# official OpenNextion ESP-IDF example before changing them.
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_FREERTOS_HZ=1000
+CONFIG_OBD_MCP2515_SPI_HZ=1000000

@@ -1,0 +1,57 @@
+menu "OBD VAG CAN"
+
+    choice OBD_CAN_BITRATE
+        prompt "CAN bitrate"
+        default OBD_CAN_BITRATE_500K
+        help
+            This setting is independent of the CAN identifier width.
+
+        config OBD_CAN_BITRATE_250K
+            bool "250 kbit/s"
+
+        config OBD_CAN_BITRATE_500K
+            bool "500 kbit/s"
+    endchoice
+
+    choice OBD_CAN_ID_FORMAT
+        prompt "CAN identifier width"
+        default OBD_CAN_ID_STANDARD
+        help
+            Select 11-bit standard or 29-bit extended CAN identifiers independently
+            from the bitrate. Passive receive still reports both frame formats.
+
+        config OBD_CAN_ID_STANDARD
+            bool "11-bit standard"
+
+        config OBD_CAN_ID_EXTENDED
+            bool "29-bit extended"
+    endchoice
+
+    config OBD_MCP2515_SPI_HZ
+        int "MCP2515 SPI clock (Hz)"
+        range 100000 5000000
+        default 1000000
+        help
+            Start at 1 MHz. Do not exceed 5 MHz.
+
+    config OBD_RUN_CAN_SELF_TEST
+        bool "Run MCP2515 loopback self-test at boot"
+        default y
+        help
+            Runs the internal loopback test. It does not send frames onto the vehicle bus.
+
+    config OBD_RUN_PROTOCOL_TESTS
+        bool "Run ISO-TP and OBD decoder unit tests at boot"
+        default n
+        help
+            Builds and runs protocol tests instead of starting the CAN application.
+
+    config OBD_ACTIVE_TX
+        bool "Enable active OBD-II RPM requests"
+        default n
+        help
+            Disabled by default. When enabled, the firmware switches to Normal mode and
+            transmits OBD-II Mode 01 PID 0C requests to CAN ID 0x7DF. Enable deliberately
+            only when a vehicle/bus is connected and the wiring/bitrate are verified.
+
+endmenu

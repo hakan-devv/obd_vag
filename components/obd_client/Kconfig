@@ -1,0 +1,14 @@
+menu "OBD client"
+
+config OBD_LOOPBACK_ECU_SIMULATOR
+    bool "Internal OBD-II ECU simulator (MCP2515 loopback)"
+    default n
+    help
+        Run the OBD request scheduler and an internal fake ECU using the MCP2515
+        hardware loopback mode. The 0x7DF request and 0x7E8 response are looped
+        back internally and do not drive the physical CAN bus. This tests the
+        CAN controller TX/RX path, OBD PID parser, and display without a vehicle
+        or a second CAN transceiver. It does not validate physical CAN wiring,
+        transceiver operation, or vehicle compatibility.
+
+endmenu

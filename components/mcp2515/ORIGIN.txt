@@ -1,0 +1,10 @@
+Repository: https://github.com/Microver-Electronics/mcp2515-esp32-idf
+Pinned commit: 0d3f6a58c326f186c2f729f0576c1e1e6aac8599
+Date: 2023-07-21 (HEAD of main when fetched)
+
+Local patch (limited, documented):
+- Shared SPI helper mcp2515_spi_transmit() in mcp2515.c
+- Checked register/status APIs returning esp_err_t
+- Existing public signatures kept as wrappers
+- reset / setMode / send / receive / filter write paths return ERROR_FAIL on SPI error
+- Copyright and LICENSE.md retained
