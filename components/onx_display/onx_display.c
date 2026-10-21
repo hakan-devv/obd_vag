@@ -5,11 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "board_config.h"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 #include "driver/spi_master.h"
+#include "esp_heap_caps.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_vendor.h"
@@ -18,6 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "swipe_gesture.h"
 
 #define PCF8574_I2C_ADDRESS  0x38U
 /* The vendor ONX2432G028 example names the LCD reset output EXPAND_IO_LCD_RST=6;
@@ -27,24 +30,55 @@
 #define CST826_I2C_ADDRESS   0x15U
 #define CST826_REG_TOUCH_NUM 0x02U
 #define CST826_TOUCH_POLL_MS 25U
-#define UI_NAV_Y             260
-#define UI_NAV_HEIGHT        48
-#define UI_NAV_LEFT_X        8
-#define UI_NAV_RIGHT_X       124
-#define UI_NAV_WIDTH         108
+#define UI_HEADER_HEIGHT     24
+#define UI_CARD_X            6
+#define UI_CARD_WIDTH        228
+#define UI_CARD_HEIGHT       94
+#define UI_CARD_GAP          4
+#define UI_CARD_FIRST_Y      27
+#define UI_TITLE_LINE_CHARS  17U
+#define UI_MAX_ITEMS         64U
+#define UI_STALE_MULTIPLIER  3LL
 #define LCD_COLOR_BLACK      0x0000U
 #define LCD_COLOR_WHITE      0xFFFFU
 #define LCD_COLOR_CYAN       0x07FFU
 #define LCD_COLOR_GREEN      0x07E0U
 #define LCD_COLOR_NAVY       0x0010U
+#define LCD_COLOR_GRAY       0x8410U
+#define LCD_COLOR_RED        0xF800U
 #define LCD_FILL_ROWS        8U
 #define LCD_MAX_SCALE        5U
 #define LCD_GLYPH_W          5U
 #define LCD_GLYPH_H          7U
 #define LCD_CELL_W           6U
+#define LCD_NUMBER_MAX_W     24U
+#define LCD_NUMBER_MAX_H     40U
+#define LCD_NUMBER_MIN_H     26U
+#define LCD_CHAR_DEGREE     '\x7F' /* private code for the degree sign */
+#define SCREENSHOT_DELAY_MS  10000U
+#define SCREENSHOT_ROW_BYTES (BOARD_ONX_LCD_WIDTH * sizeof(uint16_t))
+#define SCREENSHOT_CHUNK_BYTES 60U
+#define SCREENSHOT_CHUNKS_PER_ROW \
+    ((SCREENSHOT_ROW_BYTES + SCREENSHOT_CHUNK_BYTES - 1U) / SCREENSHOT_CHUNK_BYTES)
+
+#if defined(CONFIG_ONX_SCREENSHOT_STREAM) && CONFIG_ONX_SCREENSHOT_STREAM
+#define ONX_SCREENSHOT_ENABLED 1
+#else
+#define ONX_SCREENSHOT_ENABLED 0
+#endif
+
+_Static_assert(UI_CARD_FIRST_Y + 3 * UI_CARD_HEIGHT + 2 * UI_CARD_GAP <=
+               BOARD_ONX_LCD_HEIGHT, "Dashboard cards must fit the display");
+_Static_assert(UI_CARD_FIRST_Y >= UI_HEADER_HEIGHT,
+               "Dashboard cards must start below the page indicator");
+_Static_assert(UI_CARD_WIDTH - 16 >= UI_TITLE_LINE_CHARS * LCD_CELL_W * 2U,
+               "Dashboard title lines must fit at 2x text scale");
 
 static const char *TAG = "onx_display";
 static bool s_initialized;
+#if ONX_SCREENSHOT_ENABLED
+static bool s_screen_frozen;
+#endif
 static SemaphoreHandle_t s_ui_mutex;
 static esp_lcd_panel_io_handle_t s_lcd_io;
 static esp_lcd_panel_handle_t s_panel;
@@ -52,20 +86,28 @@ static i2c_master_bus_handle_t s_i2c_bus;
 static i2c_master_dev_handle_t s_pcf8574;
 static i2c_master_dev_handle_t s_touch;
 static bool s_touch_ready;
-static uint32_t s_last_rpm;
-static bool s_rpm_valid;
-static int32_t s_last_coolant_temp_c;
-static bool s_coolant_valid;
 static char s_last_status[64];
+static SemaphoreHandle_t s_trans_done; /* given by the LCD color-transfer-done ISR */
 
-typedef enum {
-    UI_PAGE_RPM = 0,
-    UI_PAGE_COOLANT = 1,
-} ui_page_t;
+typedef struct {
+    parameter_descriptor_t descriptor;
+    float value;
+    int64_t timestamp_us;
+    parameter_validity_t validity;
+    bool shown_live; /* card on screen is currently drawn as LIVE */
+} dashboard_item_t;
 
-static ui_page_t s_page = UI_PAGE_RPM;
+static dashboard_item_t s_items[UI_MAX_ITEMS];
+static size_t s_item_count;
+static size_t s_page;
 static uint16_t s_fill_buffer[BOARD_ONX_LCD_WIDTH * LCD_FILL_ROWS];
 static uint16_t s_glyph_buffer[LCD_CELL_W * LCD_MAX_SCALE * LCD_GLYPH_H * LCD_MAX_SCALE];
+static uint16_t s_number_glyph_buffer[LCD_NUMBER_MAX_W * LCD_NUMBER_MAX_H];
+#if ONX_SCREENSHOT_ENABLED
+static uint16_t *s_framebuffer;
+#endif
+
+static esp_err_t draw_current_screen(void);
 
 /* 5-column, 7-row ASCII subset used by the diagnostic display. Bit 0 is top. */
 static const uint8_t s_font_letters_digits[36][5] = {
@@ -116,6 +158,11 @@ static const uint8_t *glyph_columns(char ch)
     static const uint8_t dot[5] = {0,0,0x60,0x60,0};
     static const uint8_t plus[5] = {0x08,0x08,0x3E,0x08,0x08};
     static const uint8_t underscore[5] = {0x40,0x40,0x40,0x40,0x40};
+    static const uint8_t percent[5] = {0x23,0x13,0x08,0x64,0x62};
+    static const uint8_t lparen[5] = {0x00,0x1C,0x22,0x41,0x00};
+    static const uint8_t rparen[5] = {0x00,0x41,0x22,0x1C,0x00};
+    static const uint8_t comma[5] = {0x00,0x50,0x30,0x00,0x00};
+    static const uint8_t degree[5] = {0x00,0x06,0x09,0x09,0x06};
     ch = (char)toupper((unsigned char)ch);
     if (ch >= 'A' && ch <= 'Z') return s_font_letters_digits[(unsigned)(ch - 'A')];
     if (ch >= '0' && ch <= '9') return s_font_letters_digits[26U + (unsigned)(ch - '0')];
@@ -126,9 +173,43 @@ static const uint8_t *glyph_columns(char ch)
     case '.': return dot;
     case '+': return plus;
     case '_': return underscore;
+    case '%': return percent;
+    case '(': return lparen;
+    case ')': return rparen;
+    case ',': return comma;
+    case LCD_CHAR_DEGREE: return degree;
     case ' ': return blank;
     default: return blank;
     }
+}
+
+/* Converts UTF-8 / Latin-1 text into the display's 1-byte charset: the degree
+ * sign becomes LCD_CHAR_DEGREE, any other non-ASCII sequence becomes ONE space.
+ * dst is always NUL-terminated; returns the resulting length. Idempotent. */
+static size_t normalize_text(const char *src, char *dst, size_t cap)
+{
+    size_t n = 0U;
+    if (cap == 0U) return 0U;
+    if (src == NULL) src = "";
+    for (size_t i = 0U; src[i] != '\0' && n + 1U < cap; ++i) {
+        const unsigned char c = (unsigned char)src[i];
+        if (c < 0x80U) {
+            dst[n++] = (char)c;
+        } else if (c == 0xB0U) {                    /* Latin-1 degree sign */
+            dst[n++] = LCD_CHAR_DEGREE;
+        } else if (c >= 0xC0U) {                    /* UTF-8 lead byte */
+            const size_t extra = c >= 0xF0U ? 3U : (c >= 0xE0U ? 2U : 1U);
+            if (c == 0xC2U && (unsigned char)src[i + 1U] == 0xB0U) {
+                dst[n++] = LCD_CHAR_DEGREE;
+            } else {
+                dst[n++] = ' ';
+            }
+            for (size_t k = 0U; k < extra && src[i + 1U] != '\0'; ++k) ++i;
+        }
+        /* stray continuation bytes (0x80..0xBF) are dropped */
+    }
+    dst[n] = '\0';
+    return n;
 }
 
 static esp_err_t pcf8574_write(uint8_t value)
@@ -180,22 +261,21 @@ static esp_err_t init_reset_expander(void)
 
 static esp_err_t init_touch_controller(void)
 {
+    esp_err_t err = i2c_master_probe(s_i2c_bus, CST826_I2C_ADDRESS, 100);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "CST826 did not ACK at I2C address 0x%02X: %s",
+                 CST826_I2C_ADDRESS, esp_err_to_name(err));
+        return err;
+    }
+
     const i2c_device_config_t touch_cfg = {
         .dev_addr_length = I2C_ADDR_BIT_LEN_7,
         .device_address = CST826_I2C_ADDRESS,
         .scl_speed_hz = PCF_I2C_SPEED_HZ,
     };
-    esp_err_t err = i2c_master_bus_add_device(s_i2c_bus, &touch_cfg, &s_touch);
+    err = i2c_master_bus_add_device(s_i2c_bus, &touch_cfg, &s_touch);
     if (err != ESP_OK) {
         ESP_LOGW(TAG, "Could not add CST826 I2C device at 0x%02X: %s",
-                 CST826_I2C_ADDRESS, esp_err_to_name(err));
-        s_touch = NULL;
-        return err;
-    }
-
-    err = i2c_master_probe(s_i2c_bus, CST826_I2C_ADDRESS, 100);
-    if (err != ESP_OK) {
-        ESP_LOGW(TAG, "CST826 did not ACK at I2C address 0x%02X: %s",
                  CST826_I2C_ADDRESS, esp_err_to_name(err));
         s_touch = NULL;
         return err;
@@ -207,8 +287,41 @@ static esp_err_t init_touch_controller(void)
     return ESP_OK;
 }
 
+/* esp_lcd_panel_draw_bitmap() only QUEUES the transfer: the pixel buffer must not
+ * be touched until the DMA is done. All drawing therefore goes through lcd_draw(),
+ * which waits for the transfer-done callback before returning. */
+static bool on_color_trans_done(esp_lcd_panel_io_handle_t io,
+                                esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
+{
+    (void)io;
+    (void)edata;
+    (void)user_ctx;
+    BaseType_t woken = pdFALSE;
+    xSemaphoreGiveFromISR(s_trans_done, &woken);
+    return woken == pdTRUE;
+}
+
+static esp_err_t lcd_draw(int x_start, int y_start, int x_end, int y_end,
+                          const void *pixels)
+{
+    if (s_panel == NULL || s_trans_done == NULL) return ESP_ERR_INVALID_STATE;
+    (void)xSemaphoreTake(s_trans_done, 0); /* drop any stale completion */
+    esp_err_t err = esp_lcd_panel_draw_bitmap(s_panel, x_start, y_start,
+                                              x_end, y_end, pixels);
+    if (err != ESP_OK) return err;
+    if (xSemaphoreTake(s_trans_done, pdMS_TO_TICKS(200)) != pdTRUE) {
+        ESP_LOGE(TAG, "LCD color transfer did not complete");
+        return ESP_ERR_TIMEOUT;
+    }
+    return ESP_OK;
+}
+
 static esp_err_t init_lcd_panel(void)
 {
+    if (s_trans_done == NULL) {
+        s_trans_done = xSemaphoreCreateBinary();
+        if (s_trans_done == NULL) return ESP_ERR_NO_MEM;
+    }
     const spi_bus_config_t bus_cfg = {
         .sclk_io_num = BOARD_ONX_LCD_PIN_SCLK,
         .mosi_io_num = BOARD_ONX_LCD_PIN_MOSI,
@@ -233,7 +346,7 @@ static esp_err_t init_lcd_panel(void)
         .lcd_param_bits = 8,
         .spi_mode = 0,
         .trans_queue_depth = 5,
-        .on_color_trans_done = NULL,
+        .on_color_trans_done = on_color_trans_done,
         .user_ctx = NULL,
     };
     err = esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)BOARD_ONX_LCD_SPI_HOST,
@@ -268,7 +381,8 @@ static esp_err_t init_lcd_panel(void)
         .intr_type = GPIO_INTR_DISABLE,
     };
     if ((err = gpio_config(&bl_cfg)) != ESP_OK) return err;
-    if ((err = gpio_set_level(BOARD_ONX_LCD_PIN_BACKLIGHT, 1)) != ESP_OK) return err;
+    /* Backlight stays off until the first frame is drawn (GRAM is random after reset). */
+    if ((err = gpio_set_level(BOARD_ONX_LCD_PIN_BACKLIGHT, 0)) != ESP_OK) return err;
 
     ESP_LOGI(TAG, "ONX2432G028 ST7789 initialized: %ux%u, SPI host=%d SCLK=%d MOSI=%d DC=%d CS=%d BL=%d",
              (unsigned)BOARD_ONX_LCD_WIDTH, (unsigned)BOARD_ONX_LCD_HEIGHT,
@@ -292,11 +406,34 @@ static esp_err_t fill_rect(int x, int y, int width, int height, uint16_t color)
     for (int offset = 0; offset < height; offset += (int)LCD_FILL_ROWS) {
         int rows = height - offset;
         if (rows > (int)LCD_FILL_ROWS) rows = (int)LCD_FILL_ROWS;
-        esp_err_t err = esp_lcd_panel_draw_bitmap(s_panel, x, y + offset,
-                                                   x + width, y + offset + rows,
-                                                   s_fill_buffer);
+        esp_err_t err = lcd_draw(x, y + offset, x + width, y + offset + rows, s_fill_buffer);
         if (err != ESP_OK) return err;
+#if ONX_SCREENSHOT_ENABLED
+        for (int row = 0; row < rows; ++row) {
+            uint16_t *dest = &s_framebuffer[(size_t)(y + offset + row) *
+                                             BOARD_ONX_LCD_WIDTH + (size_t)x];
+            for (int col = 0; col < width; ++col) dest[col] = color;
+        }
+#endif
     }
+    return ESP_OK;
+}
+
+static esp_err_t draw_bitmap(int x, int y, int width, int height,
+                             const uint16_t *pixels)
+{
+    if (pixels == NULL || width <= 0 || height <= 0) return ESP_ERR_INVALID_ARG;
+    if (x < 0 || y < 0 || x + width > (int)BOARD_ONX_LCD_WIDTH ||
+        y + height > (int)BOARD_ONX_LCD_HEIGHT) return ESP_ERR_INVALID_ARG;
+    esp_err_t err = lcd_draw(x, y, x + width, y + height, pixels);
+    if (err != ESP_OK) return err;
+#if ONX_SCREENSHOT_ENABLED
+    for (int row = 0; row < height; ++row) {
+        memcpy(&s_framebuffer[(size_t)(y + row) * BOARD_ONX_LCD_WIDTH + (size_t)x],
+               &pixels[(size_t)row * (size_t)width],
+               (size_t)width * sizeof(uint16_t));
+    }
+#endif
     return ESP_OK;
 }
 
@@ -318,16 +455,16 @@ static esp_err_t draw_glyph(int x, int y, char ch, unsigned scale,
             s_glyph_buffer[py * width + px] = lit ? foreground : background;
         }
     }
-    return esp_lcd_panel_draw_bitmap(s_panel, x, y, x + (int)width, y + (int)height,
-                                     s_glyph_buffer);
+    return draw_bitmap(x, y, (int)width, (int)height, s_glyph_buffer);
 }
 
 static esp_err_t draw_text_box(int x, int y, int width, int height, unsigned scale,
                                uint16_t foreground, uint16_t background, const char *text)
 {
-    if (text == NULL) text = "";
+    char norm[65];
     if (width <= 0 || height <= 0) return ESP_ERR_INVALID_ARG;
-    size_t len = strnlen(text, 64U);
+    size_t len = normalize_text(text, norm, sizeof(norm));
+    text = norm;
     while (len > 0U && len * LCD_CELL_W * scale > (size_t)width && scale > 1U) scale--;
     esp_err_t err = fill_rect(x, y, width, height, background);
     if (err != ESP_OK) return err;
@@ -341,126 +478,404 @@ static esp_err_t draw_text_box(int x, int y, int width, int height, unsigned sca
     return ESP_OK;
 }
 
-static esp_err_t draw_page_value(void)
+static uint8_t numeric_segments(char ch)
 {
-    esp_err_t err;
-    char value[16];
-    const char *title;
-    const char *unit;
+    static const uint8_t digit_segments[10] = {
+        0x3FU, 0x06U, 0x5BU, 0x4FU, 0x66U,
+        0x6DU, 0x7DU, 0x07U, 0x7FU, 0x6FU,
+    };
+    if (ch >= '0' && ch <= '9') return digit_segments[(unsigned)(ch - '0')];
+    return ch == '-' ? 0x40U : 0U;
+}
 
-    if (s_page == UI_PAGE_RPM) {
-        title = "ENGINE RPM";
-        unit = "RPM";
-        if (s_rpm_valid) {
-            (void)snprintf(value, sizeof(value), "%lu", (unsigned long)s_last_rpm);
-        } else {
-            (void)snprintf(value, sizeof(value), "----");
+static esp_err_t draw_numeric_glyph(int x, int y, char ch, unsigned height,
+                                    uint16_t foreground, uint16_t background)
+{
+    const unsigned thickness = height / 9U > 2U ? height / 9U : 3U;
+    const unsigned digit_width = height * 3U / 5U;
+    const bool decimal = ch == '.';
+    const unsigned width = decimal ? height / 4U : digit_width;
+    if (height > LCD_NUMBER_MAX_H || width > LCD_NUMBER_MAX_W) {
+        return ESP_ERR_INVALID_SIZE;
+    }
+
+    const size_t pixels = (size_t)width * height;
+    for (size_t i = 0; i < pixels; ++i) s_number_glyph_buffer[i] = background;
+
+    if (decimal) {
+        const unsigned dot_size = thickness;
+        const unsigned dot_x = width > dot_size ? width - dot_size : 0U;
+        const unsigned dot_y = height - dot_size;
+        for (unsigned py = dot_y; py < height; ++py) {
+            for (unsigned px = dot_x; px < width; ++px) {
+                s_number_glyph_buffer[(size_t)py * width + px] = foreground;
+            }
         }
     } else {
-        title = "COOLANT TEMP";
-        unit = "DEG C";
-        if (s_coolant_valid) {
-            (void)snprintf(value, sizeof(value), "%ld", (long)s_last_coolant_temp_c);
-        } else {
-            (void)snprintf(value, sizeof(value), "----");
+        const uint8_t segments = numeric_segments(ch);
+        const unsigned middle_y = (height - thickness) / 2U;
+        const unsigned vertical_height = middle_y > thickness
+            ? middle_y - thickness : 1U;
+        const unsigned lower_y = middle_y + thickness;
+        const unsigned lower_height = height > thickness + lower_y
+            ? height - thickness - lower_y : 1U;
+        const unsigned horizontal_width = digit_width - 2U * thickness;
+        const unsigned segment_x[7] = {
+            thickness, digit_width - thickness, digit_width - thickness,
+            thickness, 0U, 0U, thickness,
+        };
+        const unsigned segment_y[7] = {
+            0U, thickness, lower_y, height - thickness,
+            lower_y, thickness, middle_y,
+        };
+        const unsigned segment_w[7] = {
+            horizontal_width, thickness, thickness, horizontal_width,
+            thickness, thickness, horizontal_width,
+        };
+        const unsigned segment_h[7] = {
+            thickness, vertical_height, lower_height, thickness,
+            lower_height, vertical_height, thickness,
+        };
+        for (unsigned segment = 0; segment < 7U; ++segment) {
+            if ((segments & (1U << segment)) == 0U) continue;
+            for (unsigned py = segment_y[segment];
+                 py < segment_y[segment] + segment_h[segment]; ++py) {
+                for (unsigned px = segment_x[segment];
+                     px < segment_x[segment] + segment_w[segment]; ++px) {
+                    s_number_glyph_buffer[(size_t)py * width + px] = foreground;
+                }
+            }
         }
     }
 
-    if ((err = draw_text_box(12, 60, 216, 22, 2, LCD_COLOR_CYAN, LCD_COLOR_BLACK,
-                             title)) != ESP_OK) return err;
-    if ((err = draw_text_box(12, 100, 216, 70, 5, LCD_COLOR_GREEN, LCD_COLOR_BLACK,
-                             value)) != ESP_OK) return err;
-    if ((err = draw_text_box(12, 177, 216, 22, 2, LCD_COLOR_WHITE, LCD_COLOR_BLACK,
-                             unit)) != ESP_OK) return err;
+    return draw_bitmap(x, y, (int)width, (int)height, s_number_glyph_buffer);
+}
+
+#if ONX_SCREENSHOT_ENABLED
+static void encode_base64_chunk(const uint8_t *input, size_t input_length,
+                                char output[81])
+{
+    static const char alphabet[] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    size_t out = 0U;
+    for (size_t i = 0U; i < input_length; i += 3U) {
+        const size_t remaining = input_length - i;
+        const uint32_t value = ((uint32_t)input[i] << 16) |
+                               (remaining > 1U ?
+                                    (uint32_t)input[i + 1U] << 8 : 0U) |
+                               (remaining > 2U ? input[i + 2U] : 0U);
+        output[out++] = alphabet[(value >> 18) & 0x3FU];
+        output[out++] = alphabet[(value >> 12) & 0x3FU];
+        output[out++] = remaining > 1U ? alphabet[(value >> 6) & 0x3FU] : '=';
+        output[out++] = remaining > 2U ? alphabet[value & 0x3FU] : '=';
+    }
+    output[out] = '\0';
+}
+
+static void screenshot_stream_task(void *arg)
+{
+    (void)arg;
+    vTaskDelay(pdMS_TO_TICKS(SCREENSHOT_DELAY_MS));
+    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(1000)) != pdTRUE) {
+        ESP_LOGE(TAG, "ONXSHOT:ERROR:could not freeze LCD frame");
+        vTaskDelete(NULL);
+        return;
+    }
+    s_screen_frozen = true;
+    xSemaphoreGive(s_ui_mutex);
+
+    ESP_LOGI(TAG, "ONXSHOT:BEGIN:%u:%u:RGB565LE",
+             (unsigned)BOARD_ONX_LCD_WIDTH, (unsigned)BOARD_ONX_LCD_HEIGHT);
+
+    uint16_t row[BOARD_ONX_LCD_WIDTH];
+    uint8_t row_bytes[SCREENSHOT_ROW_BYTES];
+    char encoded[81];
+    for (unsigned y = 0U; y < BOARD_ONX_LCD_HEIGHT; ++y) {
+        memcpy(row, &s_framebuffer[(size_t)y * BOARD_ONX_LCD_WIDTH],
+               sizeof(row));
+
+        for (unsigned x = 0U; x < BOARD_ONX_LCD_WIDTH; ++x) {
+            row_bytes[x * 2U] = (uint8_t)(row[x] & 0xFFU);
+            row_bytes[x * 2U + 1U] = (uint8_t)(row[x] >> 8);
+        }
+        for (unsigned chunk = 0U; chunk < SCREENSHOT_CHUNKS_PER_ROW; ++chunk) {
+            const size_t offset = chunk * SCREENSHOT_CHUNK_BYTES;
+            const size_t remaining = SCREENSHOT_ROW_BYTES - offset;
+            const size_t chunk_length = remaining < SCREENSHOT_CHUNK_BYTES ?
+                                        remaining : SCREENSHOT_CHUNK_BYTES;
+            encode_base64_chunk(&row_bytes[offset], chunk_length, encoded);
+            ESP_LOGI(TAG, "ONXSHOT:ROW:%03u:%02u:%s", y, chunk, encoded);
+        }
+        vTaskDelay(1);
+    }
+    ESP_LOGI(TAG, "ONXSHOT:END");
+    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(1000)) == pdTRUE) {
+        s_screen_frozen = false;
+        if (draw_current_screen() != ESP_OK) {
+            ESP_LOGW(TAG, "LCD redraw after screenshot failed");
+        }
+        xSemaphoreGive(s_ui_mutex);
+    }
+    vTaskDelete(NULL);
+}
+#endif
+
+static unsigned numeric_glyph_width(char ch, unsigned height)
+{
+    return ch == '.' ? height / 4U : height * 3U / 5U;
+}
+
+static unsigned numeric_text_width(const char *text, unsigned height)
+{
+    const unsigned gap = height / 9U > 2U ? height / 9U : 3U;
+    unsigned width = 0U;
+    for (size_t i = 0U; text[i] != '\0'; ++i) {
+        width += numeric_glyph_width(text[i], height);
+        if (text[i + 1U] != '\0') width += gap;
+    }
+    return width;
+}
+
+static esp_err_t draw_numeric_text(int x, int y, const char *text, unsigned height,
+                                   uint16_t foreground, uint16_t background, int max_x)
+{
+    const unsigned gap = height / 9U > 2U ? height / 9U : 3U;
+    for (size_t i = 0U; text[i] != '\0'; ++i) {
+        const int glyph_w = (int)numeric_glyph_width(text[i], height);
+        if (x + glyph_w > max_x) break; /* never draw outside the card */
+        esp_err_t err = draw_numeric_glyph(x, y, text[i], height,
+                                           foreground, background);
+        if (err != ESP_OK) return err;
+        x += glyph_w;
+        if (text[i + 1U] != '\0') x += (int)gap;
+    }
     return ESP_OK;
 }
 
-static esp_err_t draw_nav_tab(int x, const char *label, bool active)
+static size_t page_count(void)
 {
-    const uint16_t bg = active ? LCD_COLOR_CYAN : LCD_COLOR_NAVY;
-    const uint16_t fg = active ? LCD_COLOR_BLACK : LCD_COLOR_WHITE;
-    const unsigned scale = 2U;
-    const int text_width = (int)(strnlen(label, 20U) * LCD_CELL_W * scale);
-    const int text_x = x + (UI_NAV_WIDTH - text_width) / 2;
-    esp_err_t err;
+    const size_t pages = (s_item_count + 2U) / 3U;
+    return pages == 0U ? 1U : pages;
+}
 
-    if ((err = fill_rect(x, UI_NAV_Y, UI_NAV_WIDTH, UI_NAV_HEIGHT, bg)) != ESP_OK) return err;
-    /* Thin cyan outline also makes the tap target visible when it is inactive. */
-    if ((err = fill_rect(x, UI_NAV_Y, UI_NAV_WIDTH, 2, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    if ((err = fill_rect(x, UI_NAV_Y + UI_NAV_HEIGHT - 2, UI_NAV_WIDTH, 2, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    if ((err = fill_rect(x, UI_NAV_Y, 2, UI_NAV_HEIGHT, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    if ((err = fill_rect(x + UI_NAV_WIDTH - 2, UI_NAV_Y, 2, UI_NAV_HEIGHT, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    return draw_text_box(text_x, UI_NAV_Y + 14, UI_NAV_WIDTH - 8, 20, scale, fg, bg, label);
+static bool item_is_fresh(const dashboard_item_t *item, int64_t now_us)
+{
+    if (item->validity != PARAM_VALIDITY_VALID || item->timestamp_us <= 0) return false;
+    return now_us - item->timestamp_us <
+           (int64_t)item->descriptor.update_period_ms * UI_STALE_MULTIPLIER * 1000LL;
+}
+
+static void split_title(const char *title, char first[UI_TITLE_LINE_CHARS + 1U],
+                        char second[UI_TITLE_LINE_CHARS + 1U])
+{
+    first[0] = '\0';
+    second[0] = '\0';
+    char *line = first;
+    size_t line_length = 0U;
+    const char *cursor = title;
+
+    while (*cursor != '\0') {
+        while (*cursor == ' ') ++cursor;
+        if (*cursor == '\0') break;
+        const char *word = cursor;
+        while (*cursor != '\0' && *cursor != ' ') ++cursor;
+        size_t word_length = (size_t)(cursor - word);
+        if (line_length != 0U && line_length + 1U + word_length > UI_TITLE_LINE_CHARS) {
+            if (line == second) break;
+            line = second;
+            line_length = 0U;
+        }
+        if (word_length > UI_TITLE_LINE_CHARS - line_length) {
+            word_length = UI_TITLE_LINE_CHARS - line_length;
+        }
+        if (line_length != 0U) line[line_length++] = ' ';
+        memcpy(line + line_length, word, word_length);
+        line_length += word_length;
+        line[line_length] = '\0';
+    }
+}
+
+static esp_err_t draw_card(size_t item_index, size_t slot)
+{
+    const int x = UI_CARD_X;
+    const int y = UI_CARD_FIRST_Y + (int)slot * (UI_CARD_HEIGHT + UI_CARD_GAP);
+    esp_err_t err;
+    if ((err = fill_rect(x, y, UI_CARD_WIDTH, UI_CARD_HEIGHT, LCD_COLOR_NAVY)) != ESP_OK)
+        return err;
+    if ((err = fill_rect(x, y, UI_CARD_WIDTH, 2, LCD_COLOR_CYAN)) != ESP_OK) return err;
+    if ((err = fill_rect(x, y + UI_CARD_HEIGHT - 2, UI_CARD_WIDTH, 2, LCD_COLOR_CYAN)) != ESP_OK)
+        return err;
+
+    if (item_index >= s_item_count) {
+        return draw_text_box(x + 8, y + 20, UI_CARD_WIDTH - 16, 22, 2,
+                             LCD_COLOR_GRAY, LCD_COLOR_NAVY, "--");
+    }
+
+    dashboard_item_t *item = &s_items[item_index];
+    item->shown_live = false; /* set again only after a fully successful draw */
+
+    char name_text[65];
+    char title_first[UI_TITLE_LINE_CHARS + 1U];
+    char title_second[UI_TITLE_LINE_CHARS + 1U];
+    (void)normalize_text(item->descriptor.name, name_text, sizeof(name_text));
+    split_title(name_text, title_first, title_second);
+    if ((err = draw_text_box(x + 8, y + 4, UI_CARD_WIDTH - 16, 15, 2,
+                             LCD_COLOR_CYAN, LCD_COLOR_NAVY,
+                             title_first)) != ESP_OK) return err;
+    if ((err = draw_text_box(x + 8, y + 19, UI_CARD_WIDTH - 16, 15, 2,
+                             LCD_COLOR_CYAN, LCD_COLOR_NAVY,
+                             title_second)) != ESP_OK) return err;
+
+    char status[12];
+    const int64_t now_us = esp_timer_get_time();
+    const bool finite_value = isfinite((double)item->value);
+    const bool fresh = item_is_fresh(item, now_us) && finite_value;
+    char number[16];
+    char unit_text[17] = "";
+    if (fresh) {
+        (void)snprintf(number, sizeof(number), "%.1f", (double)item->value);
+        const size_t length = strnlen(number, sizeof(number));
+        if (length >= 2U && number[length - 2U] == '.' && number[length - 1U] == '0')
+            number[length - 2U] = '\0';
+        if (strcmp(number, "-0") == 0) { number[0] = '0'; number[1] = '\0'; }
+        (void)normalize_text(item->descriptor.unit, unit_text, sizeof(unit_text));
+        (void)snprintf(status, sizeof(status), "LIVE");
+    } else {
+        (void)snprintf(number, sizeof(number), "--");
+        switch (item->validity) {
+        case PARAM_VALIDITY_VALID:
+            if (item->timestamp_us <= 0) (void)snprintf(status, sizeof(status), "NO DATA");
+            else if (!finite_value) (void)snprintf(status, sizeof(status), "INVALID");
+            else (void)snprintf(status, sizeof(status), "STALE");
+            break;
+        case PARAM_VALIDITY_STALE: (void)snprintf(status, sizeof(status), "STALE"); break;
+        case PARAM_VALIDITY_TIMEOUT: (void)snprintf(status, sizeof(status), "TIMEOUT"); break;
+        case PARAM_VALIDITY_INVALID: (void)snprintf(status, sizeof(status), "INVALID"); break;
+        default: (void)snprintf(status, sizeof(status), "NO DATA"); break;
+        }
+    }
+
+    const int value_area_width = UI_CARD_WIDTH - 16;
+    const size_t unit_length = strnlen(unit_text, sizeof(unit_text));
+    const unsigned unit_width = (unsigned)(unit_length * LCD_CELL_W * 2U);
+    const unsigned unit_gap = 8U;
+    bool show_unit = unit_length > 0U;
+    unsigned number_height = LCD_NUMBER_MAX_H;
+    for (;;) {
+        const unsigned reserved = show_unit ? unit_width + unit_gap : 0U;
+        if (numeric_text_width(number, number_height) + reserved <=
+            (unsigned)value_area_width) break;
+        if (number_height > LCD_NUMBER_MIN_H) {
+            --number_height;
+        } else if (show_unit) {
+            show_unit = false;              /* drop the unit before clipping digits */
+            number_height = LCD_NUMBER_MAX_H;
+        } else {
+            break;
+        }
+    }
+    const unsigned number_width = numeric_text_width(number, number_height);
+    const unsigned group_width = number_width + (show_unit ? unit_width + unit_gap : 0U);
+    int value_x = x + 8 + (value_area_width - (int)group_width) / 2;
+    if (value_x < x + 8) value_x = x + 8;
+    const int right_limit = x + UI_CARD_WIDTH - 8;
+    const uint16_t value_color = fresh ? LCD_COLOR_GREEN : LCD_COLOR_GRAY;
+
+    if ((err = draw_numeric_text(value_x, y + 39, number, number_height,
+                                 value_color, LCD_COLOR_NAVY, right_limit)) != ESP_OK)
+        return err;
+    if (show_unit) {
+        const int unit_x = value_x + (int)number_width + (int)unit_gap;
+        if (unit_x + (int)unit_width <= right_limit &&
+            (err = draw_text_box(unit_x, y + 53, (int)unit_width, 20, 2,
+                                 value_color, LCD_COLOR_NAVY, unit_text)) != ESP_OK)
+            return err;
+    }
+    err = draw_text_box(x + 8, y + 83, UI_CARD_WIDTH - 16, 9, 1,
+                        fresh ? LCD_COLOR_GREEN : LCD_COLOR_RED,
+                        LCD_COLOR_NAVY, status);
+    if (err == ESP_OK) item->shown_live = fresh;
+    return err;
+}
+
+static esp_err_t draw_page_header(void)
+{
+    char page_text[16];
+    (void)snprintf(page_text, sizeof(page_text), "%u/%u",
+                   (unsigned)(s_page + 1U), (unsigned)page_count());
+    esp_err_t err = fill_rect(0, 0, BOARD_ONX_LCD_WIDTH, UI_HEADER_HEIGHT, LCD_COLOR_NAVY);
+    if (err != ESP_OK) return err;
+    err = draw_text_box(6, 8, (int)BOARD_ONX_LCD_WIDTH - 6 - 76, 9, 1,
+                        LCD_COLOR_WHITE, LCD_COLOR_NAVY, s_last_status);
+    if (err != ESP_OK) return err;
+    return draw_text_box(BOARD_ONX_LCD_WIDTH - 70, 4, 66, 16, 2,
+                         LCD_COLOR_CYAN, LCD_COLOR_NAVY, page_text);
 }
 
 static esp_err_t draw_current_screen(void)
 {
     esp_err_t err = fill_rect(0, 0, BOARD_ONX_LCD_WIDTH, BOARD_ONX_LCD_HEIGHT, LCD_COLOR_BLACK);
     if (err != ESP_OK) return err;
-    if ((err = fill_rect(0, 0, BOARD_ONX_LCD_WIDTH, 42, LCD_COLOR_NAVY)) != ESP_OK) return err;
-    if ((err = draw_text_box(12, 10, 216, 22, 2, LCD_COLOR_WHITE, LCD_COLOR_NAVY,
-                             "OBD / ENGINE")) != ESP_OK) return err;
-    if ((err = fill_rect(12, 46, 216, 2, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    if ((err = draw_page_value()) != ESP_OK) return err;
-    if ((err = fill_rect(12, 204, 216, 1, LCD_COLOR_CYAN)) != ESP_OK) return err;
-    if ((err = draw_text_box(12, 213, 216, 24, 2, LCD_COLOR_WHITE, LCD_COLOR_BLACK,
-                             s_last_status[0] != '\0' ? s_last_status : "WAITING FOR CAN")) != ESP_OK) return err;
-    if ((err = draw_nav_tab(UI_NAV_LEFT_X, "RPM", s_page == UI_PAGE_RPM)) != ESP_OK) return err;
-    if ((err = draw_nav_tab(UI_NAV_RIGHT_X, "COOLANT", s_page == UI_PAGE_COOLANT)) != ESP_OK) return err;
+    if ((err = draw_page_header()) != ESP_OK) return err;
+    const size_t first = s_page * 3U;
+    for (size_t slot = 0; slot < 3U; ++slot) {
+        if ((err = draw_card(first + slot, slot)) != ESP_OK) return err;
+    }
     return ESP_OK;
 }
 
-static void switch_page(ui_page_t page)
+static void switch_page(int direction)
 {
     if (s_ui_mutex == NULL || xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
         ESP_LOGW(TAG, "Could not acquire LCD mutex for page switch");
         return;
     }
-    if (s_page != page) {
-        s_page = page;
+    const size_t pages = page_count();
+    if (pages <= 1U) {
+        xSemaphoreGive(s_ui_mutex);
+        return;
+    }
+    size_t next = s_page;
+    if (direction > 0 && next + 1U < pages) ++next;
+    if (direction < 0 && next > 0U) --next;
+    if (next != s_page) {
+        s_page = next;
+#if ONX_SCREENSHOT_ENABLED
+        if (s_screen_frozen) {
+            xSemaphoreGive(s_ui_mutex);
+            return;
+        }
+#endif
         if (draw_current_screen() != ESP_OK) {
             ESP_LOGW(TAG, "LCD page redraw failed");
         } else {
-            ESP_LOGI(TAG, "Touch selected page: %s", page == UI_PAGE_RPM ? "RPM" : "COOLANT TEMP");
+            ESP_LOGI(TAG, "Dashboard page %u/%u",
+                     (unsigned)(s_page + 1U), (unsigned)pages);
         }
     }
     xSemaphoreGive(s_ui_mutex);
 }
 
-static void handle_touch(uint16_t raw_x, uint16_t raw_y)
+static bool normalize_touch(uint16_t raw_x, uint16_t raw_y, int16_t *x, int16_t *y)
 {
-    uint16_t x;
-    uint16_t y;
-
-    /* The glass/controller axes can differ by 90 degrees. Prefer direct coordinates,
-     * and swap only when the point cannot fit the portrait LCD's coordinate range. */
     if (raw_x < BOARD_ONX_LCD_WIDTH && raw_y < BOARD_ONX_LCD_HEIGHT) {
-        x = raw_x;
-        y = raw_y;
-    } else if (raw_x < BOARD_ONX_LCD_HEIGHT && raw_y < BOARD_ONX_LCD_WIDTH) {
-        x = raw_y;
-        y = raw_x;
-    } else {
-        ESP_LOGW(TAG, "Touch coordinates out of screen range: raw x=%u y=%u",
-                 (unsigned)raw_x, (unsigned)raw_y);
-        return;
+        *x = (int16_t)raw_x;
+        *y = (int16_t)raw_y;
+        return true;
     }
-
-    ESP_LOGI(TAG, "CST826 touch down: raw=(%u,%u), screen=(%u,%u)",
-             (unsigned)raw_x, (unsigned)raw_y, (unsigned)x, (unsigned)y);
-    if (y < UI_NAV_Y || y >= UI_NAV_Y + UI_NAV_HEIGHT) return;
-
-    if (x >= UI_NAV_LEFT_X && x < UI_NAV_LEFT_X + UI_NAV_WIDTH) {
-        switch_page(UI_PAGE_RPM);
-    } else if (x >= UI_NAV_RIGHT_X && x < UI_NAV_RIGHT_X + UI_NAV_WIDTH) {
-        switch_page(UI_PAGE_COOLANT);
+    if (raw_x < BOARD_ONX_LCD_HEIGHT && raw_y < BOARD_ONX_LCD_WIDTH) {
+        *x = (int16_t)raw_y;
+        *y = (int16_t)raw_x;
+        return true;
     }
+    return false;
 }
 
 static void cst826_touch_task(void *arg)
 {
     bool finger_down = false;
     int64_t last_error_log_us = 0;
+    swipe_gesture_t gesture = {0};
     (void)arg;
 
     while (true) {
@@ -474,10 +889,30 @@ static void cst826_touch_task(void *arg)
             const uint16_t raw_x = (uint16_t)(((uint16_t)(data[1] & 0x0FU) << 8) | data[2]);
             const uint16_t raw_y = (uint16_t)(((uint16_t)(data[3] & 0x0FU) << 8) | data[4]);
 
+            int16_t x = 0;
+            int16_t y = 0;
+            const bool coordinate_valid = normalize_touch(raw_x, raw_y, &x, &y);
             if (touch_count > 0U && (event == 0U || event == 2U)) {
-                if (!finger_down) handle_touch(raw_x, raw_y);
-                finger_down = true;
-            } else if (touch_count == 0U || event == 1U) {
+                if (coordinate_valid && !finger_down) {
+                    swipe_gesture_begin(&gesture, x, y);
+                    finger_down = true;
+                } else if (coordinate_valid) {
+                    swipe_gesture_update(&gesture, x, y);
+                }
+            } else if (event == 1U && finger_down) {
+                if (!coordinate_valid) {
+                    x = gesture.last_x;
+                    y = gesture.last_y;
+                }
+                const swipe_direction_t direction = swipe_gesture_end(&gesture, x, y);
+                if (direction == SWIPE_LEFT) switch_page(1);
+                else if (direction == SWIPE_RIGHT) switch_page(-1);
+                finger_down = false;
+            } else if (touch_count == 0U && finger_down) {
+                const swipe_direction_t direction =
+                    swipe_gesture_end(&gesture, gesture.last_x, gesture.last_y);
+                if (direction == SWIPE_LEFT) switch_page(1);
+                else if (direction == SWIPE_RIGHT) switch_page(-1);
                 finger_down = false;
             }
         } else {
@@ -498,78 +933,137 @@ void onx_display_set_status(const char *status)
         ESP_LOGW(TAG, "Could not acquire LCD mutex for status update");
         return;
     }
-    if (strncmp(s_last_status, status, sizeof(s_last_status)) == 0) {
+    if (strncmp(s_last_status, status, sizeof(s_last_status) - 1U) == 0) {
         xSemaphoreGive(s_ui_mutex);
         return;
     }
-    if (draw_text_box(12, 213, 216, 24, 2, LCD_COLOR_WHITE, LCD_COLOR_BLACK, status) == ESP_OK) {
-        size_t n = strnlen(status, sizeof(s_last_status) - 1U);
-        memcpy(s_last_status, status, n);
-        s_last_status[n] = '\0';
-    } else {
-        ESP_LOGW(TAG, "LCD status update failed");
+    size_t n = strnlen(status, sizeof(s_last_status) - 1U);
+    memcpy(s_last_status, status, n);
+    s_last_status[n] = '\0';
+    bool may_draw = true;
+#if ONX_SCREENSHOT_ENABLED
+    may_draw = !s_screen_frozen;
+#endif
+    if (may_draw && draw_page_header() != ESP_OK) {
+        ESP_LOGW(TAG, "LCD status redraw failed");
     }
     xSemaphoreGive(s_ui_mutex);
 }
 
-void onx_display_set_rpm(uint32_t rpm)
+static int find_item(uint8_t pid)
 {
-    if (!s_initialized || s_ui_mutex == NULL) return;
-    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
-        ESP_LOGW(TAG, "Could not acquire LCD mutex for RPM update");
+    for (size_t i = 0; i < s_item_count; ++i) {
+        if (s_items[i].descriptor.pid == pid) return (int)i;
+    }
+    return -1;
+}
+
+void onx_display_set_catalog(const parameter_descriptor_t *catalog, size_t count)
+{
+    static const uint8_t preferred[] = {0x0CU, 0x05U, 0x04U, 0x0DU, 0x0BU, 0x0FU};
+    if (catalog == NULL && count != 0U) return;
+    if (count > UI_MAX_ITEMS) {
+        ESP_LOGE(TAG, "Dashboard catalog exceeds supported capacity (%u > %u)",
+                 (unsigned)count, (unsigned)UI_MAX_ITEMS);
         return;
     }
-    if (!s_rpm_valid || rpm != s_last_rpm) {
-        s_last_rpm = rpm;
-        s_rpm_valid = true;
-        if (s_page == UI_PAGE_RPM && draw_page_value() != ESP_OK) {
-            ESP_LOGW(TAG, "LCD RPM update failed");
+    const bool can_draw = s_initialized && s_ui_mutex != NULL;
+    if (can_draw && xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
+        ESP_LOGW(TAG, "Could not acquire LCD mutex to configure dashboard");
+        return;
+    }
+
+    memset(s_items, 0, sizeof(s_items));
+    s_item_count = 0U;
+    for (size_t preferred_index = 0;
+         preferred_index < sizeof(preferred) / sizeof(preferred[0]);
+         ++preferred_index) {
+        for (size_t i = 0; i < count; ++i) {
+            if (catalog[i].pid == preferred[preferred_index]) {
+                s_items[s_item_count++].descriptor = catalog[i];
+                break;
+            }
         }
     }
-    xSemaphoreGive(s_ui_mutex);
-}
-
-void onx_display_clear_rpm(void)
-{
-    if (!s_initialized || s_ui_mutex == NULL) return;
-    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
-        ESP_LOGW(TAG, "Could not acquire LCD mutex to clear RPM");
-        return;
-    }
-    s_rpm_valid = false;
-    if (s_page == UI_PAGE_RPM && draw_page_value() != ESP_OK) {
-        ESP_LOGW(TAG, "LCD RPM clear failed");
-    }
-    xSemaphoreGive(s_ui_mutex);
-}
-
-void onx_display_set_coolant_temp(int32_t temp_c)
-{
-    if (!s_initialized || s_ui_mutex == NULL) return;
-    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
-        ESP_LOGW(TAG, "Could not acquire LCD mutex for coolant update");
-        return;
-    }
-    if (!s_coolant_valid || temp_c != s_last_coolant_temp_c) {
-        s_last_coolant_temp_c = temp_c;
-        s_coolant_valid = true;
-        if (s_page == UI_PAGE_COOLANT && draw_page_value() != ESP_OK) {
-            ESP_LOGW(TAG, "LCD coolant temperature update failed");
+    for (size_t i = 0; i < count; ++i) {
+        bool already_added = false;
+        for (size_t j = 0; j < s_item_count; ++j) {
+            if (s_items[j].descriptor.pid == catalog[i].pid) {
+                already_added = true;
+                break;
+            }
         }
+        if (!already_added) s_items[s_item_count++].descriptor = catalog[i];
+    }
+
+    if (!can_draw) return;
+    s_page = 0U;
+#if ONX_SCREENSHOT_ENABLED
+    if (s_screen_frozen) {
+        xSemaphoreGive(s_ui_mutex);
+        return;
+    }
+#endif
+    if (draw_current_screen() != ESP_OK) {
+        ESP_LOGW(TAG, "Dashboard catalog redraw failed");
     }
     xSemaphoreGive(s_ui_mutex);
 }
 
-void onx_display_clear_coolant_temp(void)
+void onx_display_update_parameter(uint8_t pid, float value,
+                                  parameter_validity_t validity,
+                                  int64_t timestamp_us)
 {
     if (!s_initialized || s_ui_mutex == NULL) return;
     if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
-        ESP_LOGW(TAG, "Could not acquire LCD mutex to clear coolant temperature");
+        ESP_LOGW(TAG, "Could not acquire LCD mutex for PID 0x%02X update", pid);
         return;
     }
-    s_coolant_valid = false;
-    if (s_page == UI_PAGE_COOLANT && draw_page_value() != ESP_OK) {
-        ESP_LOGW(TAG, "LCD coolant temperature clear failed");
+    const int index = find_item(pid);
+    if (index < 0) {
+        xSemaphoreGive(s_ui_mutex);
+        return;
+    }
+    dashboard_item_t *item = &s_items[index];
+    /* Redraw also when valid data arrives but the card is not currently shown as
+     * LIVE (e.g. it was drawn "--" while off-screen), even if the value is equal. */
+    const bool changed = item->validity != validity || item->value != value ||
+                         (validity == PARAM_VALIDITY_VALID && !item->shown_live);
+    item->value = value;
+    item->validity = validity;
+    item->timestamp_us = timestamp_us;
+    const size_t first = s_page * 3U;
+    bool may_draw = true;
+#if ONX_SCREENSHOT_ENABLED
+    may_draw = !s_screen_frozen;
+#endif
+    if (may_draw && changed && (size_t)index >= first && (size_t)index < first + 3U &&
+        draw_card((size_t)index, (size_t)index - first) != ESP_OK) {
+        ESP_LOGW(TAG, "LCD card update failed for PID 0x%02X", pid);
+    }
+    xSemaphoreGive(s_ui_mutex);
+}
+
+void onx_display_poll(int64_t now_us)
+{
+    if (!s_initialized || s_ui_mutex == NULL ||
+        xSemaphoreTake(s_ui_mutex, 0) != pdTRUE) return;
+    const size_t first = s_page * 3U;
+    const size_t end = first + 3U < s_item_count ? first + 3U : s_item_count;
+    for (size_t i = first; i < end; ++i) {
+        dashboard_item_t *item = &s_items[i];
+        if (item->validity == PARAM_VALIDITY_VALID &&
+            now_us - item->timestamp_us >=
+                (int64_t)item->descriptor.update_period_ms * UI_STALE_MULTIPLIER * 1000LL) {
+            item->validity = PARAM_VALIDITY_STALE;
+#if ONX_SCREENSHOT_ENABLED
+            if (s_screen_frozen) continue;
+#endif
+            if (draw_card(i, i - first) != ESP_OK) {
+                ESP_LOGW(TAG, "LCD stale-state redraw failed for PID 0x%02X",
+                         item->descriptor.pid);
+            }
+        }
     }
     xSemaphoreGive(s_ui_mutex);
 }
@@ -577,8 +1071,7 @@ void onx_display_clear_coolant_temp(void)
 void onx_display_show_waiting_for_rpm(const char *status)
 {
     if (!s_initialized) return;
-    onx_display_clear_rpm();
-    onx_display_set_status(status != NULL ? status : "WAITING FOR RPM");
+    onx_display_set_status(status != NULL ? status : "WAITING FOR OBD DATA");
 }
 
 esp_err_t onx_display_init(void)
@@ -603,25 +1096,43 @@ esp_err_t onx_display_init(void)
     err = init_lcd_panel();
     if (err != ESP_OK) return err;
     (void)snprintf(s_last_status, sizeof(s_last_status), "%s", "WAITING FOR CAN");
-    s_page = UI_PAGE_RPM;
-    s_rpm_valid = false;
-    s_coolant_valid = false;
+    s_item_count = 0U;
+    s_page = 0U;
+#if ONX_SCREENSHOT_ENABLED
+    s_framebuffer = heap_caps_calloc((size_t)BOARD_ONX_LCD_WIDTH * BOARD_ONX_LCD_HEIGHT,
+                                     sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    if (s_framebuffer == NULL) {
+        s_framebuffer = heap_caps_calloc((size_t)BOARD_ONX_LCD_WIDTH * BOARD_ONX_LCD_HEIGHT,
+                                         sizeof(uint16_t), MALLOC_CAP_8BIT);
+    }
+    if (s_framebuffer == NULL) {
+        ESP_LOGE(TAG, "Could not allocate LCD screenshot framebuffer");
+        return ESP_ERR_NO_MEM;
+    }
+#endif
     err = draw_current_screen();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Initial ST7789 UI draw failed: %s", esp_err_to_name(err));
         return err;
     }
+    (void)gpio_set_level(BOARD_ONX_LCD_PIN_BACKLIGHT, 1);
 
     s_initialized = true;
+#if ONX_SCREENSHOT_ENABLED
+    if (xTaskCreate(screenshot_stream_task, "onx_screenshot", 4096, NULL, 1,
+                    NULL) != pdPASS) {
+        ESP_LOGE(TAG, "Could not create ONX screenshot stream task");
+    }
+#endif
     if (s_touch_ready) {
         if (xTaskCreate(cst826_touch_task, "cst826_touch", 3072, NULL, 5, NULL) != pdPASS) {
             ESP_LOGE(TAG, "Could not create CST826 touch task; page navigation is unavailable");
             s_touch_ready = false;
         } else {
-            ESP_LOGI(TAG, "CST826 touch polling task started (%u ms period); tap the bottom tabs to switch pages",
+            ESP_LOGI(TAG, "CST826 touch polling task started (%u ms period); swipe horizontally to switch pages",
                      (unsigned)CST826_TOUCH_POLL_MS);
         }
     }
-    ESP_LOGI(TAG, "ONX2432G028 LCD ready: pages=RPM/COOLANT TEMP, 240x320; values update from OBD responses");
+    ESP_LOGI(TAG, "ONX2432G028 LCD ready: waiting for ECU-supported PID catalog, 240x320");
     return ESP_OK;
 }

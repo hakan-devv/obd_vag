@@ -470,16 +470,15 @@ esp_err_t can_read_and_clear_rx_overflow(uint8_t *overflow_flags)
 }
 
 /*
- * TEMPORARY FIELD-DIAGNOSTIC MODE:
- * Accept all valid standard and extended CAN IDs while leaving the OBD
- * request scheduler and response decoder unchanged. This is intentionally
- * broader than the production 0x7E8-0x7EF acceptance filters.
+ * Accept all valid standard and extended frames while the discovery state
+ * machine is in Listen-Only mode. Active OBD probing installs response filters
+ * before entering Normal mode.
  */
 esp_err_t can_configure_diagnostic_accept_all_rx(void)
 {
     if (!s_inited || !s_mode_valid) return ESP_ERR_INVALID_STATE;
     if (s_current_mode != CAN_MODE_CONFIG) {
-        ESP_LOGE(TAG, "Diagnostic RX mode can only be configured in Configuration mode");
+        ESP_LOGE(TAG, "Accept-all RX mode can only be configured in Configuration mode");
         return ESP_ERR_INVALID_STATE;
     }
 
@@ -523,8 +522,8 @@ esp_err_t can_configure_diagnostic_accept_all_rx(void)
     }
 
     s_rx_configuration_verified = true;
-    ESP_LOGW(TAG,
-             "DIAGNOSTIC RX ENABLED: accepting standard + extended CAN IDs; flushed %lu stale startup frame(s)",
+    ESP_LOGI(TAG,
+             "CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed %lu stale frame(s)",
              (unsigned long)stale_frames);
     return ESP_OK;
 }

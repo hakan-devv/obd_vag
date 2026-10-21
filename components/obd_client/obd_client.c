@@ -6,15 +6,22 @@
 #include <string.h>
 
 #include "can_driver.h"
+#include "can_discovery.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "isotp.h"
 #include "onx_display.h"
 #include "parameter_manager.h"
+#include "pid_scheduler.h"
 #include "sdkconfig.h"
 #include "uds_client.h"
+#if defined(CONFIG_OBD_RUN_PROTOCOL_TESTS) && CONFIG_OBD_RUN_PROTOCOL_TESTS
+#include "obd_client_test.h"
+#endif
 
 static const char *TAG = "obd_client";
+
+static obd_pid_status_t s_pid_status[256];
 
 #define OBD_REQUEST_ID_STANDARD    0x7DFU
 #define OBD_REQUEST_ID_EXTENDED    0x18DB33F1U
@@ -26,6 +33,8 @@ static const char *TAG = "obd_client";
 #define OBD_DISCOVERY_PID          0x00U
 #define OBD_REQUEST_PERIOD_US        50000LL
 #define OBD_RESPONSE_TIMEOUT_US     200000LL
+#define CAN_DISCOVERY_LISTEN_US     300000LL
+#define CAN_DISCOVERY_RETRY_US     5000000LL
 #define OBD_MAX_RX_FRAMES_PER_STEP  32
 #define OBD_MAX_CONSECUTIVE_MISSES  3U
 #define OBD_RX_STATS_MAX_UNIQUE_IDS 32U
@@ -66,10 +75,6 @@ static int64_t s_request_sent_us;
 static uint32_t s_consecutive_misses;
 static uint32_t s_successful_rpm_responses;
 static uint32_t s_successful_coolant_responses;
-static int64_t s_last_rpm_response_us;
-static bool s_rpm_displayed_live;
-static int64_t s_last_coolant_response_us;
-static bool s_coolant_displayed_live;
 static uint32_t s_raw_frames_logged;
 static int64_t s_last_diag_attempt_us;
 static int64_t s_last_diag_success_us;
@@ -89,6 +94,10 @@ static uint8_t s_last_rx_dlc;
 static uint32_t s_unique_ids_count;
 static bool s_unique_ids_table_full;
 static can_bus_config_t s_can_config;
+static can_discovery_t s_can_discovery;
+static bool s_can_discovery_enabled;
+static int64_t s_candidate_deadline_us;
+static int64_t s_discovery_retry_us;
 static isotp_context_t s_isotp[OBD_ECU_COUNT];
 static uds_client_t s_uds[OBD_ECU_COUNT];
 static isotp_event_t s_isotp_event;
@@ -116,14 +125,22 @@ static void record_miss(const char *reason)
              (unsigned long)s_consecutive_misses,
              (unsigned)OBD_MAX_CONSECUTIVE_MISSES);
 
-    if (s_consecutive_misses >= OBD_MAX_CONSECUTIVE_MISSES) {
-        s_polling_enabled = false;
-        onx_display_set_status("OBD POLLING PAUSED");
-        ESP_LOGE(TAG,
-                 "OBD polling paused after %u consecutive misses; CAN reception and touch UI remain active. "
-                 "Check vehicle connection, ignition state and bitrate, then reboot to retry.",
-                 (unsigned)OBD_MAX_CONSECUTIVE_MISSES);
-    }
+    if (s_consecutive_misses >= OBD_MAX_CONSECUTIVE_MISSES)
+        ESP_LOGW(TAG, "OBD polling continues despite consecutive misses");
+}
+
+static void record_pid_error(uint8_t pid, obd_pid_error_t error)
+{
+    ++s_pid_status[pid].error_count;
+    s_pid_status[pid].last_error = error;
+}
+
+bool obd_client_get_pid_status(uint8_t pid, obd_pid_status_t *status)
+{
+    if (status == NULL) return false;
+    *status = s_pid_status[pid];
+    return status->last_request_us != 0 || status->last_success_us != 0 ||
+           status->error_count != 0;
 }
 
 static void record_rx_statistics(const can_frame_t *frame)
@@ -153,6 +170,20 @@ static void record_rx_statistics(const can_frame_t *frame)
     } else {
         s_unique_ids_table_full = true;
     }
+}
+
+static void refresh_dashboard_catalog(void)
+{
+    static parameter_descriptor_t supported[64];
+    size_t catalog_count = 0U;
+    size_t supported_count = 0U;
+    const parameter_descriptor_t *catalog = parameter_manager_catalog(&catalog_count);
+    for (size_t i = 0; i < catalog_count; ++i) {
+        if (parameter_manager_any_ecu_supports(catalog[i].pid)) {
+            supported[supported_count++] = catalog[i];
+        }
+    }
+    onx_display_set_catalog(supported, supported_count);
 }
 
 static void poll_rx_overflow_flags(int64_t now_us)
@@ -249,6 +280,7 @@ static esp_err_t initialize_isotp_channels(void)
             tx_id = 0x7E0U + index;
             rx_id = 0x7E8U + index;
         }
+
         const isotp_config_t config = {
             .tx_id = tx_id,
             .rx_id = rx_id,
@@ -263,6 +295,128 @@ static esp_err_t initialize_isotp_channels(void)
         if (err != ESP_OK) return err;
     }
     return ESP_OK;
+}
+
+static esp_err_t begin_can_candidate_listen(int64_t now_us)
+{
+    const can_bus_config_t *candidate = can_discovery_candidate(&s_can_discovery);
+    if (candidate == NULL) return ESP_ERR_NOT_FOUND;
+
+    esp_err_t err = can_set_mode(CAN_MODE_CONFIG);
+    if (err != ESP_OK) return err;
+    err = can_reconfigure(candidate);
+    if (err != ESP_OK) return err;
+    err = can_configure_diagnostic_accept_all_rx();
+    if (err != ESP_OK) return err;
+    err = can_set_mode(CAN_MODE_LISTEN_ONLY);
+    if (err != ESP_OK) return err;
+    err = can_get_config(&s_can_config);
+    if (err != ESP_OK) return err;
+
+    s_polling_enabled = false;
+    s_waiting_for_response = false;
+    s_requested_pid = 0U;
+    s_candidate_deadline_us = now_us + CAN_DISCOVERY_LISTEN_US;
+    ESP_LOGI(TAG, "Passive CAN candidate: %lu kbit/s %s; listening for valid frames",
+             (unsigned long)(s_can_config.bitrate / 1000U),
+             s_can_config.extended_ids ? "29-bit" : "11-bit");
+    return ESP_OK;
+}
+
+#if OBD_ACTIVE_TX_ENABLED && !OBD_LOOPBACK_SIM_ENABLED
+static esp_err_t begin_can_candidate_verification(int64_t now_us)
+{
+    esp_err_t err = can_discovery_begin_verification(&s_can_discovery);
+    if (err != ESP_OK) return err;
+    err = can_set_mode(CAN_MODE_CONFIG);
+    if (err != ESP_OK) return err;
+    err = can_configure_obd_response_filters();
+    if (err != ESP_OK) return err;
+    err = initialize_isotp_channels();
+    if (err != ESP_OK) return err;
+    err = can_set_mode(CAN_MODE_NORMAL);
+    if (err != ESP_OK) return err;
+
+    s_polling_enabled = true;
+    s_next_request_us = now_us;
+    ESP_LOGI(TAG, "Passive traffic evidence met; sending the opt-in OBD 01 00 verification request");
+    onx_display_show_waiting_for_rpm("VERIFYING OBD");
+    return ESP_OK;
+}
+#endif
+
+static void reject_current_can_candidate(const char *reason, int64_t now_us)
+{
+    ESP_LOGW(TAG, "CAN candidate rejected: %s", reason);
+    can_discovery_reject_candidate(&s_can_discovery);
+    s_can_discovery_enabled = true;
+    if (can_discovery_candidate(&s_can_discovery) == NULL) {
+        s_polling_enabled = false;
+        s_discovery_retry_us = now_us + CAN_DISCOVERY_RETRY_US;
+        ESP_LOGW(TAG, "No candidate returned a valid 41 00 bitmap; will passively rescan");
+        onx_display_show_waiting_for_rpm("NO OBD RESPONSE");
+        return;
+    }
+    esp_err_t err = begin_can_candidate_listen(now_us);
+    if (err != ESP_OK) {
+        s_polling_enabled = false;
+        s_can_discovery_enabled = false;
+        ESP_LOGE(TAG, "Could not start next CAN candidate: %s", esp_err_to_name(err));
+    }
+}
+
+static void poll_can_discovery(int64_t now_us)
+{
+    if (!s_can_discovery_enabled) return;
+    if (s_can_discovery.phase == CAN_DISCOVERY_EXHAUSTED) {
+        if (s_discovery_retry_us != 0 && now_us >= s_discovery_retry_us) {
+            can_discovery_restart(&s_can_discovery);
+            s_discovery_retry_us = 0;
+            esp_err_t err = begin_can_candidate_listen(now_us);
+            if (err != ESP_OK) {
+                s_can_discovery_enabled = false;
+                ESP_LOGE(TAG, "Could not restart CAN discovery: %s", esp_err_to_name(err));
+            }
+        }
+        return;
+    }
+    if (s_can_discovery.phase != CAN_DISCOVERY_LISTENING ||
+        now_us < s_candidate_deadline_us) {
+        return;
+    }
+
+    if (can_discovery_has_evidence(&s_can_discovery)) {
+#if OBD_ACTIVE_TX_ENABLED && !OBD_LOOPBACK_SIM_ENABLED
+        esp_err_t err = begin_can_candidate_verification(now_us);
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Could not verify CAN candidate: %s", esp_err_to_name(err));
+            reject_current_can_candidate("candidate configuration failed", now_us);
+        }
+#else
+        if (can_discovery_lock_passive(&s_can_discovery) == ESP_OK) {
+            s_can_discovery_enabled = false;
+            ESP_LOGI(TAG, "Passive CAN detected: %lu kbit/s %s; OBD requests remain disabled",
+                     (unsigned long)(s_can_config.bitrate / 1000U),
+                     s_can_config.extended_ids ? "29-bit" : "11-bit");
+            onx_display_show_waiting_for_rpm("CAN DETECTED - PASSIVE");
+        }
+#endif
+        return;
+    }
+
+    can_discovery_reject_candidate(&s_can_discovery);
+    if (can_discovery_candidate(&s_can_discovery) == NULL) {
+        s_polling_enabled = false;
+        s_discovery_retry_us = now_us + CAN_DISCOVERY_RETRY_US;
+        ESP_LOGW(TAG, "No valid CAN frames on 250/500 kbit/s, 11/29-bit candidates; scan is inconclusive");
+        onx_display_show_waiting_for_rpm("NO CAN TRAFFIC");
+        return;
+    }
+    esp_err_t err = begin_can_candidate_listen(now_us);
+    if (err != ESP_OK) {
+        s_can_discovery_enabled = false;
+        ESP_LOGE(TAG, "Could not start next CAN candidate: %s", esp_err_to_name(err));
+    }
 }
 
 static void log_uds_event(uint8_t ecu_index, const uds_event_t *event)
@@ -345,18 +499,44 @@ static void record_obd_response(const can_frame_t *frame,
                 ESP_LOGW(TAG, "Malformed PID bitmap from ECU 0x%0*lX: length=%u",
                          frame->extended ? 8 : 3, (unsigned long)frame->id,
                          (unsigned)length);
-                if (matching_request) record_miss("Malformed supported-PID bitmap");
+                if (matching_request) {
+                    record_pid_error(pid, OBD_PID_ERROR_INVALID_RESPONSE);
+                    if (s_can_discovery.phase == CAN_DISCOVERY_VERIFYING) {
+                        reject_current_can_candidate("malformed 41 00 bitmap", now_us);
+                    }
+                    record_miss("Malformed supported-PID bitmap");
+                }
                 return;
             }
+            const bool verifying_bitmap =
+                s_can_discovery.phase == CAN_DISCOVERY_VERIFYING;
+            if (verifying_bitmap && !matching_request) return;
             esp_err_t err = parameter_manager_record_supported_page(
                 frame->id, frame->extended, pid, &payload[2]);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "Could not cache ECU PID bitmap: %s", esp_err_to_name(err));
+                if (verifying_bitmap) {
+                    reject_current_can_candidate("invalid PID bitmap", now_us);
+                }
                 return;
+            }
+            if (verifying_bitmap) {
+                if (!can_discovery_confirm(&s_can_discovery, frame, payload, length)) {
+                    reject_current_can_candidate("invalid 41 00 response address", now_us);
+                    return;
+                }
+                s_can_discovery_enabled = false;
+                ESP_LOGI(TAG,
+                         "CAN/OBD verified by ECU 0x%0*lX: %lu kbit/s %s and valid 41 00 bitmap",
+                         frame->extended ? 8 : 3, (unsigned long)frame->id,
+                         (unsigned long)(s_can_config.bitrate / 1000U),
+                         s_can_config.extended_ids ? "29-bit" : "11-bit");
+                onx_display_set_status("OBD CONNECTED");
             }
             s_discovery_response_seen = true;
             s_discovery_has_continuation |=
                 parameter_manager_page_has_continuation(&payload[2]);
+            refresh_dashboard_catalog();
             if (s_discovery_collect_until_us == 0) {
                 s_discovery_collect_until_us = now_us + 100000LL;
             }
@@ -373,15 +553,20 @@ static void record_obd_response(const can_frame_t *frame,
                 ESP_LOGW(TAG, "OBD decoder rejected ECU 0x%0*lX PID 0x%02X: %s",
                          frame->extended ? 8 : 3, (unsigned long)frame->id,
                          pid, esp_err_to_name(err));
-                if (matching_request) record_miss("Malformed or out-of-range OBD response");
+                if (matching_request) {
+                    record_pid_error(pid, OBD_PID_ERROR_INVALID_RESPONSE);
+                    onx_display_update_parameter(pid, 0.0f, PARAM_VALIDITY_INVALID,
+                                                 now_us);
+                    record_miss("Malformed or out-of-range OBD response");
+                }
                 return;
             }
+            s_pid_status[pid].last_success_us = now_us;
+            s_pid_status[pid].last_error = OBD_PID_ERROR_NONE;
+            onx_display_update_parameter(pid, value.value, value.validity, now_us);
 
             if (pid == OBD_PID_ENGINE_RPM) {
                 const uint32_t rpm = (uint32_t)(value.value + 0.5f);
-                onx_display_set_rpm(rpm);
-                s_last_rpm_response_us = now_us;
-                s_rpm_displayed_live = true;
                 ++s_successful_rpm_responses;
                 ESP_LOGI(TAG, "Engine RPM: %lu rpm (ECU CAN ID 0x%0*lX; response #%lu)",
                          (unsigned long)rpm, frame->extended ? 8 : 3,
@@ -389,9 +574,6 @@ static void record_obd_response(const can_frame_t *frame,
                          (unsigned long)s_successful_rpm_responses);
             } else if (pid == OBD_PID_COOLANT_TEMP) {
                 const int32_t temp_c = (int32_t)(value.value + 0.5f);
-                onx_display_set_coolant_temp(temp_c);
-                s_last_coolant_response_us = now_us;
-                s_coolant_displayed_live = true;
                 ++s_successful_coolant_responses;
                 ESP_LOGI(TAG, "Coolant temperature: %ld C (ECU CAN ID 0x%0*lX; response #%lu)",
                          (long)temp_c, frame->extended ? 8 : 3,
@@ -431,7 +613,17 @@ static void record_obd_response(const can_frame_t *frame,
         ESP_LOGW(TAG, "ECU 0x%0*lX negative response service=0x%02X NRC=0x%02X",
                  frame->extended ? 8 : 3, (unsigned long)frame->id,
                  payload[1], payload[2]);
-        if (s_waiting_for_response) record_miss("ECU returned a negative diagnostic response");
+        if (s_waiting_for_response && payload[1] == OBD_MODE_CURRENT_DATA) {
+            const uint8_t requested_pid = s_requested_pid;
+            record_pid_error(s_requested_pid, OBD_PID_ERROR_NEGATIVE_RESPONSE);
+            onx_display_update_parameter(requested_pid, 0.0f,
+                                         PARAM_VALIDITY_INVALID,
+                                         esp_timer_get_time());
+            record_miss("ECU returned a negative diagnostic response");
+            if (s_can_discovery.phase == CAN_DISCOVERY_VERIFYING) {
+                reject_current_can_candidate("negative response to 01 00", esp_timer_get_time());
+            }
+        }
         return;
     }
 
@@ -493,6 +685,12 @@ static void process_frame(const can_frame_t *frame)
     }
 #endif
 
+    if (s_can_discovery_enabled &&
+        s_can_discovery.phase == CAN_DISCOVERY_LISTENING) {
+        (void)can_discovery_observe(&s_can_discovery, frame);
+        return;
+    }
+
     if (frame->rtr || !is_obd_response_id(frame)) return;
 
     for (uint8_t i = 0; i < OBD_ECU_COUNT; ++i) {
@@ -511,6 +709,56 @@ static void process_frame(const can_frame_t *frame)
         if (uds_result != UDS_EVENT_NONE) log_uds_event(i, &s_uds_event);
     }
 }
+
+static bool expire_obd_request(int64_t now_us)
+{
+    if (!s_waiting_for_response ||
+        (now_us - s_request_sent_us) < OBD_RESPONSE_TIMEOUT_US) {
+        return false;
+    }
+
+    const uint8_t timed_out_pid = s_requested_pid;
+    parameter_manager_record_timeout(timed_out_pid, now_us);
+    record_pid_error(timed_out_pid, OBD_PID_ERROR_TIMEOUT);
+    onx_display_update_parameter(timed_out_pid, 0.0f,
+                                 PARAM_VALIDITY_TIMEOUT, now_us);
+    ESP_LOGW(TAG, "OBD Mode 01 PID 0x%02X response timeout after 200 ms",
+             timed_out_pid);
+    record_miss("No response for outstanding OBD request");
+    if (s_can_discovery.phase == CAN_DISCOVERY_VERIFYING) {
+        reject_current_can_candidate("timeout waiting for valid 41 00 bitmap", now_us);
+    }
+    return true;
+}
+
+#if defined(CONFIG_OBD_RUN_PROTOCOL_TESTS) && CONFIG_OBD_RUN_PROTOCOL_TESTS
+bool obd_client_test_process_response(uint8_t requested_pid,
+                                      const uint8_t *payload, size_t length)
+{
+    if (payload == NULL) return false;
+    memset(&s_pid_status[requested_pid], 0, sizeof(s_pid_status[requested_pid]));
+    s_waiting_for_response = true;
+    s_requested_pid = requested_pid;
+    s_request_sent_us = esp_timer_get_time();
+    const can_frame_t frame = {
+        .id = OBD_RESPONSE_ID_FIRST,
+        .dlc = 8U,
+        .extended = false,
+        .rtr = false,
+    };
+    record_obd_response(&frame, payload, length);
+    return !s_waiting_for_response;
+}
+
+bool obd_client_test_expire_request(uint8_t requested_pid, int64_t elapsed_us)
+{
+    memset(&s_pid_status[requested_pid], 0, sizeof(s_pid_status[requested_pid]));
+    s_waiting_for_response = true;
+    s_requested_pid = requested_pid;
+    s_request_sent_us = esp_timer_get_time();
+    return expire_obd_request(s_request_sent_us + elapsed_us);
+}
+#endif
 
 static void log_controller_diagnostics(int64_t now_us)
 {
@@ -567,26 +815,21 @@ static void log_controller_diagnostics(int64_t now_us)
     }
 }
 
+#if OBD_SCHEDULER_ENABLED
 static uint8_t select_next_pid(int64_t now_us)
 {
     if (!s_discovery_complete) return s_discovery_base;
 
     size_t count = 0;
     const parameter_descriptor_t *catalog = parameter_manager_catalog(&count);
-    const parameter_descriptor_t *selected = NULL;
+    bool supported[256] = {false};
     for (size_t i = 0; i < count; ++i) {
-        const parameter_descriptor_t *candidate = &catalog[i];
-        if (!parameter_manager_any_ecu_supports(candidate->pid)) continue;
-        if (s_next_due_us[candidate->pid] != 0 &&
-            now_us < s_next_due_us[candidate->pid]) continue;
-        if (selected == NULL || candidate->priority < selected->priority ||
-            (candidate->priority == selected->priority &&
-             s_next_due_us[candidate->pid] < s_next_due_us[selected->pid])) {
-            selected = candidate;
-        }
+        supported[catalog[i].pid] =
+            parameter_manager_any_ecu_supports(catalog[i].pid);
     }
-    return selected != NULL ? selected->pid : 0xFFU;
+    return pid_scheduler_select(catalog, count, supported, s_next_due_us, now_us);
 }
+#endif
 
 esp_err_t obd_client_start(void)
 {
@@ -609,35 +852,25 @@ esp_err_t obd_client_start(void)
     s_next_request_us = esp_timer_get_time();
     ESP_LOGW(TAG, "INTERNAL OBD-II ECU SIMULATOR ENABLED: MCP2515 loopback only; no physical CAN frames are transmitted");
     onx_display_show_waiting_for_rpm("INTERNAL OBD SIM");
-#elif OBD_ACTIVE_TX_ENABLED
-    esp_err_t err = can_set_mode(CAN_MODE_CONFIG);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Cannot enter CAN Configuration mode for RX filters: %s", esp_err_to_name(err));
-        return err;
-    }
-    err = can_configure_obd_response_filters();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Cannot configure OBD response filters: %s", esp_err_to_name(err));
-        return err;
-    }
-    err = can_set_mode(CAN_MODE_NORMAL);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Cannot enter CAN Normal mode: %s", esp_err_to_name(err));
-        return err;
-    }
-    s_polling_enabled = true;
-    s_next_request_us = esp_timer_get_time();
-    ESP_LOGW(TAG, "ACTIVE OBD TX enabled; scheduler will discover supported PID ranges before polling");
-    onx_display_show_waiting_for_rpm("ACTIVE OBD REQUESTS");
 #else
-    esp_err_t err = can_set_mode(CAN_MODE_LISTEN_ONLY);
+    esp_err_t err = can_get_config(&s_can_config);
+    if (err != ESP_OK) return err;
+    can_discovery_init(&s_can_discovery, &s_can_config);
+    s_can_discovery_enabled = true;
+    s_discovery_retry_us = 0;
+    err = begin_can_candidate_listen(esp_timer_get_time());
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Cannot enter CAN Listen-Only mode: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "Could not start passive CAN candidate scan: %s", esp_err_to_name(err));
         return err;
     }
-    s_polling_enabled = false;
-    ESP_LOGI(TAG, "Passive Listen-Only monitor selected; no CAN frames will be transmitted");
-    onx_display_show_waiting_for_rpm("LISTEN ONLY - WAITING");
+#if OBD_ACTIVE_TX_ENABLED
+    ESP_LOGW(TAG,
+             "Active OBD discovery is explicitly enabled: Listen-Only candidates first; TX only after valid bus traffic");
+    onx_display_show_waiting_for_rpm("PASSIVE CAN SCAN");
+#else
+    ESP_LOGI(TAG, "Passive CAN auto-detection enabled; CAN transmission remains disabled");
+    onx_display_show_waiting_for_rpm("PASSIVE CAN SCAN");
+#endif
 #endif
 
     parameter_manager_init();
@@ -658,10 +891,7 @@ esp_err_t obd_client_start(void)
     s_consecutive_misses = 0;
     s_successful_rpm_responses = 0;
     s_successful_coolant_responses = 0;
-    s_last_rpm_response_us = 0;
-    s_rpm_displayed_live = false;
-    s_last_coolant_response_us = 0;
-    s_coolant_displayed_live = false;
+    memset(s_pid_status, 0, sizeof(s_pid_status));
     s_raw_frames_logged = 0;
     s_last_diag_attempt_us = 0;
     s_last_diag_success_us = 0;
@@ -683,6 +913,9 @@ esp_err_t obd_client_start(void)
     memset(s_unique_ids, 0, sizeof(s_unique_ids));
     memset(s_next_due_us, 0, sizeof(s_next_due_us));
     s_last_scheduler_lag_us = 0;
+    if (OBD_LOOPBACK_SIM_ENABLED) {
+        s_can_discovery_enabled = false;
+    }
     ESP_LOGI(TAG, "Monitor ready: configured bitrate=%lu kbps CAN IDs=%s; physical bus not yet verified",
              (unsigned long)(s_can_config.bitrate / 1000U),
              s_can_config.extended_ids ? "29-bit" : "11-bit");
@@ -738,30 +971,11 @@ void obd_client_poll(void)
         if (uds_result != UDS_EVENT_NONE) log_uds_event(i, &s_uds_event);
     }
     parameter_manager_mark_stale(now_us);
-
-    /* Each live page follows its own requested update interval. */
-    if (s_rpm_displayed_live && s_last_rpm_response_us != 0 &&
-        (now_us - s_last_rpm_response_us) >= 500000LL) {
-        s_rpm_displayed_live = false;
-        s_last_rpm_response_us = 0;
-        onx_display_clear_rpm();
-        ESP_LOGW(TAG, "RPM data stale; RPM page value cleared until a fresh response arrives");
-    }
-    if (s_coolant_displayed_live && s_last_coolant_response_us != 0 &&
-        (now_us - s_last_coolant_response_us) >= 3500000LL) {
-        s_coolant_displayed_live = false;
-        s_last_coolant_response_us = 0;
-        onx_display_clear_coolant_temp();
-        ESP_LOGW(TAG, "Coolant-temperature data stale; value cleared until a fresh response arrives");
-    }
+    onx_display_poll(now_us);
     poll_rx_overflow_flags(now_us);
     log_controller_diagnostics(now_us);
-    if (s_waiting_for_response && (now_us - s_request_sent_us) >= OBD_RESPONSE_TIMEOUT_US) {
-        parameter_manager_record_timeout(s_requested_pid, now_us);
-        ESP_LOGW(TAG, "OBD Mode 01 PID 0x%02X response timeout after 200 ms",
-                 s_requested_pid);
-        record_miss("No response for outstanding OBD request");
-    }
+    (void)expire_obd_request(now_us);
+    poll_can_discovery(now_us);
 
 #if !OBD_SCHEDULER_ENABLED
     return;
@@ -815,6 +1029,7 @@ void obd_client_poll(void)
         s_waiting_for_response = true;
         s_requested_pid = request_pid;
         s_request_sent_us = now_us;
+        s_pid_status[request_pid].last_request_us = now_us;
         if (s_discovery_complete) {
             size_t count = 0;
             const parameter_descriptor_t *catalog = parameter_manager_catalog(&count);
@@ -831,6 +1046,9 @@ void obd_client_poll(void)
                  request_pid, request_pid <= OBD_MAX_DISCOVERY_BASE &&
                  (request_pid % OBD_PID_PAGE_SIZE) == 0U ? " (SUPPORTED PID BITMAP)" : "");
     } else {
+        record_pid_error(request_pid, OBD_PID_ERROR_TX);
+        onx_display_update_parameter(request_pid, 0.0f, PARAM_VALIDITY_INVALID,
+                                     now_us);
         record_miss("OBD request transmission failed");
         can_diagnostics_t diag;
         esp_err_t diag_err = can_read_diagnostics(&diag);

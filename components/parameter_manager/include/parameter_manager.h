@@ -38,12 +38,26 @@ typedef enum {
     PARAM_DECODER_TEMPERATURE_A_MINUS_40,
     PARAM_DECODER_MAF_AB_DIV_100,
     PARAM_DECODER_IGNITION_A_DIV_2_MINUS_64,
-    PARAM_DECODER_SECONDS_AB,
+    PARAM_DECODER_U16_AB,
     PARAM_DECODER_FUEL_LEVEL_PERCENT,
     PARAM_DECODER_VOLTAGE_AB_DIV_1000,
     PARAM_DECODER_CATALYST_TEMP_AB_DIV_10_MINUS_40,
     PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125,
     PARAM_DECODER_TORQUE_REFERENCE_AB,
+    PARAM_DECODER_PRESSURE_A_TIMES_3,
+    PARAM_DECODER_EGR_ERROR_A,
+    PARAM_DECODER_DISTANCE_AB,
+    PARAM_DECODER_FUEL_RAIL_PRESSURE_AB,
+    PARAM_DECODER_EVAP_PRESSURE_AB,
+    PARAM_DECODER_ABSOLUTE_LOAD_AB,
+    PARAM_DECODER_EQUIVALENCE_RATIO_AB,
+    PARAM_DECODER_ETHANOL_PERCENT_A,
+    PARAM_DECODER_INJECTION_TIMING_AB,
+    PARAM_DECODER_FUEL_RATE_AB,
+    PARAM_DECODER_TURBO_RPM_AB_TIMES_10,
+    PARAM_DECODER_ODOMETER_ABCD_DIV_10,
+    PARAM_DECODER_EVAP_PRESSURE_A_DIV_200,
+    PARAM_DECODER_PRESSURE_AB_TIMES_10,
 } parameter_decoder_t;
 
 typedef struct {
@@ -62,7 +76,7 @@ typedef struct {
     uint32_t ecu_id;
     bool extended_id;
     uint8_t pid;
-    uint8_t raw[4];
+    uint8_t raw[8];
     uint8_t raw_length;
     float value;
     int64_t timestamp_us;
@@ -88,6 +102,7 @@ void parameter_manager_record_timeout(uint8_t pid, int64_t timestamp_us);
 void parameter_manager_mark_stale(int64_t now_us);
 bool parameter_manager_get_value(uint32_t ecu_id, bool extended_id, uint8_t pid,
                                  parameter_value_t *value);
+bool parameter_manager_get_latest_value(uint8_t pid, parameter_value_t *value);
 const char *parameter_manager_validity_name(parameter_validity_t validity);
 
 #ifdef __cplusplus

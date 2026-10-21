@@ -2,42 +2,57 @@
 
 ## Implemented
 
-- MCP2515 CAN setup can be configured for 250/500 kbit/s and standard/extended
-  CAN identifiers. Active OBD requests remain an explicit Kconfig choice.
-- Supported Mode 01 PID bitmaps are cached per responding ECU. The request
-  scheduler discovers bitmap pages and polls supported catalog entries by
-  priority and target update period.
-- ISO-TP supports Single, First, Consecutive, and Flow Control frames, including
-  receive reassembly, sequence checks, FC handling, STmin/Block Size, and timeouts.
-- The Parameter Manager validates response lengths and ranges, records support,
-  values, validity, timeouts, and stale data for the documented PID catalog.
-- The opt-in UDS client supports physical-addressing requests for
-  `0x10 03`, `0x3E 00`, and `0x22 <DID>`, with positive/negative responses,
-  `0x78` pending, timeouts, and session tracking. It does not send requests at
-  boot, implement write services, or assign meanings to unknown DIDs.
-- Focused protocol tests cover ISO-TP framing, Flow Control direction,
-  reassembly, sequence errors, timeouts, PID bitmap mapping, decoder scaling,
-  invalid data, stale transitions, UDS DID responses, and pending timeouts.
+- Mode 01 support bitmap pages are discovered through the continuation bit.
+- The scalar numeric PID catalog and decoder formulas are documented in
+  [PARAMETER_CATALOG.md](./PARAMETER_CATALOG.md). Only a PID both reported by an
+  ECU and present in the decoder catalog is scheduled. Other advertised PIDs
+  are logged as lacking a decoder; bitfield and packed multi-sensor PIDs are
+  not represented as fabricated scalar values.
+- PID scheduling chooses the oldest due supported PID, with configured
+  priority as a tie-breaker. Per-PID request time, success time, error count,
+  and latest error are available through the OBD client API.
+- Mode 01 timeouts, negative responses, malformed payload lengths, and TX
+  errors are recorded without permanently stopping polling. The dashboard
+  immediately marks failed data rather than continuing to present it as live.
+- The onboard ST7789 display uses three-card pages built from the discovered
+  supported catalog. CST826 horizontal swipe handling changes one page per
+  gesture; small and predominantly vertical movements are ignored.
+- Numeric values use a seven-segment renderer with adaptive sizing, finite
+  value checks, and inline units. LCD transfers wait for the DMA completion
+  callback before drawing buffers can be reused. Missing, stale, or invalid
+  values are not presented as live data.
+- ISO-TP, UDS, parameter manager, scheduler, and swipe protocol tests are
+  available with `CONFIG_OBD_RUN_PROTOCOL_TESTS=y`.
 
 ## Build and test evidence
 
-- ESP-IDF v5.5.2 default firmware configuration: `idf.py build` completed
-  successfully for ESP32-S3.
-- `CONFIG_OBD_RUN_PROTOCOL_TESTS=y` test-image configuration: firmware compiled
-  successfully. The test image was not flashed, so its assertions have not
-  been executed on-device.
-- No new-code physical CAN or vehicle test was performed. A successful build or
-  MCP2515 internal loopback is not evidence of CAN bus communication.
-- The current saved configuration keeps the protocol test option disabled and
-  retains the project's active-TX setting. Review CAN wiring, bitrate, ID width,
-  and electrical protection before enabling transmission in a vehicle setup.
+- ESP-IDF v5.5.2 production firmware builds successfully for ESP32-S3. The
+  current app image is 305,952 bytes (`0x4AB20`), with 71% free in the 1 MiB
+  app partition.
+- The opt-in serial screenshot firmware also builds for ESP32-S3. Its current
+  app image is 305,968 bytes (`0x4AB30`) and allocates an additional 150 KiB
+  framebuffer at runtime. A screenshot was captured, but its framebuffer
+  colors did not match the photographed LCD; it is not considered visual proof.
+- The protocol-test image also builds successfully. Its app image is 251,232
+  bytes (`0x3D560`), with 76% free in the app partition.
+- The protocol tests have **not been executed for this revision**. The
+  protocol-test image has not been flashed or run on hardware.
+- The normal production firmware was restored to the LCD board after the
+  temporary screenshot capture. No further physical verification was made
+  after the latest display-source changes.
 
-## Remaining verification
+## Physical verification limits and remaining work
 
-- Exercise the optional test image on the S3 and capture its pass/fail log.
-- Recheck physical CAN request/response on the bench after flashing the default
-  image; do not treat previous firmware behavior as validation of this change.
-- Confirm MCP2515 timing against the actual 8 MHz modules and the licensed
-  datasheet; the public datasheet PDF was not retrievable during research.
-- Obtain a model/year/ECU-specific authoritative source before adding any
-  VAG-specific DID profile. Until then, OEM values remain `UNKNOWN/TODO`.
+- No CAN or ECU-simulator runtime test was performed for this revision, and no
+  real-vehicle test has been performed.
+- LCD controller and CST826 initialization are implemented. The last screenshot
+  did not match the physical LCD colors, so visual correctness remains
+  unverified. Physical swipe navigation is also unverified for this revision.
+  Gesture tests are present in the protocol-test image but were not run.
+- The standard defines additional bitfield, enum, packed-sensor, and other
+  Mode 01 PIDs beyond the scalar catalog. These remain explicitly unsupported
+  until their response semantics and UI representation are implemented.
+- A before/after RAM baseline was not captured. The compiler map and runtime
+  logs do not provide a like-for-like RAM comparison for the earlier image.
+- No vehicle-specific UDS DID decoder is included. UDS `0x22` responses remain
+  raw until supported by model/year/ECU-specific documentation and tests.

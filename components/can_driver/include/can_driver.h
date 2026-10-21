@@ -58,7 +58,7 @@ esp_err_t can_read_diagnostics(can_diagnostics_t *diagnostics);
 esp_err_t can_read_and_clear_rx_overflow(uint8_t *overflow_flags);
 /* Configure standard OBD-II response IDs 0x7E8-0x7EF; requires Configuration mode. */
 esp_err_t can_configure_obd_response_filters(void);
-/* TEMPORARY diagnostics: accept all valid standard/extended IDs; requires Configuration mode. */
+/* Accept all valid standard/extended IDs for Listen-Only discovery; requires Configuration mode. */
 esp_err_t can_configure_diagnostic_accept_all_rx(void);
 esp_err_t can_run_self_test(void);
 
