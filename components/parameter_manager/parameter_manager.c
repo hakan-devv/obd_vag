@@ -24,7 +24,7 @@ static const parameter_descriptor_t CATALOG[] = {
     {0x1FU, "Run time since engine start", "s", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x21U, "Distance with MIL on", "km", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x22U, "Fuel rail pressure", "kPa", 2U, PARAM_DECODER_FUEL_RAIL_PRESSURE_AB, 0.0f, 5176.8f, 1000U, 6U},
-    {0x23U, "Diesel rail pressure", "kPa", 2U, PARAM_DECODER_PRESSURE_AB_TIMES_10, 0.0f, 655350.0f, 1000U, 6U},
+    {0x23U, "Fuel rail gauge pressure", "kPa", 2U, PARAM_DECODER_PRESSURE_AB_TIMES_10, 0.0f, 655350.0f, 1000U, 6U},
     {0x2CU, "Commanded EGR", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 1000U, 6U},
     {0x2DU, "EGR error", "%", 1U, PARAM_DECODER_EGR_ERROR_A, -100.0f, 99.2f, 1000U, 6U},
     {0x2EU, "Evaporative purge", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 1000U, 7U},
@@ -49,15 +49,18 @@ static const parameter_descriptor_t CATALOG[] = {
     {0x4DU, "Time with MIL on", "min", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x4EU, "Time since DTC clear", "min", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x52U, "Ethanol fuel percentage", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 5000U, 7U},
-    {0x53U, "Absolute evaporative pressure", "kPa", 1U, PARAM_DECODER_EVAP_PRESSURE_A_DIV_200, 0.0f, 1.275f, 5000U, 7U},
+    {0x53U, "Absolute evaporative pressure", "kPa", 2U, PARAM_DECODER_EVAP_PRESSURE_AB, 0.0f, 327.675f, 5000U, 7U},
     {0x5AU, "Relative accelerator pedal position", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 500U, 5U},
     {0x5CU, "Engine oil temperature", "C", 1U, PARAM_DECODER_TEMPERATURE_A_MINUS_40, -40.0f, 215.0f, 5000U, 7U},
     {0x5DU, "Fuel injection timing", "deg", 2U, PARAM_DECODER_INJECTION_TIMING_AB, -210.0f, 301.992f, 1000U, 6U},
     {0x5EU, "Engine fuel rate", "L/h", 2U, PARAM_DECODER_FUEL_RATE_AB, 0.0f, 3276.75f, 1000U, 6U},
     {0x62U, "Actual engine percent torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
     {0x63U, "Engine reference torque", "Nm", 2U, PARAM_DECODER_TORQUE_REFERENCE_AB, 0.0f, 65535.0f, 5000U, 7U},
-    {0x74U, "Turbocharger RPM", "rpm", 2U, PARAM_DECODER_TURBO_RPM_AB_TIMES_10, 0.0f, 655350.0f, 1000U, 6U},
-    {0xA1U, "Odometer", "km", 4U, PARAM_DECODER_ODOMETER_ABCD_DIV_10, 0.0f, 429496729.5f, 5000U, 7U},
+    {0x74U, "Turbocharger RPM", "rpm", 2U, PARAM_DECODER_TURBO_RPM_AB_DIV_4, 0.0f, 16383.75f, 1000U, 6U},
+    {0xA1U, "Driver demand engine torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
+    {0xA2U, "Actual engine torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
+    {0xA3U, "Engine reference torque", "Nm", 2U, PARAM_DECODER_TORQUE_REFERENCE_AB, 0.0f, 65535.0f, 5000U, 7U},
+    {0xA6U, "Odometer", "km", 4U, PARAM_DECODER_ODOMETER_ABCD_DIV_10, 0.0f, 429496729.5f, 5000U, 7U},
 };
 
 typedef struct {
@@ -271,14 +274,14 @@ esp_err_t parameter_manager_decode_obd(uint32_t ecu_id, bool extended_id,
     case PARAM_DECODER_FUEL_RATE_AB:
         decoded = (float)read_u16(data) * 0.05f;
         break;
-    case PARAM_DECODER_TURBO_RPM_AB_TIMES_10:
-        decoded = (float)read_u16(data) * 10.0f;
+    case PARAM_DECODER_TURBO_RPM_AB_DIV_4:
+        decoded = (float)read_u16(data) / 4.0f;
         break;
     case PARAM_DECODER_ODOMETER_ABCD_DIV_10:
         decoded = (float)read_u32(data) / 10.0f;
         break;
-    case PARAM_DECODER_EVAP_PRESSURE_A_DIV_200:
-        decoded = (float)data[0] / 200.0f;
+    case PARAM_DECODER_EVAP_PRESSURE_AB:
+        decoded = (float)read_u16(data) / 200.0f;
         break;
     case PARAM_DECODER_PRESSURE_AB_TIMES_10:
         decoded = (float)read_u16(data) * 10.0f;

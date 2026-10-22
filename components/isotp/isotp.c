@@ -163,7 +163,7 @@ static isotp_event_type_t handle_flow_control(isotp_context_t *context,
     context->tx_waiting_flow_control = false;
     context->wait_frames = 0;
     context->tx_block_count = 0;
-    context->next_tx_us = now_us;
+    context->next_tx_us = now_us + st_min_to_us(context->st_min);
     context->deadline_us = now_us + ISOTP_RX_TIMEOUT_US;
     return ISOTP_EVENT_NONE;
 }

@@ -14,6 +14,7 @@ extern "C" {
 
 #define CAN_DISCOVERY_MIN_VALID_FRAMES 3U
 #define CAN_DISCOVERY_CANDIDATE_COUNT  4U
+#define CAN_DISCOVERY_EVIDENCE_SLOTS   8U
 
 typedef enum {
     CAN_DISCOVERY_LISTENING = 0,
@@ -23,7 +24,16 @@ typedef enum {
 } can_discovery_phase_t;
 
 typedef struct {
+    uint32_t id;
+    uint8_t dlc;
+    uint8_t count;
+    bool extended;
+    bool used;
+} can_discovery_evidence_t;
+
+typedef struct {
     can_bus_config_t candidates[CAN_DISCOVERY_CANDIDATE_COUNT];
+    can_discovery_evidence_t evidence[CAN_DISCOVERY_EVIDENCE_SLOTS];
     size_t candidate_index;
     uint8_t matching_frames;
     can_discovery_phase_t phase;

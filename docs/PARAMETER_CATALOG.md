@@ -25,7 +25,7 @@ PID when the CAN response time exceeds the target.
 | `1F` | Run time since engine start | s | 2 | `256*A+B` | 5000 ms |
 | `21` | Distance with MIL on | km | 2 | `256*A+B` | 5000 ms |
 | `22` | Fuel rail pressure, relative to manifold vacuum | kPa | 2 | `0.079*(256*A+B)` | 1000 ms |
-| `23` | Fuel rail gauge pressure (diesel) | kPa | 2 | `10*(256*A+B)` | 1000 ms |
+| `23` | Fuel rail gauge pressure | kPa | 2 | `10*(256*A+B)` | 1000 ms |
 | `2C` | Commanded EGR | % | 1 | `100*A/255` | 1000 ms |
 | `2D` | EGR error | % | 1 | `(A-128)*100/128` | 1000 ms |
 | `2E` | Evaporative purge | % | 1 | `100*A/255` | 1000 ms |
@@ -44,15 +44,18 @@ PID when the CAN response time exceeds the target.
 | `4D` | Time with MIL on | min | 2 | `256*A+B` | 5000 ms |
 | `4E` | Time since DTC clear | min | 2 | `256*A+B` | 5000 ms |
 | `52` | Ethanol fuel percentage | % | 1 | `100*A/255` | 5000 ms |
-| `53` | Absolute evaporative pressure | kPa | 1 | `A/200` | 5000 ms |
+| `53` | Absolute evaporative pressure | kPa | 2 | `(256*A+B)/200` | 5000 ms |
 | `5A` | Relative accelerator pedal position | % | 1 | `100*A/255` | 500 ms |
 | `5C` | Engine oil temperature | deg C | 1 | `A-40` | 5000 ms |
 | `5D` | Fuel injection timing | deg | 2 | `(256*A+B)/128-210` | 1000 ms |
 | `5E` | Engine fuel rate | L/h | 2 | `0.05*(256*A+B)` | 1000 ms |
 | `62` | Actual engine percent torque | % | 1 | `A-125` | 1000 ms |
 | `63` | Engine reference torque | Nm | 2 | `256*A+B` | 5000 ms |
-| `74` | Turbocharger RPM | rpm | 2 | `10*(256*A+B)` | 1000 ms |
-| `A1` | Odometer | km | 4 | `(A*2^24+B*2^16+C*256+D)/10` | 5000 ms |
+| `74` | Turbocharger RPM | rpm | 2 | `(256*A+B)/4` | 1000 ms |
+| `A1` | Driver demand engine torque | % | 1 | `A-125` | 1000 ms |
+| `A2` | Actual engine torque | % | 1 | `A-125` | 1000 ms |
+| `A3` | Engine reference torque | Nm | 2 | `256*A+B` | 5000 ms |
+| `A6` | Odometer | km | 4 | `(A*2^24+B*2^16+C*256+D)/10` | 5000 ms |
 
 `A` through `D` are response data bytes after the positive response service
 and PID; multi-byte values are big-endian. Exact response length and decoded

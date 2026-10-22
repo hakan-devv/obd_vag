@@ -18,9 +18,10 @@ Sources:
 
 This project retains the four tested CAN combinations but uses a passive
 Listen-Only phase before any diagnostic request. A combination is eligible for
-active verification only after at least three valid, non-RTR frames of that
-identifier width are received during its listen window. It is accepted for OBD
-only when an ISO-TP response from the corresponding OBD response-ID family
+active verification only after at least three valid, non-RTR frames repeat the
+same identifier, DLC, and identifier width during its listen window. A latched
+MCP2515 message-error flag rejects the candidate. It is accepted for OBD only
+when an ISO-TP response from the corresponding OBD response-ID family
 matches the outstanding Mode 01 PID `00` request and contains exactly the
 positive `41 00` response with its four-byte support bitmap.
 
@@ -31,14 +32,16 @@ positive `41 00` response with its four-byte support bitmap.
   changed only in Configuration mode, then verified by the existing driver.
 - The Listen-Only phase accepts both standard and extended frames; it does not
   ACK or transmit. `can_receive()` reports only frames the MCP2515 accepted as
-  valid, and the discovery state machine additionally checks RTR and ID width.
+  valid, and the discovery state machine additionally checks RTR, ID width,
+  repeated ID/DLC, and MCP2515 message-error status.
 - With `CONFIG_OBD_ACTIVE_TX=n`, valid traffic can identify the observed
   bitrate/ID-width candidate, but the firmware does not claim that OBD service
   is available and sends no request.
 - With `CONFIG_OBD_ACTIVE_TX=y`, a candidate with passive traffic evidence is
   switched to response-ID filters and Normal mode before one Mode 01 `00`
-  verification request is sent. There are no diagnostic requests during
-  candidate scanning.
+  verification request is sent. Normal mode verifies the MCP2515 one-shot
+  setting; failed attempts are not automatically retransmitted. There are no
+  diagnostic requests during candidate scanning.
 - A negative response, malformed bitmap, or timeout rejects that candidate
   and resumes Listen-Only scanning. If all candidates fail or no traffic is
   observed, discovery reports an inconclusive result and retries after five

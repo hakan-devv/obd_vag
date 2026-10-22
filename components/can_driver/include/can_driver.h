@@ -56,6 +56,8 @@ esp_err_t can_set_mode(can_mode_t mode);
 esp_err_t can_read_diagnostics(can_diagnostics_t *diagnostics);
 /* Read latched RX overflow flags and clear the observed flags; output is valid on ESP_OK. */
 esp_err_t can_read_and_clear_rx_overflow(uint8_t *overflow_flags);
+/* Read and clear the latched MCP2515 CAN message-error flag. */
+esp_err_t can_read_and_clear_message_error(bool *message_error);
 /* Configure standard OBD-II response IDs 0x7E8-0x7EF; requires Configuration mode. */
 esp_err_t can_configure_obd_response_filters(void);
 /* Accept all valid standard/extended IDs for Listen-Only discovery; requires Configuration mode. */

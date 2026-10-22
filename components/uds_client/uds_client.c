@@ -114,7 +114,7 @@ static uds_event_type_t process_pdu(uds_client_t *client, const uint8_t *data,
 
     if (data[0] == 0x7FU) {
         if (length < 3U || data[1] != client->active_service) {
-            return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
+            return UDS_EVENT_NONE;
         }
         if (data[2] == UDS_NRC_RESPONSE_PENDING) {
             client->deadline_us = now_us + client->pending_timeout_us;
@@ -137,7 +137,7 @@ static uds_event_type_t process_pdu(uds_client_t *client, const uint8_t *data,
     }
 
     if (data[0] != (uint8_t)(client->active_service + 0x40U)) {
-        return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
+        return UDS_EVENT_NONE;
     }
 
     size_t header_length = 1U;

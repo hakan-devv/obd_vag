@@ -98,10 +98,13 @@ static can_discovery_t s_can_discovery;
 static bool s_can_discovery_enabled;
 static int64_t s_candidate_deadline_us;
 static int64_t s_discovery_retry_us;
-static isotp_context_t s_isotp[OBD_ECU_COUNT];
 static uds_client_t s_uds[OBD_ECU_COUNT];
-static isotp_event_t s_isotp_event;
 static uds_event_t s_uds_event;
+static uint32_t s_uds_rx_ids[OBD_ECU_COUNT];
+static bool s_uds_channel_used[OBD_ECU_COUNT];
+static bool s_pid_source_valid[256];
+static uint32_t s_pid_source_id[256];
+static bool s_pid_source_extended[256];
 static uint8_t s_discovery_base;
 static bool s_discovery_complete;
 static bool s_discovery_response_seen;
@@ -265,36 +268,75 @@ static esp_err_t send_isotp_frame(const can_frame_t *frame, void *context)
     return can_send(frame);
 }
 
+static esp_err_t initialize_uds_channel(uint8_t index, uint32_t rx_id)
+{
+    if (index >= OBD_ECU_COUNT) return ESP_ERR_INVALID_ARG;
+
+    const uint32_t tx_id = s_can_config.extended_ids
+        ? 0x18DA0000U | ((rx_id & 0xFFU) << 8) | 0xF1U
+        : 0x7E0U + (rx_id - OBD_RESPONSE_ID_FIRST);
+    const isotp_config_t config = {
+        .tx_id = tx_id,
+        .rx_id = rx_id,
+        .extended_id = s_can_config.extended_ids,
+        .padding = 0x00U,
+        .rx_block_size = 0U,
+        .rx_st_min = 0U,
+    };
+    esp_err_t err = uds_client_init(&s_uds[index], &config,
+                                    send_isotp_frame, NULL);
+    if (err != ESP_OK) return err;
+    s_uds_rx_ids[index] = rx_id;
+    s_uds_channel_used[index] = true;
+    return ESP_OK;
+}
+
 static esp_err_t initialize_isotp_channels(void)
 {
     esp_err_t err = can_get_config(&s_can_config);
     if (err != ESP_OK) return err;
 
-    for (uint8_t index = 0; index < OBD_ECU_COUNT; ++index) {
-        uint32_t tx_id;
-        uint32_t rx_id;
-        if (s_can_config.extended_ids) {
-            rx_id = 0x18DAF110U + index;
-            tx_id = 0x18DA0000U | ((rx_id & 0xFFU) << 8) | 0xF1U;
-        } else {
-            tx_id = 0x7E0U + index;
-            rx_id = 0x7E8U + index;
-        }
+    memset(s_uds, 0, sizeof(s_uds));
+    memset(s_uds_rx_ids, 0, sizeof(s_uds_rx_ids));
+    memset(s_uds_channel_used, 0, sizeof(s_uds_channel_used));
 
-        const isotp_config_t config = {
-            .tx_id = tx_id,
-            .rx_id = rx_id,
-            .extended_id = s_can_config.extended_ids,
-            .padding = 0x00U,
-            .rx_block_size = 0U,
-            .rx_st_min = 0U,
-        };
-        err = isotp_init(&s_isotp[index], &config, send_isotp_frame, NULL);
-        if (err != ESP_OK) return err;
-        err = uds_client_init(&s_uds[index], &config, send_isotp_frame, NULL);
-        if (err != ESP_OK) return err;
+    if (!s_can_config.extended_ids) {
+        for (uint8_t index = 0U; index < OBD_ECU_COUNT; ++index) {
+            err = initialize_uds_channel(index, OBD_RESPONSE_ID_FIRST + index);
+            if (err != ESP_OK) return err;
+        }
     }
     return ESP_OK;
+}
+
+static int find_or_create_uds_channel(const can_frame_t *frame)
+{
+    if (frame == NULL || !is_obd_response_id(frame)) return -1;
+
+    if (!frame->extended) {
+        const uint8_t index = (uint8_t)(frame->id - OBD_RESPONSE_ID_FIRST);
+        return index < OBD_ECU_COUNT && s_uds_channel_used[index] ? (int)index : -1;
+    }
+
+    int unused = -1;
+    for (uint8_t index = 0U; index < OBD_ECU_COUNT; ++index) {
+        if (s_uds_channel_used[index] && s_uds_rx_ids[index] == frame->id) {
+            return (int)index;
+        }
+        if (!s_uds_channel_used[index] && unused < 0) unused = (int)index;
+    }
+    if (unused < 0) {
+        ESP_LOGW(TAG, "Ignoring extended OBD ECU 0x%08lX: channel capacity (%u) reached",
+                 (unsigned long)frame->id, (unsigned)OBD_ECU_COUNT);
+        return -1;
+    }
+    esp_err_t err = initialize_uds_channel((uint8_t)unused, frame->id);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Could not allocate ISO-TP channel for ECU 0x%08lX: %s",
+                 (unsigned long)frame->id, esp_err_to_name(err));
+        return -1;
+    }
+    return unused;
 }
 
 static esp_err_t begin_can_candidate_listen(int64_t now_us)
@@ -310,6 +352,12 @@ static esp_err_t begin_can_candidate_listen(int64_t now_us)
     if (err != ESP_OK) return err;
     err = can_set_mode(CAN_MODE_LISTEN_ONLY);
     if (err != ESP_OK) return err;
+    bool stale_message_error = false;
+    err = can_read_and_clear_message_error(&stale_message_error);
+    if (err != ESP_OK) return err;
+    if (stale_message_error) {
+        ESP_LOGW(TAG, "Cleared a stale MCP2515 message-error flag before listen window");
+    }
     err = can_get_config(&s_can_config);
     if (err != ESP_OK) return err;
 
@@ -368,6 +416,22 @@ static void reject_current_can_candidate(const char *reason, int64_t now_us)
 static void poll_can_discovery(int64_t now_us)
 {
     if (!s_can_discovery_enabled) return;
+    if (s_can_discovery.phase == CAN_DISCOVERY_LISTENING) {
+        bool message_error = false;
+        esp_err_t err = can_read_and_clear_message_error(&message_error);
+        if (err != ESP_OK) {
+            s_polling_enabled = false;
+            s_can_discovery_enabled = false;
+            ESP_LOGE(TAG, "Cannot verify MCP2515 message-error flag; refusing active probing: %s",
+                     esp_err_to_name(err));
+            return;
+        }
+        if (message_error) {
+            reject_current_can_candidate(
+                "MCP2515 reported a CAN message error in Listen-Only mode", now_us);
+            return;
+        }
+    }
     if (s_can_discovery.phase == CAN_DISCOVERY_EXHAUSTED) {
         if (s_discovery_retry_us != 0 && now_us >= s_discovery_retry_us) {
             can_discovery_restart(&s_can_discovery);
@@ -449,6 +513,7 @@ static esp_err_t validate_uds_request(uint8_t ecu_index)
 #if !OBD_ACTIVE_TX_ENABLED || OBD_LOOPBACK_SIM_ENABLED
     return ESP_ERR_INVALID_STATE;
 #else
+    if (!s_uds_channel_used[ecu_index]) return ESP_ERR_NOT_FOUND;
     if (!s_started || !s_polling_enabled || s_waiting_for_response) {
         return ESP_ERR_INVALID_STATE;
     }
@@ -561,45 +626,64 @@ static void record_obd_response(const can_frame_t *frame,
                 }
                 return;
             }
-            s_pid_status[pid].last_success_us = now_us;
-            s_pid_status[pid].last_error = OBD_PID_ERROR_NONE;
-            onx_display_update_parameter(pid, value.value, value.validity, now_us);
+            if (!s_pid_source_valid[pid]) {
+                s_pid_source_valid[pid] = true;
+                s_pid_source_id[pid] = frame->id;
+                s_pid_source_extended[pid] = frame->extended;
+            }
+            const bool selected_source =
+                s_pid_source_id[pid] == frame->id &&
+                s_pid_source_extended[pid] == frame->extended;
+            if (selected_source) {
+                s_pid_status[pid].last_success_us = now_us;
+                s_pid_status[pid].last_error = OBD_PID_ERROR_NONE;
+                onx_display_update_parameter(pid, value.value, value.validity, now_us);
 
-            if (pid == OBD_PID_ENGINE_RPM) {
-                const uint32_t rpm = (uint32_t)(value.value + 0.5f);
-                ++s_successful_rpm_responses;
-                ESP_LOGI(TAG, "Engine RPM: %lu rpm (ECU CAN ID 0x%0*lX; response #%lu)",
-                         (unsigned long)rpm, frame->extended ? 8 : 3,
-                         (unsigned long)frame->id,
-                         (unsigned long)s_successful_rpm_responses);
-            } else if (pid == OBD_PID_COOLANT_TEMP) {
-                const int32_t temp_c = (int32_t)(value.value + 0.5f);
-                ++s_successful_coolant_responses;
-                ESP_LOGI(TAG, "Coolant temperature: %ld C (ECU CAN ID 0x%0*lX; response #%lu)",
-                         (long)temp_c, frame->extended ? 8 : 3,
-                         (unsigned long)frame->id,
-                         (unsigned long)s_successful_coolant_responses);
-            } else {
-                const parameter_descriptor_t *catalog = NULL;
-                size_t count = 0;
-                catalog = parameter_manager_catalog(&count);
-                for (size_t i = 0; i < count; ++i) {
-                    if (catalog[i].pid == pid) {
-                        ESP_LOGI(TAG, "%s: %.2f %s (ECU CAN ID 0x%0*lX; raw length=%u)",
-                                 catalog[i].name, (double)value.value, catalog[i].unit,
-                                 frame->extended ? 8 : 3,
-                                 (unsigned long)frame->id, value.raw_length);
-                        break;
+                if (pid == OBD_PID_ENGINE_RPM) {
+                    const uint32_t rpm = (uint32_t)(value.value + 0.5f);
+                    ++s_successful_rpm_responses;
+                    ESP_LOGI(TAG, "Engine RPM: %lu rpm (ECU CAN ID 0x%0*lX; response #%lu)",
+                             (unsigned long)rpm, frame->extended ? 8 : 3,
+                             (unsigned long)frame->id,
+                             (unsigned long)s_successful_rpm_responses);
+                } else if (pid == OBD_PID_COOLANT_TEMP) {
+                    const int32_t temp_c = (int32_t)(value.value + 0.5f);
+                    ++s_successful_coolant_responses;
+                    ESP_LOGI(TAG, "Coolant temperature: %ld C (ECU CAN ID 0x%0*lX; response #%lu)",
+                             (long)temp_c, frame->extended ? 8 : 3,
+                             (unsigned long)frame->id,
+                             (unsigned long)s_successful_coolant_responses);
+                } else {
+                    size_t count = 0U;
+                    const parameter_descriptor_t *catalog =
+                        parameter_manager_catalog(&count);
+                    for (size_t i = 0; i < count; ++i) {
+                        if (catalog[i].pid == pid) {
+                            ESP_LOGI(TAG, "%s: %.2f %s (ECU CAN ID 0x%0*lX; raw length=%u)",
+                                     catalog[i].name, (double)value.value, catalog[i].unit,
+                                     frame->extended ? 8 : 3,
+                                     (unsigned long)frame->id, value.raw_length);
+                            break;
+                        }
                     }
                 }
+                onx_display_set_status("OBD DATA LIVE");
+            } else {
+                ESP_LOGD(TAG, "Ignoring duplicate PID 0x%02X value from ECU 0x%0*lX; "
+                         "display source remains 0x%0*lX",
+                         pid, frame->extended ? 8 : 3, (unsigned long)frame->id,
+                         s_pid_source_extended[pid] ? 8 : 3,
+                         (unsigned long)s_pid_source_id[pid]);
             }
-            onx_display_set_status("OBD DATA LIVE");
         }
 
         if (matching_request) {
             s_waiting_for_response = false;
             s_requested_pid = 0U;
             s_consecutive_misses = 0U;
+#if OBD_SCHEDULER_ENABLED
+            s_next_request_us = now_us;
+#endif
         }
         return;
     }
@@ -693,20 +777,23 @@ static void process_frame(const can_frame_t *frame)
 
     if (frame->rtr || !is_obd_response_id(frame)) return;
 
-    for (uint8_t i = 0; i < OBD_ECU_COUNT; ++i) {
-        const isotp_event_type_t result = isotp_on_frame(
-            &s_isotp[i], frame, (uint64_t)esp_timer_get_time(), &s_isotp_event);
-        if (result == ISOTP_EVENT_PDU_RECEIVED) {
-            record_obd_response(frame, s_isotp_event.data, s_isotp_event.length);
-        } else if (result == ISOTP_EVENT_ERROR) {
-            ESP_LOGW(TAG, "ISO-TP RX error ECU=0x%0*lX reason=%u",
-                     frame->extended ? 8 : 3, (unsigned long)frame->id,
-                     (unsigned)s_isotp_event.error);
-        }
+    const int channel = find_or_create_uds_channel(frame);
+    if (channel < 0) return;
 
-        const uds_event_type_t uds_result = uds_client_on_frame(
-            &s_uds[i], frame, (uint64_t)esp_timer_get_time(), &s_uds_event);
-        if (uds_result != UDS_EVENT_NONE) log_uds_event(i, &s_uds_event);
+    const uds_event_type_t uds_result = uds_client_on_frame(
+        &s_uds[channel], frame, (uint64_t)esp_timer_get_time(), &s_uds_event);
+    const isotp_event_t *transport_event = &s_uds[channel].transport_event;
+    if (transport_event->type == ISOTP_EVENT_PDU_RECEIVED &&
+        transport_event->length >= 2U &&
+        (transport_event->data[0] == 0x41U ||
+         (transport_event->data[0] == 0x7FU &&
+          transport_event->length >= 2U &&
+          transport_event->data[1] == OBD_MODE_CURRENT_DATA))) {
+        record_obd_response(frame, transport_event->data,
+                            transport_event->length);
+    }
+    if (uds_result != UDS_EVENT_NONE) {
+        log_uds_event((uint8_t)channel, &s_uds_event);
     }
 }
 
@@ -892,6 +979,9 @@ esp_err_t obd_client_start(void)
     s_successful_rpm_responses = 0;
     s_successful_coolant_responses = 0;
     memset(s_pid_status, 0, sizeof(s_pid_status));
+    memset(s_pid_source_valid, 0, sizeof(s_pid_source_valid));
+    memset(s_pid_source_id, 0, sizeof(s_pid_source_id));
+    memset(s_pid_source_extended, 0, sizeof(s_pid_source_extended));
     s_raw_frames_logged = 0;
     s_last_diag_attempt_us = 0;
     s_last_diag_success_us = 0;
@@ -959,13 +1049,7 @@ void obd_client_poll(void)
 
     const int64_t now_us = esp_timer_get_time();
     for (uint8_t i = 0; i < OBD_ECU_COUNT; ++i) {
-        const isotp_event_type_t result = isotp_tick(&s_isotp[i],
-            (uint64_t)now_us, &s_isotp_event);
-        if (result == ISOTP_EVENT_ERROR) {
-            ESP_LOGW(TAG, "ISO-TP timeout/error endpoint=%u reason=%u",
-                     (unsigned)i, (unsigned)s_isotp_event.error);
-        }
-
+        if (!s_uds_channel_used[i]) continue;
         const uds_event_type_t uds_result = uds_client_tick(
             &s_uds[i], (uint64_t)now_us, &s_uds_event);
         if (uds_result != UDS_EVENT_NONE) log_uds_event(i, &s_uds_event);

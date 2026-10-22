@@ -165,6 +165,32 @@ static bool test_isotp_flow_control_direction(void)
     return true;
 }
 
+static bool test_isotp_stmin_reserved_values(void)
+{
+    fake_can_t fake = {0};
+    static isotp_context_t context;
+    const isotp_config_t config = standard_isotp_config();
+    const uint8_t payload[] = {1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U};
+    can_frame_t flow_control = {
+        .id = 0x7E8U, .dlc = 3U, .extended = false, .rtr = false,
+        .data = {0x30U, 0U, 0x7FU},
+    };
+    static isotp_event_t event;
+
+    CHECK(isotp_init(&context, &config, capture_frame, &fake) == ESP_OK);
+    CHECK(isotp_send(&context, payload, sizeof(payload), 100U) == ESP_OK);
+    CHECK(isotp_on_frame(&context, &flow_control, 200U, &event) == ISOTP_EVENT_NONE);
+    CHECK(isotp_tick(&context, 127199U, &event) == ISOTP_EVENT_NONE);
+    CHECK(isotp_tick(&context, 127200U, &event) == ISOTP_EVENT_TX_COMPLETE);
+
+    CHECK(isotp_init(&context, &config, capture_frame, &fake) == ESP_OK);
+    CHECK(isotp_send(&context, payload, sizeof(payload), 100U) == ESP_OK);
+    flow_control.data[2] = 0x80U;
+    CHECK(isotp_on_frame(&context, &flow_control, 200U, &event) == ISOTP_EVENT_ERROR);
+    CHECK(event.error == ISOTP_ERROR_FLOW_CONTROL);
+    return true;
+}
+
 static bool test_isotp_receive_timeout(void)
 {
     fake_can_t fake = {0};
@@ -297,6 +323,9 @@ static bool test_extended_standard_pid_decoders(void)
     const uint8_t fuel_pressure[] = {16U};
     const uint8_t absolute_load[] = {0x01U, 0x00U};
     const uint8_t fuel_rate[] = {0x01U, 0x90U};
+    const uint8_t turbo_rpm[] = {0x01U, 0x90U};
+    const uint8_t evap_pressure[] = {0x01U, 0x90U};
+    const uint8_t driver_torque[] = {0x80U};
     const uint8_t odometer[] = {0U, 0U, 0x27U, 0x10U};
 
     parameter_manager_init();
@@ -309,10 +338,21 @@ static bool test_extended_standard_pid_decoders(void)
     CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x5EU, fuel_rate,
         sizeof(fuel_rate), 300U, &value) == ESP_OK);
     CHECK(value.value == 20.0f);
-    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0xA1U, odometer,
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x74U, turbo_rpm,
+        sizeof(turbo_rpm), 350U, &value) == ESP_OK);
+    CHECK(value.value == 100.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x53U, evap_pressure,
+        sizeof(evap_pressure), 375U, &value) == ESP_OK);
+    CHECK(value.value == 2.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x53U, evap_pressure,
+        1U, 380U, &value) == ESP_ERR_INVALID_SIZE);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0xA1U, driver_torque,
+        sizeof(driver_torque), 390U, &value) == ESP_OK);
+    CHECK(value.value == 3.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0xA6U, odometer,
         sizeof(odometer), 400U, &value) == ESP_OK);
     CHECK(value.value == 1000.0f);
-    CHECK(parameter_manager_get_latest_value(0xA1U, &value));
+    CHECK(parameter_manager_get_latest_value(0xA6U, &value));
     CHECK(value.validity == PARAM_VALIDITY_VALID && value.value == 1000.0f);
     return true;
 }
@@ -472,6 +512,29 @@ static bool test_can_discovery_requires_valid_bitmap_response(void)
     return true;
 }
 
+static bool test_can_discovery_requires_repeated_same_frame_shape(void)
+{
+    can_discovery_t discovery;
+    const can_bus_config_t initial = {CAN_BITRATE_500_KBPS, false};
+    const can_frame_t frames[] = {
+        {.id = 0x100U, .dlc = 8U, .extended = false, .rtr = false},
+        {.id = 0x101U, .dlc = 8U, .extended = false, .rtr = false},
+        {.id = 0x100U, .dlc = 7U, .extended = false, .rtr = false},
+        {.id = 0x100U, .dlc = 8U, .extended = false, .rtr = false},
+        {.id = 0x100U, .dlc = 8U, .extended = false, .rtr = false},
+    };
+    can_discovery_init(&discovery, &initial);
+    for (size_t i = 0U; i < 3U; ++i) {
+        CHECK(can_discovery_observe(&discovery, &frames[i]));
+        CHECK(!can_discovery_has_evidence(&discovery));
+    }
+    CHECK(can_discovery_observe(&discovery, &frames[3]));
+    CHECK(!can_discovery_has_evidence(&discovery));
+    CHECK(can_discovery_observe(&discovery, &frames[4]));
+    CHECK(can_discovery_has_evidence(&discovery));
+    return true;
+}
+
 static bool test_can_discovery_extended_response_and_retry(void)
 {
     can_discovery_t discovery;
@@ -535,6 +598,33 @@ static bool test_uds_read_did_round_trip(void)
     return true;
 }
 
+static bool test_uds_ignores_unrelated_positive_response(void)
+{
+    fake_can_t fake = {0};
+    static uds_client_t client;
+    const isotp_config_t config = standard_isotp_config();
+    const can_frame_t obd_response = {
+        .id = 0x7E8U, .dlc = 8U, .extended = false, .rtr = false,
+        .data = {0x04U, 0x41U, 0x0CU, 0x1FU, 0U, 0U, 0U, 0U},
+    };
+    const can_frame_t uds_response = {
+        .id = 0x7E8U, .dlc = 8U, .extended = false, .rtr = false,
+        .data = {0x04U, 0x62U, 0xF1U, 0x90U, 0U, 0U, 0U, 0U},
+    };
+    static uds_event_t event;
+
+    CHECK(uds_client_init(&client, &config, capture_frame, &fake) == ESP_OK);
+    CHECK(uds_client_read_did(&client, 0xF190U, 100U) == ESP_OK);
+    CHECK(uds_client_on_frame(&client, &obd_response, 200U, &event) ==
+          UDS_EVENT_NONE);
+    CHECK(uds_client_transaction_active(&client));
+    CHECK(uds_client_on_frame(&client, &uds_response, 300U, &event) ==
+          UDS_EVENT_RESPONSE);
+    CHECK(event.did == 0xF190U);
+    CHECK(!uds_client_transaction_active(&client));
+    return true;
+}
+
 static bool test_uds_extended_session_and_pending_timeout(void)
 {
     fake_can_t fake = {0};
@@ -576,6 +666,7 @@ void obd_client_run_protocol_tests(void)
     RUN_TEST(test_isotp_multiframe_receive_and_flow_control);
     RUN_TEST(test_isotp_sequence_mismatch);
     RUN_TEST(test_isotp_flow_control_direction);
+    RUN_TEST(test_isotp_stmin_reserved_values);
     RUN_TEST(test_isotp_receive_timeout);
     RUN_TEST(test_pid_bitmap_discovery);
     RUN_TEST(test_standard_pid_decoders);
@@ -588,9 +679,11 @@ void obd_client_run_protocol_tests(void)
     RUN_TEST(test_pid_scheduler_fairness);
     RUN_TEST(test_swipe_gesture_direction_and_threshold);
     RUN_TEST(test_can_discovery_candidate_order_and_frame_evidence);
+    RUN_TEST(test_can_discovery_requires_repeated_same_frame_shape);
     RUN_TEST(test_can_discovery_requires_valid_bitmap_response);
     RUN_TEST(test_can_discovery_extended_response_and_retry);
     RUN_TEST(test_uds_read_did_round_trip);
+    RUN_TEST(test_uds_ignores_unrelated_positive_response);
     RUN_TEST(test_uds_extended_session_and_pending_timeout);
 
     if (failed == 0U) {

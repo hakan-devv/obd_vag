@@ -53,22 +53,51 @@ bool can_discovery_observe(can_discovery_t *discovery, const can_frame_t *frame)
 {
     if (discovery == NULL || frame == NULL ||
         discovery->phase != CAN_DISCOVERY_LISTENING ||
-        frame->rtr || frame->dlc > sizeof(frame->data)) {
+        frame->rtr || frame->dlc == 0U ||
+        frame->dlc > sizeof(frame->data) ||
+        (!frame->extended && frame->id > 0x7FFU) ||
+        (frame->extended && frame->id > 0x1FFFFFFFU)) {
         return false;
     }
     const can_bus_config_t *candidate = can_discovery_candidate(discovery);
     if (candidate == NULL || frame->extended != candidate->extended_ids) return false;
-    if (discovery->matching_frames < CAN_DISCOVERY_MIN_VALID_FRAMES) {
-        ++discovery->matching_frames;
+
+    can_discovery_evidence_t *available_slot = NULL;
+    for (size_t i = 0U; i < CAN_DISCOVERY_EVIDENCE_SLOTS; ++i) {
+        can_discovery_evidence_t *entry = &discovery->evidence[i];
+        if (entry->used && entry->id == frame->id &&
+            entry->extended == frame->extended && entry->dlc == frame->dlc) {
+            if (entry->count < CAN_DISCOVERY_MIN_VALID_FRAMES) ++entry->count;
+            discovery->matching_frames = entry->count;
+            return true;
+        }
+        if (!entry->used && available_slot == NULL) available_slot = entry;
     }
+
+    if (available_slot == NULL) return false;
+    *available_slot = (can_discovery_evidence_t) {
+        .id = frame->id,
+        .dlc = frame->dlc,
+        .count = 1U,
+        .extended = frame->extended,
+        .used = true,
+    };
+    discovery->matching_frames = 1U;
     return true;
 }
 
 bool can_discovery_has_evidence(const can_discovery_t *discovery)
 {
-    return discovery != NULL &&
-           discovery->phase == CAN_DISCOVERY_LISTENING &&
-           discovery->matching_frames >= CAN_DISCOVERY_MIN_VALID_FRAMES;
+    if (discovery == NULL || discovery->phase != CAN_DISCOVERY_LISTENING) {
+        return false;
+    }
+    for (size_t i = 0U; i < CAN_DISCOVERY_EVIDENCE_SLOTS; ++i) {
+        if (discovery->evidence[i].used &&
+            discovery->evidence[i].count >= CAN_DISCOVERY_MIN_VALID_FRAMES) {
+            return true;
+        }
+    }
+    return false;
 }
 
 esp_err_t can_discovery_begin_verification(can_discovery_t *discovery)
@@ -116,6 +145,7 @@ void can_discovery_reject_candidate(can_discovery_t *discovery)
     }
     ++discovery->candidate_index;
     discovery->matching_frames = 0U;
+    memset(discovery->evidence, 0, sizeof(discovery->evidence));
     discovery->phase = discovery->candidate_index < CAN_DISCOVERY_CANDIDATE_COUNT
         ? CAN_DISCOVERY_LISTENING : CAN_DISCOVERY_EXHAUSTED;
 }
@@ -125,5 +155,6 @@ void can_discovery_restart(can_discovery_t *discovery)
     if (discovery == NULL || discovery->phase != CAN_DISCOVERY_EXHAUSTED) return;
     discovery->candidate_index = 0U;
     discovery->matching_frames = 0U;
+    memset(discovery->evidence, 0, sizeof(discovery->evidence));
     discovery->phase = CAN_DISCOVERY_LISTENING;
 }

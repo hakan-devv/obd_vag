@@ -46,15 +46,6 @@ menu "OBD VAG CAN"
         help
             Builds and runs protocol tests instead of starting the CAN application.
 
-    config ONX_SCREENSHOT_STREAM
-        bool "Stream one ONX LCD screenshot after boot"
-        default n
-        help
-            Keep a 240x320 RGB565 mirror of the ST7789 output and stream its
-            rows over the serial console once, ten seconds after LCD startup.
-            Use tools/capture_onx_screenshot.py to receive a BMP image. This
-            is a temporary diagnostic option and increases RAM use.
-
     config OBD_ACTIVE_TX
         bool "Enable active OBD-II requests after CAN discovery"
         default n

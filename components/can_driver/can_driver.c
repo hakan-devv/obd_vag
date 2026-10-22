@@ -330,14 +330,18 @@ esp_err_t can_set_mode(can_mode_t mode)
         if (err != ESP_OK) return err;
     }
 
-    /*
-     * Use normal CAN automatic retransmission. OBD requests can lose arbitration
-     * against higher-priority vehicle traffic and must be retried by the controller.
-     */
+    /* Phase 1 uses one-shot transmission; failed attempts are retried by the scheduler. */
     if (mode == CAN_MODE_NORMAL) {
         esp_err_t err = MCP2515_modifyRegisterChecked(
-            MCP_CANCTRL, CANCTRL_OSM, 0);
+            MCP_CANCTRL, CANCTRL_OSM, CANCTRL_OSM);
         if (err != ESP_OK) return err;
+        uint8_t canctrl = 0U;
+        err = MCP2515_readRegisterChecked(MCP_CANCTRL, &canctrl);
+        if (err != ESP_OK) return err;
+        if ((canctrl & CANCTRL_OSM) == 0U) {
+            ESP_LOGE(TAG, "Refusing Normal mode: MCP2515 one-shot setting did not verify");
+            return ESP_ERR_INVALID_STATE;
+        }
     }
 
     if (mode == CAN_MODE_LOOPBACK) {
@@ -469,6 +473,24 @@ esp_err_t can_read_and_clear_rx_overflow(uint8_t *overflow_flags)
     return ESP_OK;
 }
 
+esp_err_t can_read_and_clear_message_error(bool *message_error)
+{
+    if (!s_inited || !s_mode_valid) return ESP_ERR_INVALID_STATE;
+    if (message_error == NULL) return ESP_ERR_INVALID_ARG;
+    *message_error = false;
+
+    uint8_t flags = 0U;
+    esp_err_t err = MCP2515_readRegisterChecked(MCP_CANINTF, &flags);
+    if (err != ESP_OK) return err;
+    if ((flags & (uint8_t)CANINTF_MERRF) == 0U) return ESP_OK;
+
+    err = MCP2515_modifyRegisterChecked(MCP_CANINTF,
+                                        (uint8_t)CANINTF_MERRF, 0U);
+    if (err != ESP_OK) return err;
+    *message_error = true;
+    return ESP_OK;
+}
+
 /*
  * Accept all valid standard and extended frames while the discovery state
  * machine is in Listen-Only mode. Active OBD probing installs response filters
@@ -588,7 +610,11 @@ esp_err_t can_configure_obd_response_filters(void)
             err = MCP2515_readRegisterChecked(
                 (REGISTER_t)((uint8_t)mask_registers[i] + offset), &value);
             if (err != ESP_OK) return err;
-            if (value != expected_mask[offset]) {
+            /* RXMnSIDL bit 3 is unimplemented and always reads as zero. */
+            const uint8_t implemented_bits =
+                extended && offset == 1U ? (uint8_t)~0x08U : 0xFFU;
+            if ((value & implemented_bits) !=
+                (expected_mask[offset] & implemented_bits)) {
                 ESP_LOGE(TAG, "RXM%u readback mismatch at offset %u: got 0x%02X expected 0x%02X",
                          (unsigned)i, (unsigned)offset, value, expected_mask[offset]);
                 return ESP_FAIL;

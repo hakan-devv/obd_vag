@@ -791,10 +791,7 @@ ERROR_t MCP2515_sendMessage(const TXBn_t txbn, const CAN_FRAME frame)
         return ERROR_FAILTX;
     }
 
-    /*
-     * With one-shot mode disabled, arbitration loss/error can be retried by
-     * the MCP2515. TXREQ clears when a transmit attempt eventually completes.
-     */
+    /* In one-shot mode TXREQ clears after this single transmit attempt. */
     uint8_t ctrl = 0;
     bool completed = false;
     for (int attempt = 0; attempt < 50; ++attempt) {
@@ -806,7 +803,7 @@ ERROR_t MCP2515_sendMessage(const TXBn_t txbn, const CAN_FRAME frame)
             completed = true;
             break;
         }
-        /* Allow up to 50 RTOS ticks for arbitration retries on a busy vehicle bus. */
+        /* Bound the wait for the single one-shot transmit attempt. */
         vTaskDelay(1);
     }
 
@@ -818,15 +815,11 @@ ERROR_t MCP2515_sendMessage(const TXBn_t txbn, const CAN_FRAME frame)
         return ERROR_FAILTX;
     }
 
-    /*
-     * In retry-enabled Normal mode, a completed TXREQ is the success condition.
-     * MLOA/TXERR can record an earlier arbitration loss/error before a later retry
-     * succeeds, so do not treat those historical status bits as final failure.
-     */
     if ((ctrl & (TXB_ABTF | TXB_MLOA | TXB_TXERR)) != 0) {
-        ESP_LOGD(TAG_MCP2515,
-                 "TXB%u completed after retry; final CTRL=0x%02X",
+        ESP_LOGW(TAG_MCP2515,
+                 "TXB%u one-shot transmit failed (CTRL=0x%02X)",
                  (unsigned)txbn, ctrl);
+        return ERROR_FAILTX;
     }
     return ERROR_OK;
 }
