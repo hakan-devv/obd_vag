@@ -1,0 +1,2 @@
+Command: D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.5.2\tools/idf_monitor.py -p COM13 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 C:\Users\hakan\Desktop\obd_vag\build-protocol\obd_vag.elf C:\Users\hakan\Desktop\obd_vag\build-protocol\bootloader\bootloader.elf --force-color -m 'D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Espressif\frameworks\esp-idf-v5.5.2\tools\idf.py' '-B' 'build-protocol' '-p' 'COM13'
+ESP-ROM:esp32s3-2�ESP-
