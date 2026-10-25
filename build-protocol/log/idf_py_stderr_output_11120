@@ -1,1 +1,0 @@
-Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe -DESP_PLATFORM=1 -DSDKCONFIG=C:/Users/hakan/AppData/Local/Temp/obd-vag-sdkconfig-protocol -DCCACHE_ENABLE=1 C:\Users\hakan\Desktop\obd_vag

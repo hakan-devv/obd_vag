@@ -35,6 +35,7 @@ static obd_pid_status_t s_pid_status[256];
 #define OBD_RESPONSE_TIMEOUT_US     200000LL
 #define CAN_DISCOVERY_LISTEN_US     300000LL
 #define CAN_DISCOVERY_RETRY_US     5000000LL
+#define CAN_DISCOVERY_VERIFY_ATTEMPTS 2U
 #define OBD_MAX_RX_FRAMES_PER_STEP  32
 #define OBD_MAX_CONSECUTIVE_MISSES  3U
 #define OBD_RX_STATS_MAX_UNIQUE_IDS 32U
@@ -95,6 +96,7 @@ static uint32_t s_unique_ids_count;
 static bool s_unique_ids_table_full;
 static can_bus_config_t s_can_config;
 static can_discovery_t s_can_discovery;
+static uint8_t s_verify_timeouts;
 static bool s_can_discovery_enabled;
 static int64_t s_candidate_deadline_us;
 static int64_t s_discovery_retry_us;
@@ -387,11 +389,30 @@ static esp_err_t begin_can_candidate_verification(int64_t now_us)
 
     s_polling_enabled = true;
     s_next_request_us = now_us;
-    ESP_LOGI(TAG, "Passive traffic evidence met; sending the opt-in OBD 01 00 verification request");
+    s_verify_timeouts = 0U;
+    ESP_LOGI(TAG, "Bus alive at %lu kbit/s (%s IDs); probing OBD with 01 00",
+             (unsigned long)(s_can_config.bitrate / 1000U),
+             s_can_config.extended_ids ? "29-bit" : "11-bit");
     onx_display_show_waiting_for_rpm("VERIFYING OBD");
     return ESP_OK;
 }
 #endif
+
+/* All candidates exhausted: stop polling and leave the controller in
+ * Configuration mode while waiting for the rescan, so a wrong-bitrate bus does
+ * not flood the RX buffers and the controller does not ACK in Normal mode. */
+static void enter_discovery_idle(int64_t now_us)
+{
+    s_polling_enabled = false;
+    s_waiting_for_response = false;
+    s_requested_pid = 0U;
+    s_discovery_retry_us = now_us + CAN_DISCOVERY_RETRY_US;
+    esp_err_t err = can_set_mode(CAN_MODE_CONFIG);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Could not enter Configuration mode while idle: %s",
+                 esp_err_to_name(err));
+    }
+}
 
 static void reject_current_can_candidate(const char *reason, int64_t now_us)
 {
@@ -399,8 +420,7 @@ static void reject_current_can_candidate(const char *reason, int64_t now_us)
     can_discovery_reject_candidate(&s_can_discovery);
     s_can_discovery_enabled = true;
     if (can_discovery_candidate(&s_can_discovery) == NULL) {
-        s_polling_enabled = false;
-        s_discovery_retry_us = now_us + CAN_DISCOVERY_RETRY_US;
+        enter_discovery_idle(now_us);
         ESP_LOGW(TAG, "No candidate returned a valid 41 00 bitmap; will passively rescan");
         onx_display_show_waiting_for_rpm("NO OBD RESPONSE");
         return;
@@ -470,8 +490,7 @@ static void poll_can_discovery(int64_t now_us)
 
     can_discovery_reject_candidate(&s_can_discovery);
     if (can_discovery_candidate(&s_can_discovery) == NULL) {
-        s_polling_enabled = false;
-        s_discovery_retry_us = now_us + CAN_DISCOVERY_RETRY_US;
+        enter_discovery_idle(now_us);
         ESP_LOGW(TAG, "No valid CAN frames on 250/500 kbit/s, 11/29-bit candidates; scan is inconclusive");
         onx_display_show_waiting_for_rpm("NO CAN TRAFFIC");
         return;
@@ -813,7 +832,12 @@ static bool expire_obd_request(int64_t now_us)
              timed_out_pid);
     record_miss("No response for outstanding OBD request");
     if (s_can_discovery.phase == CAN_DISCOVERY_VERIFYING) {
-        reject_current_can_candidate("timeout waiting for valid 41 00 bitmap", now_us);
+        if (++s_verify_timeouts < CAN_DISCOVERY_VERIFY_ATTEMPTS) {
+            ESP_LOGW(TAG, "No 41 00 yet (attempt %u/%u); retrying once before rejecting",
+                     (unsigned)s_verify_timeouts, (unsigned)CAN_DISCOVERY_VERIFY_ATTEMPTS);
+        } else {
+            reject_current_can_candidate("timeout waiting for valid 41 00 bitmap", now_us);
+        }
     }
     return true;
 }

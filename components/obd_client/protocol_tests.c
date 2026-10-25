@@ -481,6 +481,39 @@ static bool test_can_discovery_candidate_order_and_frame_evidence(void)
     return true;
 }
 
+static bool test_can_discovery_bitrate_evidence_ignores_id_width(void)
+{
+    can_discovery_t discovery;
+    const can_bus_config_t initial = {CAN_BITRATE_500_KBPS, false};
+    const can_frame_t gateway = {
+        .id = 0x17F00010U, .dlc = 8U, .extended = true, .rtr = false,
+    };
+    const can_frame_t standard_response = {
+        .id = 0x7E8U, .dlc = 8U, .extended = false, .rtr = false,
+    };
+    const can_frame_t extended_response = {
+        .id = 0x18DAF110U, .dlc = 8U, .extended = true, .rtr = false,
+    };
+    const uint8_t valid_bitmap[] = {0x41U, 0x00U, 0xBEU, 0x1FU, 0xA8U, 0x13U};
+
+    can_discovery_init(&discovery, &initial);
+    const can_bus_config_t *candidate = can_discovery_candidate(&discovery);
+    CHECK(candidate != NULL && !candidate->extended_ids);
+    /* Only 29-bit gateway traffic is visible, as on VAG OBD pins. */
+    CHECK(can_discovery_observe(&discovery, &gateway));
+    CHECK(can_discovery_observe(&discovery, &gateway));
+    CHECK(!can_discovery_has_evidence(&discovery));
+    CHECK(can_discovery_observe(&discovery, &gateway));
+    CHECK(can_discovery_has_evidence(&discovery));
+    CHECK(can_discovery_begin_verification(&discovery) == ESP_OK);
+    /* The OBD response must still match the candidate's own ID width. */
+    CHECK(!can_discovery_confirm(&discovery, &extended_response, valid_bitmap,
+                                 sizeof(valid_bitmap)));
+    CHECK(can_discovery_confirm(&discovery, &standard_response, valid_bitmap,
+                                sizeof(valid_bitmap)));
+    return true;
+}
+
 static bool test_can_discovery_requires_valid_bitmap_response(void)
 {
     can_discovery_t discovery;
@@ -680,6 +713,7 @@ void obd_client_run_protocol_tests(void)
     RUN_TEST(test_swipe_gesture_direction_and_threshold);
     RUN_TEST(test_can_discovery_candidate_order_and_frame_evidence);
     RUN_TEST(test_can_discovery_requires_repeated_same_frame_shape);
+    RUN_TEST(test_can_discovery_bitrate_evidence_ignores_id_width);
     RUN_TEST(test_can_discovery_requires_valid_bitmap_response);
     RUN_TEST(test_can_discovery_extended_response_and_retry);
     RUN_TEST(test_uds_read_did_round_trip);

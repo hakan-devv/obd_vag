@@ -59,8 +59,12 @@ bool can_discovery_observe(can_discovery_t *discovery, const can_frame_t *frame)
         (frame->extended && frame->id > 0x1FFFFFFFU)) {
         return false;
     }
-    const can_bus_config_t *candidate = can_discovery_candidate(discovery);
-    if (candidate == NULL || frame->extended != candidate->extended_ids) return false;
+    /* Passive evidence only proves that the bus is alive and clean at this
+     * bitrate. Frames of ANY identifier width count: many gateways (e.g. VAG)
+     * show only 29-bit gateway traffic on the OBD pins although OBD-II itself
+     * answers on 11-bit IDs. The ID width is decided by the active probe, and
+     * can_discovery_confirm() still requires the response to match it. */
+    if (can_discovery_candidate(discovery) == NULL) return false;
 
     can_discovery_evidence_t *available_slot = NULL;
     for (size_t i = 0U; i < CAN_DISCOVERY_EVIDENCE_SLOTS; ++i) {
