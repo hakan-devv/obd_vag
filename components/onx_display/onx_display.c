@@ -36,7 +36,7 @@
 #define UI_CARD_GAP          4
 #define UI_CARD_FIRST_Y      27
 #define UI_TITLE_LINE_CHARS  17U
-#define UI_MAX_ITEMS         64U
+#define UI_MAX_ITEMS         128U
 #define UI_STALE_MULTIPLIER  3LL
 #define RGB565_SWAP(c) ((uint16_t)((((c) & 0xFFU) << 8) | ((c) >> 8)))
 #define LCD_COLOR_CYAN   RGB565_SWAP(0x07FFU)
@@ -84,6 +84,9 @@ typedef struct {
     parameter_validity_t validity;
     bool shown_live; /* card on screen is currently drawn as LIVE */
     bool value_dirty;
+    bool is_did;
+    uint16_t did;
+    char state_text[12]; /* non-empty overrides the status line of a DID card */
 } dashboard_item_t;
 
 static dashboard_item_t s_items[UI_MAX_ITEMS];
@@ -619,15 +622,21 @@ static esp_err_t draw_card_value(size_t item_index, size_t slot)
     char number[16];
     char unit_text[17] = "";
     if (fresh) {
-        (void)snprintf(number, sizeof(number), "%.1f", (double)item->value);
+        const bool lambda_unit = strcmp(item->descriptor.unit, "lambda") == 0;
+        (void)snprintf(number, sizeof(number), lambda_unit ? "%.3f" : "%.1f",
+                       (double)item->value);
         const size_t length = strnlen(number, sizeof(number));
-        if (length >= 2U && number[length - 2U] == '.' && number[length - 1U] == '0')
+        if (!lambda_unit && length >= 2U && number[length - 2U] == '.' &&
+            number[length - 1U] == '0')
             number[length - 2U] = '\0';
         if (strcmp(number, "-0") == 0) { number[0] = '0'; number[1] = '\0'; }
         (void)normalize_text(item->descriptor.unit, unit_text, sizeof(unit_text));
         (void)snprintf(status, sizeof(status), "LIVE");
     } else {
         (void)snprintf(number, sizeof(number), "--");
+        if (item->is_did && item->state_text[0] != '\0') {
+            (void)snprintf(status, sizeof(status), "%s", item->state_text);
+        } else
         switch (item->validity) {
         case PARAM_VALIDITY_VALID:
             if (item->timestamp_us <= 0) (void)snprintf(status, sizeof(status), "NO DATA");
@@ -897,7 +906,7 @@ void onx_display_set_status(const char *status)
 static int find_item(uint8_t pid)
 {
     for (size_t i = 0; i < s_item_count; ++i) {
-        if (s_items[i].descriptor.pid == pid) return (int)i;
+        if (s_items[i].descriptor.pid == pid && !s_items[i].is_did) return (int)i;
     }
     return -1;
 }
@@ -917,6 +926,12 @@ void onx_display_set_catalog(const parameter_descriptor_t *catalog, size_t count
         return;
     }
 
+    /* OEM DID cards survive PID catalog refreshes (bitmap pages re-run it). */
+    static dashboard_item_t kept_dids[UI_MAX_ITEMS];
+    size_t kept_count = 0U;
+    for (size_t i = 0; i < s_item_count; ++i) {
+        if (s_items[i].is_did) kept_dids[kept_count++] = s_items[i];
+    }
     memset(s_items, 0, sizeof(s_items));
     s_item_count = 0U;
     for (size_t preferred_index = 0;
@@ -938,6 +953,10 @@ void onx_display_set_catalog(const parameter_descriptor_t *catalog, size_t count
             }
         }
         if (!already_added) s_items[s_item_count++].descriptor = catalog[i];
+    }
+    for (size_t i = 0; i < kept_count && s_item_count < UI_MAX_ITEMS; ++i) {
+        s_items[s_item_count++] = kept_dids[i];
+        s_items[s_item_count - 1U].value_dirty = true;
     }
 
     if (!can_draw) return;
@@ -970,6 +989,59 @@ void onx_display_update_parameter(uint8_t pid, float value,
     item->validity = validity;
     item->timestamp_us = timestamp_us;
     if (changed) item->value_dirty = true;
+    xSemaphoreGive(s_ui_mutex);
+    if (changed) notify_ui_task();
+}
+
+void onx_display_update_did(uint16_t did, const char *name, const char *unit,
+                            float value, const char *state_text,
+                            uint32_t period_ms, int64_t timestamp_us)
+{
+    if (!s_initialized || s_ui_mutex == NULL) return;
+    if (xSemaphoreTake(s_ui_mutex, pdMS_TO_TICKS(500)) != pdTRUE) {
+        ESP_LOGW(TAG, "Could not acquire LCD mutex for DID 0x%04X update", did);
+        return;
+    }
+    int index = -1;
+    for (size_t i = 0; i < s_item_count; ++i) {
+        if (s_items[i].is_did && s_items[i].did == did) {
+            index = (int)i;
+            break;
+        }
+    }
+    bool created = false;
+    if (index < 0) {
+        if (s_item_count >= UI_MAX_ITEMS) {
+            xSemaphoreGive(s_ui_mutex);
+            return;
+        }
+        index = (int)s_item_count++;
+        memset(&s_items[index], 0, sizeof(s_items[index]));
+        s_items[index].is_did = true;
+        s_items[index].did = did;
+        s_items[index].descriptor.name = name != NULL ? name : "DID";
+        s_items[index].descriptor.unit = unit != NULL ? unit : "";
+        s_items[index].descriptor.update_period_ms =
+            (uint16_t)(period_ms > 20000U ? 20000U : (period_ms == 0U ? 1000U : period_ms));
+        created = true;
+    }
+    dashboard_item_t *item = &s_items[index];
+    char previous_state[sizeof(item->state_text)];
+    memcpy(previous_state, item->state_text, sizeof(previous_state));
+    memset(item->state_text, 0, sizeof(item->state_text));
+    if (state_text != NULL) {
+        (void)snprintf(item->state_text, sizeof(item->state_text), "%s", state_text);
+    }
+    const parameter_validity_t validity =
+        state_text == NULL ? PARAM_VALIDITY_VALID : PARAM_VALIDITY_INVALID;
+    const bool changed = created || item->validity != validity || item->value != value ||
+                         memcmp(previous_state, item->state_text, sizeof(previous_state)) != 0 ||
+                         (validity == PARAM_VALIDITY_VALID && !item->shown_live);
+    item->value = value;
+    item->validity = validity;
+    item->timestamp_us = timestamp_us;
+    if (changed) item->value_dirty = true;
+    if (created) s_screen_dirty = true; /* page count changed */
     xSemaphoreGive(s_ui_mutex);
     if (changed) notify_ui_task();
 }

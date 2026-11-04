@@ -1,0 +1,1361 @@
+
+C:\Users\hakan\Desktop\obd_vag>idf.py -p COM14 monitor
+Executing action: monitor
+Running idf_monitor in directory C:\Users\hakan\Desktop\obd_vag
+Executing "D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.5.2\tools/idf_monitor.py -p COM14 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 C:\Users\hakan\Desktop\obd_vag\build\obd_vag.elf C:\Users\hakan\Desktop\obd_vag\build\bootloader\bootloader.elf --force-color -m 'D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Espressif\frameworks\esp-idf-v5.5.2\tools\idf.py' '-p' 'COM14'"...
+--- Warning: GDB cannot open serial ports accessed as COMx
+--- Using \\.\COM14 instead...
+--- esp-idf-monitor 1.8.0 on \\.\COM14 115200
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x29 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x158c
+load:0x403c8700,len:0xd24
+--- 0x403c8700: _stext at ??:?
+load:0x403cb700,len:0x2f34
+entry 0x403c8924
+--- 0x403c8924: call_start_cpu0 at D:/Espressif/frameworks/esp-idf-v5.5.2/components/bootloader/subproject/main/bootloader_start.c:25
+I (24) boot: ESP-IDF v5.5.2 2nd stage bootloader
+I (25) boot: compile time Nov  3 2026 20:30:02
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c030020 size=261d0h (156112) map
+I (114) esp_image: segment 1: paddr=000361f8 vaddr=3fc95000 size=02bd4h ( 11220) load
+I (117) esp_image: segment 2: paddr=00038dd4 vaddr=40374000 size=07244h ( 29252) load
+I (124) esp_image: segment 3: paddr=00040020 vaddr=42000020 size=28a1ch (166428) map
+I (155) esp_image: segment 4: paddr=00068a44 vaddr=4037b244 size=09d94h ( 40340) load
+I (164) esp_image: segment 5: paddr=000727e0 vaddr=50000000 size=00020h (    32) load
+I (171) boot: Loaded app from partition at offset 0x10000
+I (171) boot: Disabling RNG early entropy source...
+I (182) cpu_start: Multicore app
+I (190) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (191) cpu_start: Pro cpu start user code
+I (191) cpu_start: cpu freq: 160000000 Hz
+I (193) app_init: Application information:
+I (196) app_init: Project name:     obd_vag
+I (200) app_init: App version:      51958f6-dirty
+I (205) app_init: Compile time:     Nov  3 2026 20:29:23
+I (210) app_init: ELF file SHA256:  59686ecf7...
+I (214) app_init: ESP-IDF:          v5.5.2
+I (218) efuse_init: Min chip rev:     v0.0
+I (222) efuse_init: Max chip rev:     v0.99
+I (226) efuse_init: Chip rev:         v0.2
+I (230) heap_init: Initializing. RAM available for dynamic allocation:
+I (236) heap_init: At 3FCAA2C8 len 0003F448 (253 KiB): RAM
+I (241) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (246) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (251) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (258) spi_flash: detected chip: generic
+I (260) spi_flash: flash io: dio
+I (263) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (270) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (277) main_task: Started on CPU0
+I (280) main_task: Calling app_main()
+I (284) can_driver: SPI host=1 SCK=38 MOSI=39 MISO=40 CS=42 hz=1000000 mode=0
+I (303) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (304) can_driver: CNF write: 0x00 0x91 0x01
+I (304) can_driver: CNF read:  0x00 0x91 0x01
+I (308) can_driver: can_init OK; controller left in Configuration mode
+I (485) onx_display: Onboard PCF8574 reset expander initialized; LCD RST pulsed via P5
+I (485) onx_display: CST826 capacitive touch detected at I2C address 0x15 on GPIO7/GPIO8
+I (610) onx_display: ONX2432G028 ST7789 initialized: 240x320, SPI host=2 SCLK=5 MOSI=1 DC=3 CS=2 BL=6
+I (726) onx_display: CST826 touch polling task started (25 ms period); swipe horizontally to switch pages
+I (726) onx_display: ONX2432G028 LCD ready: waiting for ECU-supported PID catalog, 240x320
+I (732) app_main: MCP2515 loopback self-test skipped by configuration
+I (739) can_driver: CAN mode 1 verified by MCP2515
+W (743) can_driver: can_send rejected in mode 1
+I (748) app_main: Listen-Only TX guard passed; TXREQ clear on TXB0/TXB1/TXB2
+I (754) can_driver: CAN mode 3 verified by MCP2515
+I (759) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (767) can_driver: CNF write: 0x00 0x91 0x01
+I (771) can_driver: CNF read:  0x00 0x91 0x01
+I (775) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (782) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (791) can_driver: CAN mode 1 verified by MCP2515
+I (796) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+W (804) obd_client: Active OBD discovery is explicitly enabled: Listen-Only candidates first; TX only after valid bus traffic
+I (816) obd_client: Monitor ready: configured bitrate=500 kbps CAN IDs=11-bit; live bus monitoring active
+I (824) obd_client: OBD response filters configured for 11-bit addressing
+I (830) obd_client: First 24 raw CAN frames log at INFO, later frames at DEBUG; OBD PIDs use the Parameter Manager and ISO-TP
+I (841) app_main: Active OBD RPM requests ENABLED by build configuration
+I (848) app_main: Automatic vehicle identification and EXACT-only OEM DID gating enabled
+I (856) app_main: USB Serial/JTAG command console ready: 0/1/?/p/v/d
+I (862) app_main: [PID] Polling STATUS: ENABLED
+I (867) obd_client: MCP2515 diag: CANSTAT=0x60 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=0 unique-IDs=0 last=none RXOVR0=0 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+I (1041) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1042) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1043) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1050) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1052) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1057) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1062) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1068) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1073) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1078) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1083) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1089) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1094) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+I (1099) obd_client: CAN RX id=0x100 STD dlc=2 data=[EC 01]
+W (1104) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=1 RX1=0 (latch observations, not exact lost-frame counts)
+I (1117) can_driver: CAN mode 3 verified by MCP2515
+I (1127) can_driver: OBD RX filters verified: 11-bit 0x7E8-0x7EF response family, mask=0x000007F8
+I (1131) can_driver: CAN mode 0 verified by MCP2515
+I (1135) obd_client: Bus alive at 500 kbit/s (11-bit IDs); probing OBD with 01 00
+I (1144) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x00 (SUPPORTED PID BITMAP)
+I (1155) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[06 41 00 18 3A 80 00 00]
+I (1158) parameter_manager: PID bitmap cached ECU=STD:0x7E8 page=0x00 continuation=no
+I (1165) obd_client: CAN/OBD verified by ECU 0x7E8: 500 kbit/s 11-bit and valid 41 00 bitmap
+I (1262) obd_client: Supported-PID discovery complete at bitmap 0x00
+I (1271) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1276) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[04 41 0C 0D 48 00 00 00]
+I (1385) obd_client: Engine RPM: 850 rpm (ECU CAN ID 0x7E8; response #1)
+I (1411) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (1418) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 0D 08 00 00 00 00]
+I (1419) obd_client: Vehicle speed: 8.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (1424) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (1433) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 04 5E 00 00 00 00]
+I (1435) obd_client: Calculated engine load: 36.86 % (ECU CAN ID 0x7E8; raw length=1)
+I (1462) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (1472) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 11 4F 00 00 00 00]
+I (1473) obd_client: Throttle position: 30.98 % (ECU CAN ID 0x7E8; raw length=1)
+I (1477) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (1487) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 05 5D 00 00 00 00]
+I (1489) obd_client: Coolant temperature: 53 C (ECU CAN ID 0x7E8; response #1)
+I (1514) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (1524) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 0B 34 00 00 00 00]
+I (1525) obd_client: Intake manifold absolute pressure: 52.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (1531) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (1540) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 0F 46 00 00 00 00]
+I (1542) obd_client: Intake air temperature: 30.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (1552) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1561) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[04 41 0C 0D 8C 00 00 00]
+I (1563) obd_client: Engine RPM: 867 rpm (ECU CAN ID 0x7E8; response #2)
+I (1587) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (1597) obd_client: CAN RX id=0x7E8 STD dlc=8 data=[03 41 0D 08 00 00 00 00]
+I (1598) obd_client: Vehicle speed: 8.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (1652) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1663) obd_client: Engine RPM: 907 rpm (ECU CAN ID 0x7E8; response #3)
+I (1690) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (1701) obd_client: Vehicle speed: 9.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (1713) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (1723) obd_client: Throttle position: 30.98 % (ECU CAN ID 0x7E8; raw length=1)
+I (1755) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1766) obd_client: Engine RPM: 957 rpm (ECU CAN ID 0x7E8; response #4)
+I (1793) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (1804) obd_client: Vehicle speed: 9.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (1856) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1867) obd_client: Engine RPM: 1010 rpm (ECU CAN ID 0x7E8; response #5)
+I (1896) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (1907) obd_client: Vehicle speed: 10.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (1924) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (1934) obd_client: Calculated engine load: 36.86 % (ECU CAN ID 0x7E8; raw length=1)
+I (1957) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (1968) obd_client: Engine RPM: 1063 rpm (ECU CAN ID 0x7E8; response #6)
+I (1992) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (2002) obd_client: Throttle position: 30.98 % (ECU CAN ID 0x7E8; raw length=1)
+I (2005) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (2015) obd_client: Vehicle speed: 11.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (2018) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (2024) obd_client: Intake manifold absolute pressure: 52.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (2059) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (2070) obd_client: Engine RPM: 1119 rpm (ECU CAN ID 0x7E8; response #7)
+I (2108) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (2119) obd_client: Vehicle speed: 11.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (2130) obd_client: [PID] Polling STOPPED
+I (2130) app_main: [PID] Polling STOPPED
+I (4050) obd_client: [VEH] Starting read-only UDS identity sequence (0x22 only) on verified ECU RX=0x7E8 bitrate=500 kbit/s
+I (4050) app_main: [VEH] Vehicle identification started
+I (4057) obd_client: [VEH] Queued ECU identity DID 0xF190
+I (4073) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF190 positive response; raw data length=17 (no OEM decoder applied)
+I (4075) obd_client: [VEH] Queued ECU identity DID 0xF187
+I (4092) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF187 positive response; raw data length=11 (no OEM decoder applied)
+I (4095) obd_client: [VEH] Queued ECU identity DID 0xF189
+I (4103) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF189 positive response; raw data length=4 (no OEM decoder applied)
+I (4112) obd_client: [VEH] Queued ECU identity DID 0xF191
+I (4128) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF191 positive response; raw data length=11 (no OEM decoder applied)
+I (4130) obd_client: [VEH] Queued ECU identity DID 0xF1A3
+W (4139) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1A3 NRC=0x31
+I (4143) obd_client: [VEH] Queued ECU identity DID 0xF197
+I (4151) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF197 positive response; raw data length=4 (no OEM decoder applied)
+I (4160) obd_client: [VEH] Queued ECU identity DID 0xF1AD
+W (4168) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1AD NRC=0x31
+I (4172) obd_client: [VEH] Queued ECU identity DID 0xF19E
+I (4189) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19E positive response; raw data length=11 (no OEM decoder applied)
+I (4191) obd_client: [VEH] Queued ECU identity DID 0xF1A2
+W (4199) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1A2 NRC=0x31
+I (4204) obd_client: [VEH] Queued ECU identity DID 0xF1AA
+W (4212) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1AA NRC=0x31
+I (4217) obd_client: [VEH] Queued ECU identity DID 0xF17C
+W (4225) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF17C NRC=0x31
+I (4230) obd_client: [VEH] Queued ECU identity DID 0xF1F4
+W (4238) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1F4 NRC=0x31
+I (4242) obd_client: [VEH] Queued ECU identity DID 0xF1A5
+W (4251) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xF1A5 NRC=0x31
+I (4255) obd_client: [VEH] Queued ECU identity DID 0xF804
+I (4272) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF804 positive response; raw data length=16 (no OEM decoder applied)
+I (4275) obd_client: [VEH] Queued ECU identity DID 0xF806
+I (4282) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF806 positive response; raw data length=4 (no OEM decoder applied)
+I (4289) obd_client: [VEH] ECU identity sequence complete: VIN=WVWZZZ1KZ8W000001 profile=UNKNOWN match=PARTIAL
+I (5869) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=12.59 fps total=63 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (7680) obd_client: [OEM_DID_SCAN] LittleFS support is unavailable in this build; file logging disabled and UART logging remains active
+I (7681) obd_client: [OEM_DID_SCAN] Started for ECU=ENGINE queue_count=343 state=RUNNING
+I (7689) obd_client: [OEM_DID_SCAN] Broad powertrain sweep queued: engine candidates plus identity DIDs not already queried by V, followed by TCU candidates when the configured route is available; profile filtering disabled
+I (7709) app_main: [DID] Broad engine + TCU candidate scan started (Haldex route is not enabled)
+I (7719) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF180 TX_UDS=[22 F1 80] STATUS=REQUEST_SENT DECODER=ASCII
+I (7742) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF180 positive response; raw data length=12 (no OEM decoder applied)
+I (7743) obd_client: [OEM_DID_SCAN] TIME=7485 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF180 TX_UDS=[22 F1 80] RX_UDS=[53 49 4D 2D 42 4F 4F 54 2D 31 2E 30] STATUS=POSITIVE DATA_LENGTH=12 DATA=[53 49 4D 2D 42 4F 4F 54 2D 31 2E 30] DECODER=ASCII DURATION_MS=25
+I (7770) obd_client: [OEM_DID_DECODE] DID=0xF180 NAME="Boot software identification" STATUS=RAW_ONLY DATA_LENGTH=12 DATA=[53 49 4D 2D 42 4F 4F 54 2D 31 2E 30] UNIT=ASCII/HEX
+I (7787) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF181 TX_UDS=[22 F1 81] STATUS=REQUEST_SENT DECODER=ASCII
+I (7810) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF181 positive response; raw data length=16 (no OEM decoder applied)
+I (7811) obd_client: [OEM_DID_SCAN] TIME=7553 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF181 TX_UDS=[22 F1 81] RX_UDS=[53 49 4D 2D 41 50 50 2D 31 2E 30 2E 30 20 20 20] STATUS=POSITIVE DATA_LENGTH=16 DATA=[53 49 4D 2D 41 50 50 2D 31 2E 30 2E 30 20 20 20] DECODER=ASCII DURATION_MS=25
+I (7840) obd_client: [OEM_DID_DECODE] DID=0xF181 NAME="Application software identification" STATUS=RAW_ONLY DATA_LENGTH=16 DATA=[53 49 4D 2D 41 50 50 2D 31 2E 30 2E 30 20 20 20] UNIT=ASCII/HEX
+I (7859) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF182 TX_UDS=[22 F1 82] STATUS=REQUEST_SENT DECODER=ASCII
+I (7882) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF182 positive response; raw data length=16 (no OEM decoder applied)
+I (7883) obd_client: [OEM_DID_SCAN] TIME=7625 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF182 TX_UDS=[22 F1 82] RX_UDS=[53 49 4D 2D 43 41 4C 2D 32 30 32 36 2E 31 31 20] STATUS=POSITIVE DATA_LENGTH=16 DATA=[53 49 4D 2D 43 41 4C 2D 32 30 32 36 2E 31 31 20] DECODER=ASCII DURATION_MS=25
+I (7912) obd_client: [OEM_DID_DECODE] DID=0xF182 NAME="Application data identification" STATUS=RAW_ONLY DATA_LENGTH=16 DATA=[53 49 4D 2D 43 41 4C 2D 32 30 32 36 2E 31 31 20] UNIT=ASCII/HEX
+I (7931) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF183 TX_UDS=[22 F1 83] STATUS=REQUEST_SENT DECODER=ASCII
+I (7952) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF183 positive response; raw data length=8 (no OEM decoder applied)
+I (7953) obd_client: [OEM_DID_SCAN] TIME=7696 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF183 TX_UDS=[22 F1 83] RX_UDS=[20 26 10 01 A5 5A 01 00] STATUS=POSITIVE DATA_LENGTH=8 DATA=[20 26 10 01 A5 5A 01 00] DECODER=ASCII DURATION_MS=24
+I (7978) obd_client: [OEM_DID_DECODE] DID=0xF183 NAME="Boot software fingerprint" STATUS=RAW_ONLY DATA_LENGTH=8 DATA=[20 26 10 01 A5 5A 01 00] UNIT=ASCII/HEX
+I (7994) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF184 TX_UDS=[22 F1 84] STATUS=REQUEST_SENT DECODER=ASCII
+I (8015) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF184 positive response; raw data length=8 (no OEM decoder applied)
+I (8016) obd_client: [OEM_DID_SCAN] TIME=7759 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF184 TX_UDS=[22 F1 84] RX_UDS=[20 26 10 15 11 22 33 44] STATUS=POSITIVE DATA_LENGTH=8 DATA=[20 26 10 15 11 22 33 44] DECODER=ASCII DURATION_MS=24
+I (8041) obd_client: [OEM_DID_DECODE] DID=0xF184 NAME="Application software fingerprint" STATUS=RAW_ONLY DATA_LENGTH=8 DATA=[20 26 10 15 11 22 33 44] UNIT=ASCII/HEX
+I (8058) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF185 TX_UDS=[22 F1 85] STATUS=REQUEST_SENT DECODER=ASCII
+I (8079) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF185 positive response; raw data length=8 (no OEM decoder applied)
+I (8080) obd_client: [OEM_DID_SCAN] TIME=7822 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF185 TX_UDS=[22 F1 85] RX_UDS=[20 26 10 15 55 AA 10 01] STATUS=POSITIVE DATA_LENGTH=8 DATA=[20 26 10 15 55 AA 10 01] DECODER=ASCII DURATION_MS=24
+I (8105) obd_client: [OEM_DID_DECODE] DID=0xF185 NAME="Application data fingerprint" STATUS=RAW_ONLY DATA_LENGTH=8 DATA=[20 26 10 15 55 AA 10 01] UNIT=ASCII/HEX
+I (8121) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF186 TX_UDS=[22 F1 86] STATUS=REQUEST_SENT DECODER=ASCII
+I (8136) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF186 positive response; raw data length=1 (no OEM decoder applied)
+I (8142) obd_client: [OEM_DID_SCAN] TIME=7885 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF186 TX_UDS=[22 F1 86] RX_UDS=[01] STATUS=POSITIVE DATA_LENGTH=1 DATA=[01] DECODER=ASCII DURATION_MS=22
+I (8164) obd_client: [OEM_DID_DECODE] DID=0xF186 NAME="Active diagnostic session" STATUS=RAW_ONLY DATA_LENGTH=1 DATA=[01] UNIT=ASCII/HEX
+I (8177) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF188 TX_UDS=[22 F1 88] STATUS=REQUEST_SENT DECODER=ASCII
+I (8200) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF188 positive response; raw data length=11 (no OEM decoder applied)
+I (8201) obd_client: [OEM_DID_SCAN] TIME=7943 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF188 TX_UDS=[22 F1 88] RX_UDS=[30 34 45 39 30 36 30 32 37 48 56] STATUS=POSITIVE DATA_LENGTH=11 DATA=[30 34 45 39 30 36 30 32 37 48 56] DECODER=ASCII DURATION_MS=24
+I (8227) obd_client: [OEM_DID_DECODE] DID=0xF188 NAME="Vehicle manufacturer ECU software number" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[30 34 45 39 30 36 30 32 37 48 56] UNIT=ASCII/HEX
+I (8245) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF18A TX_UDS=[22 F1 8A] STATUS=REQUEST_SENT DECODER=ASCII
+I (8268) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF18A positive response; raw data length=16 (no OEM decoder applied)
+I (8269) obd_client: [OEM_DID_SCAN] TIME=8012 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF18A TX_UDS=[22 F1 8A] RX_UDS=[42 4F 53 43 48 20 20 20 20 20 20 20 20 20 20 20] STATUS=POSITIVE DATA_LENGTH=16 DATA=[42 4F 53 43 48 20 20 20 20 20 20 20 20 20 20 20] DECODER=ASCII DURATION_MS=25
+I (8299) obd_client: [OEM_DID_DECODE] DID=0xF18A NAME="System supplier identifier" STATUS=RAW_ONLY DATA_LENGTH=16 DATA=[42 4F 53 43 48 20 20 20 20 20 20 20 20 20 20 20] UNIT=ASCII/HEX
+I (8317) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF18B TX_UDS=[22 F1 8B] STATUS=REQUEST_SENT DECODER=ASCII
+I (8331) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF18B positive response; raw data length=3 (no OEM decoder applied)
+I (8338) obd_client: [OEM_DID_SCAN] TIME=8080 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF18B TX_UDS=[22 F1 8B] RX_UDS=[20 10 15] STATUS=POSITIVE DATA_LENGTH=3 DATA=[20 10 15] DECODER=ASCII DURATION_MS=22
+I (8360) obd_client: [OEM_DID_DECODE] DID=0xF18B NAME="ECU manufacturing date" STATUS=RAW_ONLY DATA_LENGTH=3 DATA=[20 10 15] UNIT=ASCII/HEX
+I (8374) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF18C TX_UDS=[22 F1 8C] STATUS=REQUEST_SENT DECODER=ASCII
+I (8397) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF18C positive response; raw data length=16 (no OEM decoder applied)
+I (8398) obd_client: [OEM_DID_SCAN] TIME=8141 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF18C TX_UDS=[22 F1 8C] RX_UDS=[30 30 30 30 30 30 30 30 30 30 30 30 31 32 33 34] STATUS=POSITIVE DATA_LENGTH=16 DATA=[30 30 30 30 30 30 30 30 30 30 30 30 31 32 33 34] DECODER=ASCII DURATION_MS=25
+I (8428) obd_client: [OEM_DID_DECODE] DID=0xF18C NAME="ECU serial number" STATUS=RAW_ONLY DATA_LENGTH=16 DATA=[30 30 30 30 30 30 30 30 30 30 30 30 31 32 33 34] UNIT=ASCII/HEX
+I (8445) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF18D TX_UDS=[22 F1 8D] STATUS=REQUEST_SENT DECODER=ASCII
+I (8459) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF18D positive response; raw data length=4 (no OEM decoder applied)
+I (8466) obd_client: [OEM_DID_SCAN] TIME=8208 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF18D TX_UDS=[22 F1 8D] RX_UDS=[00 00 00 01] STATUS=POSITIVE DATA_LENGTH=4 DATA=[00 00 00 01] DECODER=ASCII DURATION_MS=22
+I (8489) obd_client: [OEM_DID_DECODE] DID=0xF18D NAME="Supported functional units" STATUS=RAW_ONLY DATA_LENGTH=4 DATA=[00 00 00 01] UNIT=ASCII/HEX
+I (8504) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF18E TX_UDS=[22 F1 8E] STATUS=REQUEST_SENT DECODER=ASCII
+I (8526) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF18E positive response; raw data length=11 (no OEM decoder applied)
+I (8527) obd_client: [OEM_DID_SCAN] TIME=8270 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF18E TX_UDS=[22 F1 8E] RX_UDS=[30 34 45 31 30 33 39 32 35 42 20] STATUS=POSITIVE DATA_LENGTH=11 DATA=[30 34 45 31 30 33 39 32 35 42 20] DECODER=ASCII DURATION_MS=25
+I (8554) obd_client: [OEM_DID_DECODE] DID=0xF18E NAME="Vehicle manufacturer kit assembly part number" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[30 34 45 31 30 33 39 32 35 42 20] UNIT=ASCII/HEX
+I (8572) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF192 TX_UDS=[22 F1 92] STATUS=REQUEST_SENT DECODER=ASCII
+I (8595) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF192 positive response; raw data length=11 (no OEM decoder applied)
+I (8596) obd_client: [OEM_DID_SCAN] TIME=8338 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF192 TX_UDS=[22 F1 92] RX_UDS=[30 32 36 31 53 31 32 33 34 35 58] STATUS=POSITIVE DATA_LENGTH=11 DATA=[30 32 36 31 53 31 32 33 34 35 58] DECODER=ASCII DURATION_MS=25
+I (8622) obd_client: [OEM_DID_DECODE] DID=0xF192 NAME="System supplier ECU hardware number" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[30 32 36 31 53 31 32 33 34 35 58] UNIT=ASCII/HEX
+I (8640) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF193 TX_UDS=[22 F1 93] STATUS=REQUEST_SENT DECODER=ASCII
+I (8655) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF193 positive response; raw data length=3 (no OEM decoder applied)
+I (8661) obd_client: [OEM_DID_SCAN] TIME=8403 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF193 TX_UDS=[22 F1 93] RX_UDS=[48 32 35] STATUS=POSITIVE DATA_LENGTH=3 DATA=[48 32 35] DECODER=ASCII DURATION_MS=22
+I (8683) obd_client: [OEM_DID_DECODE] DID=0xF193 NAME="System supplier ECU hardware version" STATUS=RAW_ONLY DATA_LENGTH=3 DATA=[48 32 35] UNIT=ASCII/HEX
+I (8699) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF194 TX_UDS=[22 F1 94] STATUS=REQUEST_SENT DECODER=ASCII
+I (8721) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF194 positive response; raw data length=11 (no OEM decoder applied)
+I (8722) obd_client: [OEM_DID_SCAN] TIME=8464 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF194 TX_UDS=[22 F1 94] RX_UDS=[31 30 33 37 35 31 32 33 34 35 41] STATUS=POSITIVE DATA_LENGTH=11 DATA=[31 30 33 37 35 31 32 33 34 35 41] DECODER=ASCII DURATION_MS=24
+I (8748) obd_client: [OEM_DID_DECODE] DID=0xF194 NAME="System supplier ECU software number" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[31 30 33 37 35 31 32 33 34 35 41] UNIT=ASCII/HEX
+I (8766) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF195 TX_UDS=[22 F1 95] STATUS=REQUEST_SENT DECODER=ASCII
+I (8780) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF195 positive response; raw data length=4 (no OEM decoder applied)
+I (8787) obd_client: [OEM_DID_SCAN] TIME=8530 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF195 TX_UDS=[22 F1 95] RX_UDS=[39 39 37 35] STATUS=POSITIVE DATA_LENGTH=4 DATA=[39 39 37 35] DECODER=ASCII DURATION_MS=22
+I (8810) obd_client: [OEM_DID_DECODE] DID=0xF195 NAME="System supplier ECU software version" STATUS=RAW_ONLY DATA_LENGTH=4 DATA=[39 39 37 35] UNIT=ASCII/HEX
+I (8826) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF196 TX_UDS=[22 F1 96] STATUS=REQUEST_SENT DECODER=ASCII
+I (8847) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF196 positive response; raw data length=6 (no OEM decoder applied)
+I (8848) obd_client: [OEM_DID_SCAN] TIME=8591 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF196 TX_UDS=[22 F1 96] RX_UDS=[45 55 52 4F 2D 35] STATUS=POSITIVE DATA_LENGTH=6 DATA=[45 55 52 4F 2D 35] DECODER=ASCII DURATION_MS=24
+I (8872) obd_client: [OEM_DID_DECODE] DID=0xF196 NAME="Exhaust regulation/type-approval number" STATUS=RAW_ONLY DATA_LENGTH=6 DATA=[45 55 52 4F 2D 35] UNIT=ASCII/HEX
+I (8889) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF198 TX_UDS=[22 F1 98] STATUS=REQUEST_SENT DECODER=ASCII
+I (8910) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF198 positive response; raw data length=10 (no OEM decoder applied)
+I (8911) obd_client: [OEM_DID_SCAN] TIME=8654 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF198 TX_UDS=[22 F1 98] RX_UDS=[30 31 32 33 34 35 36 37 38 39] STATUS=POSITIVE DATA_LENGTH=10 DATA=[30 31 32 33 34 35 36 37 38 39] DECODER=ASCII DURATION_MS=24
+I (8937) obd_client: [OEM_DID_DECODE] DID=0xF198 NAME="Repair shop code / tester serial number" STATUS=RAW_ONLY DATA_LENGTH=10 DATA=[30 31 32 33 34 35 36 37 38 39] UNIT=ASCII/HEX
+I (8955) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF199 TX_UDS=[22 F1 99] STATUS=REQUEST_SENT DECODER=ASCII
+I (8969) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF199 positive response; raw data length=3 (no OEM decoder applied)
+I (8976) obd_client: [OEM_DID_SCAN] TIME=8718 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF199 TX_UDS=[22 F1 99] RX_UDS=[26 10 15] STATUS=POSITIVE DATA_LENGTH=3 DATA=[26 10 15] DECODER=ASCII DURATION_MS=22
+I (8998) obd_client: [OEM_DID_DECODE] DID=0xF199 NAME="Programming date" STATUS=RAW_ONLY DATA_LENGTH=3 DATA=[26 10 15] UNIT=ASCII/HEX
+I (9012) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF19A TX_UDS=[22 F1 9A] STATUS=REQUEST_SENT DECODER=ASCII
+I (9035) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19A positive response; raw data length=11 (no OEM decoder applied)
+I (9036) obd_client: [OEM_DID_SCAN] TIME=8778 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF19A TX_UDS=[22 F1 9A] RX_UDS=[53 48 4F 50 2D 30 30 30 30 30 31] STATUS=POSITIVE DATA_LENGTH=11 DATA=[53 48 4F 50 2D 30 30 30 30 30 31] DECODER=ASCII DURATION_MS=25
+I (9062) obd_client: [OEM_DID_DECODE] DID=0xF19A NAME="Calibration repair shop/equipment identifier" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[53 48 4F 50 2D 30 30 30 30 30 31] UNIT=ASCII/HEX
+I (9081) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF19B TX_UDS=[22 F1 9B] STATUS=REQUEST_SENT DECODER=ASCII
+I (9095) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19B positive response; raw data length=3 (no OEM decoder applied)
+I (9102) obd_client: [OEM_DID_SCAN] TIME=8844 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF19B TX_UDS=[22 F1 9B] RX_UDS=[26 09 30] STATUS=POSITIVE DATA_LENGTH=3 DATA=[26 09 30] DECODER=ASCII DURATION_MS=22
+I (9124) obd_client: [OEM_DID_DECODE] DID=0xF19B NAME="Calibration date" STATUS=RAW_ONLY DATA_LENGTH=3 DATA=[26 09 30] UNIT=ASCII/HEX
+I (9138) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF19C TX_UDS=[22 F1 9C] STATUS=REQUEST_SENT DECODER=ASCII
+I (9160) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19C positive response; raw data length=11 (no OEM decoder applied)
+I (9161) obd_client: [OEM_DID_SCAN] TIME=8903 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF19C TX_UDS=[22 F1 9C] RX_UDS=[4F 44 49 53 2D 53 49 4D 2D 30 31] STATUS=POSITIVE DATA_LENGTH=11 DATA=[4F 44 49 53 2D 53 49 4D 2D 30 31] DECODER=ASCII DURATION_MS=24
+I (9187) obd_client: [OEM_DID_DECODE] DID=0xF19C NAME="Calibration equipment software number" STATUS=RAW_ONLY DATA_LENGTH=11 DATA=[4F 44 49 53 2D 53 49 4D 2D 30 31] UNIT=ASCII/HEX
+I (9205) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF19D TX_UDS=[22 F1 9D] STATUS=REQUEST_SENT DECODER=ASCII
+I (9220) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19D positive response; raw data length=3 (no OEM decoder applied)
+I (9226) obd_client: [OEM_DID_SCAN] TIME=8969 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF19D TX_UDS=[22 F1 9D] RX_UDS=[25 01 01] STATUS=POSITIVE DATA_LENGTH=3 DATA=[25 01 01] DECODER=ASCII DURATION_MS=22
+I (9249) obd_client: [OEM_DID_DECODE] DID=0xF19D NAME="ECU installation date" STATUS=RAW_ONLY DATA_LENGTH=3 DATA=[25 01 01] UNIT=ASCII/HEX
+I (9263) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF19F TX_UDS=[22 F1 9F] STATUS=REQUEST_SENT DECODER=ASCII
+I (9277) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF19F positive response; raw data length=4 (no OEM decoder applied)
+I (9284) obd_client: [OEM_DID_SCAN] TIME=9026 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF19F TX_UDS=[22 F1 9F] RX_UDS=[01 02 03 04] STATUS=POSITIVE DATA_LENGTH=4 DATA=[01 02 03 04] DECODER=ASCII DURATION_MS=22
+I (9307) obd_client: [OEM_DID_DECODE] DID=0xF19F NAME="Entity identifier" STATUS=RAW_ONLY DATA_LENGTH=4 DATA=[01 02 03 04] UNIT=ASCII/HEX
+I (9321) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15E7 TX_UDS=[22 15 E7] STATUS=REQUEST_SENT DECODER=typed
+W (9335) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x15E7 NRC=0x31
+I (9338) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15E7 TX_UDS=[22 15 E7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9356) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D3 TX_UDS=[22 10 D3] STATUS=REQUEST_SENT DECODER=typed
+W (9370) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D3 NRC=0x31
+I (9373) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D3 TX_UDS=[22 10 D3] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9391) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DE TX_UDS=[22 10 DE] STATUS=REQUEST_SENT DECODER=typed
+W (9406) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DE NRC=0x31
+I (9408) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DE TX_UDS=[22 10 DE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9426) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x128C TX_UDS=[22 12 8C] STATUS=REQUEST_SENT DECODER=typed
+W (9441) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x128C NRC=0x31
+I (9443) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x128C TX_UDS=[22 12 8C] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9461) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2003 TX_UDS=[22 20 03] STATUS=REQUEST_SENT DECODER=typed
+W (9476) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2003 NRC=0x31
+I (9479) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2003 TX_UDS=[22 20 03] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9496) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E6 TX_UDS=[22 10 E6] STATUS=REQUEST_SENT DECODER=typed
+W (9511) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E6 NRC=0x31
+I (9514) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E6 TX_UDS=[22 10 E6] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9531) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E5 TX_UDS=[22 10 E5] STATUS=REQUEST_SENT DECODER=typed
+W (9546) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E5 NRC=0x31
+I (9549) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E5 TX_UDS=[22 10 E5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9567) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1126 TX_UDS=[22 11 26] STATUS=REQUEST_SENT DECODER=typed
+W (9581) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1126 NRC=0x31
+I (9584) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1126 TX_UDS=[22 11 26] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9602) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1127 TX_UDS=[22 11 27] STATUS=REQUEST_SENT DECODER=typed
+W (9617) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1127 NRC=0x31
+I (9619) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1127 TX_UDS=[22 11 27] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9637) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FC TX_UDS=[22 13 FC] STATUS=REQUEST_SENT DECODER=typed
+W (9652) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FC NRC=0x31
+I (9654) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FC TX_UDS=[22 13 FC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9672) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FA TX_UDS=[22 13 FA] STATUS=REQUEST_SENT DECODER=typed
+W (9687) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FA NRC=0x31
+I (9689) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FA TX_UDS=[22 13 FA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9707) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FD TX_UDS=[22 13 FD] STATUS=REQUEST_SENT DECODER=typed
+W (9722) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FD NRC=0x31
+I (9725) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FD TX_UDS=[22 13 FD] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9743) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1211 TX_UDS=[22 12 11] STATUS=REQUEST_SENT DECODER=typed
+W (9757) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1211 NRC=0x31
+I (9760) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1211 TX_UDS=[22 12 11] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9778) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] STATUS=REQUEST_SENT DECODER=typed
+W (9792) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120F NRC=0x31
+I (9795) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9813) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] STATUS=REQUEST_SENT DECODER=typed
+W (9827) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1210 NRC=0x31
+I (9830) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9848) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3960 TX_UDS=[22 39 60] STATUS=REQUEST_SENT DECODER=typed
+W (9863) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3960 NRC=0x31
+I (9865) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3960 TX_UDS=[22 39 60] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9883) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3961 TX_UDS=[22 39 61] STATUS=REQUEST_SENT DECODER=typed
+W (9898) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3961 NRC=0x31
+I (9900) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3961 TX_UDS=[22 39 61] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9918) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3962 TX_UDS=[22 39 62] STATUS=REQUEST_SENT DECODER=typed
+W (9933) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3962 NRC=0x31
+I (9935) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3962 TX_UDS=[22 39 62] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9953) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10A7 TX_UDS=[22 10 A7] STATUS=REQUEST_SENT DECODER=typed
+W (9968) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10A7 NRC=0x31
+I (9971) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10A7 TX_UDS=[22 10 A7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (9989) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BD TX_UDS=[22 11 BD] STATUS=REQUEST_SENT DECODER=typed
+W (10003) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11BD NRC=0x31
+I (10006) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BD TX_UDS=[22 11 BD] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10024) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1632 TX_UDS=[22 16 32] STATUS=REQUEST_SENT DECODER=typed
+W (10039) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1632 NRC=0x31
+I (10041) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1632 TX_UDS=[22 16 32] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (10059) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1102 TX_UDS=[22 11 02] STATUS=REQUEST_SENT DECODER=typed
+W (10074) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1102 NRC=0x31
+I (10077) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1102 TX_UDS=[22 11 02] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10095) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15B7 TX_UDS=[22 15 B7] STATUS=REQUEST_SENT DECODER=typed
+W (10109) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x15B7 NRC=0x31
+I (10112) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15B7 TX_UDS=[22 15 B7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10130) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x201A TX_UDS=[22 20 1A] STATUS=REQUEST_SENT DECODER=typed
+W (10145) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x201A NRC=0x31
+I (10148) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x201A TX_UDS=[22 20 1A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (10166) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x179E TX_UDS=[22 17 9E] STATUS=REQUEST_SENT DECODER=typed
+W (10180) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x179E NRC=0x31
+I (10183) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x179E TX_UDS=[22 17 9E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10201) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202F TX_UDS=[22 20 2F] STATUS=REQUEST_SENT DECODER=typed
+W (10216) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x202F NRC=0x31
+I (10218) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202F TX_UDS=[22 20 2F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10237) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x40D5 TX_UDS=[22 40 D5] STATUS=REQUEST_SENT DECODER=typed
+W (10251) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x40D5 NRC=0x31
+I (10254) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x40D5 TX_UDS=[22 40 D5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10272) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x51D4 TX_UDS=[22 51 D4] STATUS=REQUEST_SENT DECODER=typed
+W (10286) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x51D4 NRC=0x31
+I (10289) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x51D4 TX_UDS=[22 51 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10307) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1065 TX_UDS=[22 10 65] STATUS=REQUEST_SENT DECODER=typed
+W (10322) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1065 NRC=0x31
+I (10325) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1065 TX_UDS=[22 10 65] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10343) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] STATUS=REQUEST_SENT DECODER=typed
+W (10357) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120E NRC=0x31
+I (10360) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10378) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x523B TX_UDS=[22 52 3B] STATUS=REQUEST_SENT DECODER=typed
+W (10393) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x523B NRC=0x31
+I (10395) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x523B TX_UDS=[22 52 3B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10413) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1212 TX_UDS=[22 12 12] STATUS=REQUEST_SENT DECODER=typed
+W (10428) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1212 NRC=0x31
+I (10431) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1212 TX_UDS=[22 12 12] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10449) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E9 TX_UDS=[22 10 E9] STATUS=REQUEST_SENT DECODER=typed
+W (10464) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E9 NRC=0x31
+I (10466) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E9 TX_UDS=[22 10 E9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10484) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1230 TX_UDS=[22 12 30] STATUS=REQUEST_SENT DECODER=typed
+W (10499) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1230 NRC=0x31
+I (10502) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1230 TX_UDS=[22 12 30] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10520) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2032 TX_UDS=[22 20 32] STATUS=REQUEST_SENT DECODER=typed
+W (10534) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2032 NRC=0x31
+I (10537) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2032 TX_UDS=[22 20 32] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10555) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4267 TX_UDS=[22 42 67] STATUS=REQUEST_SENT DECODER=typed
+W (10570) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4267 NRC=0x31
+I (10572) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4267 TX_UDS=[22 42 67] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10591) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x417F TX_UDS=[22 41 7F] STATUS=REQUEST_SENT DECODER=typed
+W (10605) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x417F NRC=0x31
+I (10608) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x417F TX_UDS=[22 41 7F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10626) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4183 TX_UDS=[22 41 83] STATUS=REQUEST_SENT DECODER=typed
+W (10641) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4183 NRC=0x31
+I (10643) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4183 TX_UDS=[22 41 83] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10661) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4185 TX_UDS=[22 41 85] STATUS=REQUEST_SENT DECODER=typed
+W (10676) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4185 NRC=0x31
+I (10679) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4185 TX_UDS=[22 41 85] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10697) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x177D TX_UDS=[22 17 7D] STATUS=REQUEST_SENT DECODER=typed
+W (10711) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x177D NRC=0x31
+I (10714) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x177D TX_UDS=[22 17 7D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10732) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x381D TX_UDS=[22 38 1D] STATUS=REQUEST_SENT DECODER=typed
+W (10747) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x381D NRC=0x31
+I (10750) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x381D TX_UDS=[22 38 1D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10768) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1503 TX_UDS=[22 15 03] STATUS=REQUEST_SENT DECODER=typed
+W (10782) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1503 NRC=0x31
+I (10785) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1503 TX_UDS=[22 15 03] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10803) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4F70 TX_UDS=[22 4F 70] STATUS=REQUEST_SENT DECODER=typed
+W (10818) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4F70 NRC=0x31
+I (10820) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4F70 TX_UDS=[22 4F 70] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (10838) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x25CF TX_UDS=[22 25 CF] STATUS=REQUEST_SENT DECODER=typed
+W (10853) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x25CF NRC=0x31
+I (10856) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x25CF TX_UDS=[22 25 CF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10874) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x25D0 TX_UDS=[22 25 D0] STATUS=REQUEST_SENT DECODER=typed
+I (10884) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=19.18 fps total=159 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (10904) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x25D0 NRC=0x31
+I (10907) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x25D0 TX_UDS=[22 25 D0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=34
+I (10925) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2025 TX_UDS=[22 20 25] STATUS=REQUEST_SENT DECODER=typed
+W (10940) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2025 NRC=0x31
+I (10942) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2025 TX_UDS=[22 20 25] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (10960) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2932 TX_UDS=[22 29 32] STATUS=REQUEST_SENT DECODER=typed
+W (10975) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2932 NRC=0x31
+I (10978) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2932 TX_UDS=[22 29 32] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (10996) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1AB8 TX_UDS=[22 1A B8] STATUS=REQUEST_SENT DECODER=typed
+W (11010) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1AB8 NRC=0x31
+I (11013) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1AB8 TX_UDS=[22 1A B8] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11031) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CE TX_UDS=[22 11 CE] STATUS=REQUEST_SENT DECODER=typed
+W (11046) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11CE NRC=0x31
+I (11049) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CE TX_UDS=[22 11 CE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11067) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1109 TX_UDS=[22 11 09] STATUS=REQUEST_SENT DECODER=typed
+W (11081) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1109 NRC=0x31
+I (11084) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1109 TX_UDS=[22 11 09] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11102) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D5 TX_UDS=[22 10 D5] STATUS=REQUEST_SENT DECODER=typed
+W (11117) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D5 NRC=0x31
+I (11119) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D5 TX_UDS=[22 10 D5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11137) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] STATUS=REQUEST_SENT DECODER=typed
+I (11152) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF442 positive response; raw data length=2 (no OEM decoder applied)
+I (11159) obd_client: [OEM_DID_SCAN] TIME=10901 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] RX_UDS=[37 AA] STATUS=POSITIVE DATA_LENGTH=2 DATA=[37 AA] DECODER=typed DURATION_MS=22
+I (11181) obd_client: [OEM_DID_DECODE] DID=0xF442 NAME="Control module voltage" VALUE=14.250000 UNIT=V DECODE_KIND=3 FORMULA=raw*0.001+0
+I (11195) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C9 TX_UDS=[22 11 C9] STATUS=REQUEST_SENT DECODER=typed
+W (11210) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11C9 NRC=0x31
+I (11212) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C9 TX_UDS=[22 11 C9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11230) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x111B TX_UDS=[22 11 1B] STATUS=REQUEST_SENT DECODER=typed
+W (11245) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x111B NRC=0x31
+I (11248) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x111B TX_UDS=[22 11 1B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11266) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1169 TX_UDS=[22 11 69] STATUS=REQUEST_SENT DECODER=typed
+W (11280) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1169 NRC=0x31
+I (11283) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1169 TX_UDS=[22 11 69] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11301) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1711 TX_UDS=[22 17 11] STATUS=REQUEST_SENT DECODER=typed
+W (11316) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1711 NRC=0x31
+I (11318) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1711 TX_UDS=[22 17 11] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11336) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF406 TX_UDS=[22 F4 06] STATUS=REQUEST_SENT DECODER=typed
+I (11351) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF406 positive response; raw data length=1 (no OEM decoder applied)
+I (11358) obd_client: [OEM_DID_SCAN] TIME=11100 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF406 TX_UDS=[22 F4 06] RX_UDS=[7A] STATUS=POSITIVE DATA_LENGTH=1 DATA=[7A] DECODER=typed DURATION_MS=23
+I (11379) obd_client: [OEM_DID_DECODE] DID=0xF406 NAME="Short-term fuel trim bank 1" VALUE=-4.687500 UNIT=% DECODE_KIND=1 FORMULA=raw*0.78125-100
+I (11394) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF433 TX_UDS=[22 F4 33] STATUS=REQUEST_SENT DECODER=typed
+I (11409) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF433 positive response; raw data length=1 (no OEM decoder applied)
+I (11415) obd_client: [OEM_DID_SCAN] TIME=11158 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF433 TX_UDS=[22 F4 33] RX_UDS=[65] STATUS=POSITIVE DATA_LENGTH=1 DATA=[65] DECODER=typed DURATION_MS=22
+I (11437) obd_client: [OEM_DID_DECODE] DID=0xF433 NAME="Barometric pressure" VALUE=101.000000 UNIT=kPa DECODE_KIND=1 FORMULA=raw*1+0
+I (11450) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EE TX_UDS=[22 11 EE] STATUS=REQUEST_SENT DECODER=typed
+W (11465) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11EE NRC=0x31
+I (11468) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EE TX_UDS=[22 11 EE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11486) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EF TX_UDS=[22 11 EF] STATUS=REQUEST_SENT DECODER=typed
+W (11500) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11EF NRC=0x31
+I (11503) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EF TX_UDS=[22 11 EF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11521) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11F0 TX_UDS=[22 11 F0] STATUS=REQUEST_SENT DECODER=typed
+W (11536) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11F0 NRC=0x31
+I (11539) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11F0 TX_UDS=[22 11 F0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11556) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11A3 TX_UDS=[22 11 A3] STATUS=REQUEST_SENT DECODER=typed
+W (11571) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11A3 NRC=0x31
+I (11574) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11A3 TX_UDS=[22 11 A3] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11592) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11FF TX_UDS=[22 11 FF] STATUS=REQUEST_SENT DECODER=typed
+W (11607) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11FF NRC=0x31
+I (11609) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11FF TX_UDS=[22 11 FF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11627) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1200 TX_UDS=[22 12 00] STATUS=REQUEST_SENT DECODER=typed
+W (11642) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1200 NRC=0x31
+I (11645) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1200 TX_UDS=[22 12 00] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11663) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1201 TX_UDS=[22 12 01] STATUS=REQUEST_SENT DECODER=typed
+W (11678) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1201 NRC=0x31
+I (11680) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1201 TX_UDS=[22 12 01] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11698) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1202 TX_UDS=[22 12 02] STATUS=REQUEST_SENT DECODER=typed
+W (11713) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1202 NRC=0x31
+I (11716) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1202 TX_UDS=[22 12 02] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11734) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39FF TX_UDS=[22 39 FF] STATUS=REQUEST_SENT DECODER=typed
+W (11748) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x39FF NRC=0x31
+I (11751) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39FF TX_UDS=[22 39 FF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11769) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B04 TX_UDS=[22 1B 04] STATUS=REQUEST_SENT DECODER=typed
+W (11784) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1B04 NRC=0x31
+I (11786) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B04 TX_UDS=[22 1B 04] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (11804) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2CD8 TX_UDS=[22 2C D8] STATUS=REQUEST_SENT DECODER=typed
+W (11819) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2CD8 NRC=0x31
+I (11822) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2CD8 TX_UDS=[22 2C D8] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11840) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11B9 TX_UDS=[22 11 B9] STATUS=REQUEST_SENT DECODER=typed
+W (11855) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11B9 NRC=0x31
+I (11857) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11B9 TX_UDS=[22 11 B9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11875) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1504 TX_UDS=[22 15 04] STATUS=REQUEST_SENT DECODER=typed
+W (11890) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1504 NRC=0x31
+I (11893) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1504 TX_UDS=[22 15 04] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11911) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x58D1 TX_UDS=[22 58 D1] STATUS=REQUEST_SENT DECODER=typed
+W (11926) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x58D1 NRC=0x31
+I (11928) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x58D1 TX_UDS=[22 58 D1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11946) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4FBE TX_UDS=[22 4F BE] STATUS=REQUEST_SENT DECODER=typed
+W (11961) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4FBE NRC=0x31
+I (11964) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4FBE TX_UDS=[22 4F BE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (11982) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2004 TX_UDS=[22 20 04] STATUS=REQUEST_SENT DECODER=typed
+W (11996) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2004 NRC=0x31
+I (11999) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2004 TX_UDS=[22 20 04] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12017) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2046 TX_UDS=[22 20 46] STATUS=REQUEST_SENT DECODER=typed
+W (12032) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2046 NRC=0x31
+I (12034) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2046 TX_UDS=[22 20 46] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12052) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2048 TX_UDS=[22 20 48] STATUS=REQUEST_SENT DECODER=typed
+W (12067) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2048 NRC=0x31
+I (12070) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2048 TX_UDS=[22 20 48] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12088) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2049 TX_UDS=[22 20 49] STATUS=REQUEST_SENT DECODER=typed
+W (12102) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2049 NRC=0x31
+I (12105) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2049 TX_UDS=[22 20 49] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12123) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x204A TX_UDS=[22 20 4A] STATUS=REQUEST_SENT DECODER=typed
+W (12138) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x204A NRC=0x31
+I (12141) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x204A TX_UDS=[22 20 4A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12159) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2000 TX_UDS=[22 20 00] STATUS=REQUEST_SENT DECODER=typed
+W (12173) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2000 NRC=0x31
+I (12176) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2000 TX_UDS=[22 20 00] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12194) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x207B TX_UDS=[22 20 7B] STATUS=REQUEST_SENT DECODER=typed
+W (12209) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x207B NRC=0x31
+I (12211) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x207B TX_UDS=[22 20 7B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12229) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x21C1 TX_UDS=[22 21 C1] STATUS=REQUEST_SENT DECODER=typed
+W (12244) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x21C1 NRC=0x31
+I (12247) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x21C1 TX_UDS=[22 21 C1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12265) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2100 TX_UDS=[22 21 00] STATUS=REQUEST_SENT DECODER=typed
+W (12279) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2100 NRC=0x31
+I (12282) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2100 TX_UDS=[22 21 00] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12300) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2101 TX_UDS=[22 21 01] STATUS=REQUEST_SENT DECODER=typed
+W (12316) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2101 NRC=0x31
+I (12318) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2101 TX_UDS=[22 21 01] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12336) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20BB TX_UDS=[22 20 BB] STATUS=REQUEST_SENT DECODER=typed
+W (12350) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x20BB NRC=0x31
+I (12353) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20BB TX_UDS=[22 20 BB] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (12371) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293B TX_UDS=[22 29 3B] STATUS=REQUEST_SENT DECODER=typed
+W (12386) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x293B NRC=0x31
+I (12388) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293B TX_UDS=[22 29 3B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12407) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1010 TX_UDS=[22 10 10] STATUS=REQUEST_SENT DECODER=typed
+W (12421) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1010 NRC=0x31
+I (12424) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1010 TX_UDS=[22 10 10] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12442) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2002 TX_UDS=[22 20 02] STATUS=REQUEST_SENT DECODER=typed
+W (12457) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2002 NRC=0x31
+I (12459) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2002 TX_UDS=[22 20 02] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (12477) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x437C TX_UDS=[22 43 7C] STATUS=REQUEST_SENT DECODER=typed
+W (12492) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x437C NRC=0x31
+I (12495) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x437C TX_UDS=[22 43 7C] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12513) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1175 TX_UDS=[22 11 75] STATUS=REQUEST_SENT DECODER=typed
+W (12527) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1175 NRC=0x31
+I (12530) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1175 TX_UDS=[22 11 75] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12548) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] STATUS=REQUEST_SENT DECODER=typed
+W (12563) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4E4A NRC=0x31
+I (12566) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (12584) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] STATUS=REQUEST_SENT DECODER=typed
+W (12598) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4E4A NRC=0x31
+I (12601) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12619) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] STATUS=REQUEST_SENT DECODER=typed
+W (12634) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4E4A NRC=0x31
+I (12636) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4E4A TX_UDS=[22 4E 4A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12655) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x147D TX_UDS=[22 14 7D] STATUS=REQUEST_SENT DECODER=typed
+W (12669) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x147D NRC=0x31
+I (12672) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x147D TX_UDS=[22 14 7D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12690) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x147F TX_UDS=[22 14 7F] STATUS=REQUEST_SENT DECODER=typed
+W (12704) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x147F NRC=0x31
+I (12707) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x147F TX_UDS=[22 14 7F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12725) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2929 TX_UDS=[22 29 29] STATUS=REQUEST_SENT DECODER=typed
+W (12740) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2929 NRC=0x31
+I (12743) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2929 TX_UDS=[22 29 29] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12761) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x209C TX_UDS=[22 20 9C] STATUS=REQUEST_SENT DECODER=typed
+W (12775) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x209C NRC=0x31
+I (12778) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x209C TX_UDS=[22 20 9C] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12796) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x108F TX_UDS=[22 10 8F] STATUS=REQUEST_SENT DECODER=typed
+W (12811) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x108F NRC=0x31
+I (12813) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x108F TX_UDS=[22 10 8F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12831) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x203F TX_UDS=[22 20 3F] STATUS=REQUEST_SENT DECODER=typed
+W (12846) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x203F NRC=0x31
+I (12849) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x203F TX_UDS=[22 20 3F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (12867) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20A0 TX_UDS=[22 20 A0] STATUS=REQUEST_SENT DECODER=typed
+W (12882) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x20A0 NRC=0x31
+I (12884) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20A0 TX_UDS=[22 20 A0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12902) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2122 TX_UDS=[22 21 22] STATUS=REQUEST_SENT DECODER=typed
+W (12917) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2122 NRC=0x31
+I (12920) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2122 TX_UDS=[22 21 22] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (12938) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121C TX_UDS=[22 12 1C] STATUS=REQUEST_SENT DECODER=typed
+W (12952) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x121C NRC=0x31
+I (12955) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121C TX_UDS=[22 12 1C] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (12973) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11B8 TX_UDS=[22 11 B8] STATUS=REQUEST_SENT DECODER=typed
+W (12988) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11B8 NRC=0x31
+I (12990) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11B8 TX_UDS=[22 11 B8] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13009) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1029 TX_UDS=[22 10 29] STATUS=REQUEST_SENT DECODER=typed
+W (13023) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1029 NRC=0x31
+I (13026) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1029 TX_UDS=[22 10 29] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13044) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1059 TX_UDS=[22 10 59] STATUS=REQUEST_SENT DECODER=typed
+W (13059) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1059 NRC=0x31
+I (13061) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1059 TX_UDS=[22 10 59] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (13079) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10CA TX_UDS=[22 10 CA] STATUS=REQUEST_SENT DECODER=typed
+W (13094) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10CA NRC=0x31
+I (13097) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10CA TX_UDS=[22 10 CA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13115) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12B0 TX_UDS=[22 12 B0] STATUS=REQUEST_SENT DECODER=typed
+W (13129) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x12B0 NRC=0x31
+I (13132) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12B0 TX_UDS=[22 12 B0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13150) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12C8 TX_UDS=[22 12 C8] STATUS=REQUEST_SENT DECODER=typed
+W (13165) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x12C8 NRC=0x31
+I (13168) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12C8 TX_UDS=[22 12 C8] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13186) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12C7 TX_UDS=[22 12 C7] STATUS=REQUEST_SENT DECODER=typed
+W (13200) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x12C7 NRC=0x31
+I (13203) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x12C7 TX_UDS=[22 12 C7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13221) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14D1 TX_UDS=[22 14 D1] STATUS=REQUEST_SENT DECODER=typed
+W (13236) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x14D1 NRC=0x31
+I (13238) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14D1 TX_UDS=[22 14 D1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13256) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121A TX_UDS=[22 12 1A] STATUS=REQUEST_SENT DECODER=typed
+W (13271) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x121A NRC=0x31
+I (13274) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121A TX_UDS=[22 12 1A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13292) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121D TX_UDS=[22 12 1D] STATUS=REQUEST_SENT DECODER=typed
+W (13307) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x121D NRC=0x31
+I (13309) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121D TX_UDS=[22 12 1D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13327) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1631 TX_UDS=[22 16 31] STATUS=REQUEST_SENT DECODER=typed
+W (13342) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1631 NRC=0x31
+I (13345) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1631 TX_UDS=[22 16 31] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13363) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121B TX_UDS=[22 12 1B] STATUS=REQUEST_SENT DECODER=typed
+W (13377) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x121B NRC=0x31
+I (13380) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x121B TX_UDS=[22 12 1B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13398) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1131 TX_UDS=[22 11 31] STATUS=REQUEST_SENT DECODER=typed
+W (13413) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1131 NRC=0x31
+I (13415) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1131 TX_UDS=[22 11 31] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13433) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x081A TX_UDS=[22 08 1A] STATUS=REQUEST_SENT DECODER=typed
+W (13448) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x081A NRC=0x31
+I (13451) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x081A TX_UDS=[22 08 1A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13469) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x081B TX_UDS=[22 08 1B] STATUS=REQUEST_SENT DECODER=typed
+W (13484) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x081B NRC=0x31
+I (13486) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x081B TX_UDS=[22 08 1B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13504) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x205D TX_UDS=[22 20 5D] STATUS=REQUEST_SENT DECODER=typed
+W (13519) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x205D NRC=0x31
+I (13522) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x205D TX_UDS=[22 20 5D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13540) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20C0 TX_UDS=[22 20 C0] STATUS=REQUEST_SENT DECODER=typed
+W (13554) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x20C0 NRC=0x31
+I (13557) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20C0 TX_UDS=[22 20 C0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13575) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EE TX_UDS=[22 11 EE] STATUS=REQUEST_SENT DECODER=typed
+W (13590) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11EE NRC=0x31
+I (13593) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11EE TX_UDS=[22 11 EE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13610) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1221 TX_UDS=[22 12 21] STATUS=REQUEST_SENT DECODER=typed
+W (13625) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1221 NRC=0x31
+I (13628) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1221 TX_UDS=[22 12 21] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (13646) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2097 TX_UDS=[22 20 97] STATUS=REQUEST_SENT DECODER=typed
+W (13661) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2097 NRC=0x31
+I (13663) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2097 TX_UDS=[22 20 97] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13681) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1139 TX_UDS=[22 11 39] STATUS=REQUEST_SENT DECODER=typed
+W (13696) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1139 NRC=0x31
+I (13699) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1139 TX_UDS=[22 11 39] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13717) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4268 TX_UDS=[22 42 68] STATUS=REQUEST_SENT DECODER=typed
+W (13732) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4268 NRC=0x31
+I (13734) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4268 TX_UDS=[22 42 68] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (13752) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] STATUS=REQUEST_SENT DECODER=typed
+I (13767) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF41F positive response; raw data length=2 (no OEM decoder applied)
+I (13774) obd_client: [OEM_DID_SCAN] TIME=13516 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] RX_UDS=[00 12] STATUS=POSITIVE DATA_LENGTH=2 DATA=[00 12] DECODER=typed DURATION_MS=22
+I (13796) obd_client: [OEM_DID_DECODE] DID=0xF41F NAME="Time since engine start" VALUE=18.000000 UNIT=s DECODE_KIND=3 FORMULA=raw*1+0
+I (13809) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF433 TX_UDS=[22 F4 33] STATUS=REQUEST_SENT DECODER=typed
+I (13824) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF433 positive response; raw data length=1 (no OEM decoder applied)
+I (13831) obd_client: [OEM_DID_SCAN] TIME=13573 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF433 TX_UDS=[22 F4 33] RX_UDS=[65] STATUS=POSITIVE DATA_LENGTH=1 DATA=[65] DECODER=typed DURATION_MS=22
+I (13852) obd_client: [OEM_DID_DECODE] DID=0xF433 NAME="Barometric pressure" VALUE=101.000000 UNIT=kPa DECODE_KIND=1 FORMULA=raw*1+0
+I (13866) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF446 TX_UDS=[22 F4 46] STATUS=REQUEST_SENT DECODER=typed
+I (13880) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF446 positive response; raw data length=1 (no OEM decoder applied)
+I (13887) obd_client: [OEM_DID_SCAN] TIME=13629 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF446 TX_UDS=[22 F4 46] RX_UDS=[3E] STATUS=POSITIVE DATA_LENGTH=1 DATA=[3E] DECODER=typed DURATION_MS=22
+I (13909) obd_client: [OEM_DID_DECODE] DID=0xF446 NAME="Ambient air temperature" VALUE=22.000000 UNIT=degC DECODE_KIND=1 FORMULA=raw*1-40
+I (13923) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15D4 TX_UDS=[22 15 D4] STATUS=REQUEST_SENT DECODER=typed
+W (13937) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x15D4 NRC=0x31
+I (13940) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15D4 TX_UDS=[22 15 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (13958) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] STATUS=REQUEST_SENT DECODER=typed
+W (13973) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1210 NRC=0x31
+I (13975) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (13993) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15D4 TX_UDS=[22 15 D4] STATUS=REQUEST_SENT DECODER=typed
+W (14008) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x15D4 NRC=0x31
+I (14011) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x15D4 TX_UDS=[22 15 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14029) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] STATUS=REQUEST_SENT DECODER=typed
+W (14043) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120E NRC=0x31
+I (14046) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (14064) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] STATUS=REQUEST_SENT DECODER=typed
+W (14079) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120F NRC=0x31
+I (14082) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14100) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] STATUS=REQUEST_SENT DECODER=typed
+I (14114) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF41F positive response; raw data length=2 (no OEM decoder applied)
+I (14121) obd_client: [OEM_DID_SCAN] TIME=13863 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] RX_UDS=[00 12] STATUS=POSITIVE DATA_LENGTH=2 DATA=[00 12] DECODER=typed DURATION_MS=22
+I (14143) obd_client: [OEM_DID_DECODE] DID=0xF41F NAME="Time since engine start" VALUE=18.000000 UNIT=s DECODE_KIND=3 FORMULA=raw*1+0
+I (14157) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11AB TX_UDS=[22 11 AB] STATUS=REQUEST_SENT DECODER=typed
+W (14171) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11AB NRC=0x31
+I (14174) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11AB TX_UDS=[22 11 AB] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (14192) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x113A TX_UDS=[22 11 3A] STATUS=REQUEST_SENT DECODER=typed
+W (14207) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x113A NRC=0x31
+I (14209) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x113A TX_UDS=[22 11 3A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14227) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1059 TX_UDS=[22 10 59] STATUS=REQUEST_SENT DECODER=typed
+W (14242) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1059 NRC=0x31
+I (14245) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1059 TX_UDS=[22 10 59] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14263) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x51D4 TX_UDS=[22 51 D4] STATUS=REQUEST_SENT DECODER=typed
+W (14277) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x51D4 NRC=0x31
+I (14280) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x51D4 TX_UDS=[22 51 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (14298) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1065 TX_UDS=[22 10 65] STATUS=REQUEST_SENT DECODER=typed
+W (14313) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1065 NRC=0x31
+I (14316) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1065 TX_UDS=[22 10 65] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14334) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4267 TX_UDS=[22 42 67] STATUS=REQUEST_SENT DECODER=typed
+W (14348) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4267 NRC=0x31
+I (14351) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4267 TX_UDS=[22 42 67] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14369) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x148D TX_UDS=[22 14 8D] STATUS=REQUEST_SENT DECODER=typed
+W (14384) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x148D NRC=0x31
+I (14386) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x148D TX_UDS=[22 14 8D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14404) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x148E TX_UDS=[22 14 8E] STATUS=REQUEST_SENT DECODER=typed
+W (14419) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x148E NRC=0x31
+I (14422) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x148E TX_UDS=[22 14 8E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14440) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x128C TX_UDS=[22 12 8C] STATUS=REQUEST_SENT DECODER=typed
+W (14455) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x128C NRC=0x31
+I (14457) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x128C TX_UDS=[22 12 8C] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14475) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2003 TX_UDS=[22 20 03] STATUS=REQUEST_SENT DECODER=typed
+W (14490) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2003 NRC=0x31
+I (14493) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2003 TX_UDS=[22 20 03] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14511) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x5847 TX_UDS=[22 58 47] STATUS=REQUEST_SENT DECODER=typed
+W (14526) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x5847 NRC=0x31
+I (14528) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x5847 TX_UDS=[22 58 47] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14546) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x5849 TX_UDS=[22 58 49] STATUS=REQUEST_SENT DECODER=typed
+W (14561) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x5849 NRC=0x31
+I (14563) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x5849 TX_UDS=[22 58 49] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (14582) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x584B TX_UDS=[22 58 4B] STATUS=REQUEST_SENT DECODER=typed
+W (14596) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x584B NRC=0x31
+I (14599) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x584B TX_UDS=[22 58 4B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14617) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2949 TX_UDS=[22 29 49] STATUS=REQUEST_SENT DECODER=typed
+W (14632) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2949 NRC=0x31
+I (14634) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2949 TX_UDS=[22 29 49] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14652) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] STATUS=REQUEST_SENT DECODER=typed
+I (14667) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF41F positive response; raw data length=2 (no OEM decoder applied)
+I (14674) obd_client: [OEM_DID_SCAN] TIME=14416 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF41F TX_UDS=[22 F4 1F] RX_UDS=[00 13] STATUS=POSITIVE DATA_LENGTH=2 DATA=[00 13] DECODER=typed DURATION_MS=22
+I (14696) obd_client: [OEM_DID_DECODE] DID=0xF41F NAME="Time since engine start" VALUE=19.000000 UNIT=s DECODE_KIND=3 FORMULA=raw*1+0
+I (14710) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EE TX_UDS=[22 16 EE] STATUS=REQUEST_SENT DECODER=typed
+W (14724) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x16EE NRC=0x31
+I (14727) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EE TX_UDS=[22 16 EE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14745) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1219 TX_UDS=[22 12 19] STATUS=REQUEST_SENT DECODER=typed
+W (14760) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1219 NRC=0x31
+I (14762) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1219 TX_UDS=[22 12 19] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14780) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] STATUS=REQUEST_SENT DECODER=typed
+W (14795) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1118 NRC=0x31
+I (14798) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (14816) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] STATUS=REQUEST_SENT DECODER=typed
+W (14830) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1057 NRC=0x31
+I (14833) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14851) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1181 TX_UDS=[22 11 81] STATUS=REQUEST_SENT DECODER=typed
+W (14866) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1181 NRC=0x31
+I (14868) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1181 TX_UDS=[22 11 81] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14886) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CC TX_UDS=[22 11 CC] STATUS=REQUEST_SENT DECODER=typed
+W (14901) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11CC NRC=0x31
+I (14904) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CC TX_UDS=[22 11 CC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14922) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11F0 TX_UDS=[22 11 F0] STATUS=REQUEST_SENT DECODER=typed
+W (14937) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11F0 NRC=0x31
+I (14939) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11F0 TX_UDS=[22 11 F0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14957) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20A1 TX_UDS=[22 20 A1] STATUS=REQUEST_SENT DECODER=typed
+W (14972) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x20A1 NRC=0x31
+I (14975) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x20A1 TX_UDS=[22 20 A1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (14993) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] STATUS=REQUEST_SENT DECODER=typed
+I (15007) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF442 positive response; raw data length=2 (no OEM decoder applied)
+I (15014) obd_client: [OEM_DID_SCAN] TIME=14756 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] RX_UDS=[37 AA] STATUS=POSITIVE DATA_LENGTH=2 DATA=[37 AA] DECODER=typed DURATION_MS=22
+I (15036) obd_client: [OEM_DID_DECODE] DID=0xF442 NAME="Control module voltage" VALUE=14.250000 UNIT=V DECODE_KIND=3 FORMULA=raw*0.001+0
+I (15050) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] STATUS=REQUEST_SENT DECODER=typed
+W (15065) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1057 NRC=0x31
+I (15067) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15085) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2029 TX_UDS=[22 20 29] STATUS=REQUEST_SENT DECODER=typed
+W (15100) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2029 NRC=0x31
+I (15103) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2029 TX_UDS=[22 20 29] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15121) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1108 TX_UDS=[22 11 08] STATUS=REQUEST_SENT DECODER=typed
+W (15136) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1108 NRC=0x31
+I (15138) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1108 TX_UDS=[22 11 08] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (15156) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D4 TX_UDS=[22 11 D4] STATUS=REQUEST_SENT DECODER=typed
+W (15171) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11D4 NRC=0x31
+I (15174) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D4 TX_UDS=[22 11 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15192) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EA9 TX_UDS=[22 3E A9] STATUS=REQUEST_SENT DECODER=typed
+W (15206) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3EA9 NRC=0x31
+I (15209) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EA9 TX_UDS=[22 3E A9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15227) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D01 TX_UDS=[22 3D 01] STATUS=REQUEST_SENT DECODER=typed
+W (15242) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3D01 NRC=0x31
+I (15244) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D01 TX_UDS=[22 3D 01] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (15262) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D77 TX_UDS=[22 3D 77] STATUS=REQUEST_SENT DECODER=typed
+W (15277) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3D77 NRC=0x31
+I (15280) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D77 TX_UDS=[22 3D 77] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15298) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A3 TX_UDS=[22 39 A3] STATUS=REQUEST_SENT DECODER=typed
+W (15313) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x39A3 NRC=0x31
+I (15315) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A3 TX_UDS=[22 39 A3] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15333) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EAC TX_UDS=[22 3E AC] STATUS=REQUEST_SENT DECODER=typed
+W (15348) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3EAC NRC=0x31
+I (15351) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EAC TX_UDS=[22 3E AC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15369) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EC TX_UDS=[22 16 EC] STATUS=REQUEST_SENT DECODER=typed
+W (15384) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x16EC NRC=0x31
+I (15386) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EC TX_UDS=[22 16 EC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15404) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16ED TX_UDS=[22 16 ED] STATUS=REQUEST_SENT DECODER=typed
+W (15419) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x16ED NRC=0x31
+I (15421) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16ED TX_UDS=[22 16 ED] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15440) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29C7 TX_UDS=[22 29 C7] STATUS=REQUEST_SENT DECODER=typed
+W (15454) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x29C7 NRC=0x31
+I (15457) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29C7 TX_UDS=[22 29 C7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15475) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x201A TX_UDS=[22 20 1A] STATUS=REQUEST_SENT DECODER=typed
+W (15490) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x201A NRC=0x31
+I (15492) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x201A TX_UDS=[22 20 1A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15510) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x179E TX_UDS=[22 17 9E] STATUS=REQUEST_SENT DECODER=typed
+W (15525) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x179E NRC=0x31
+I (15528) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x179E TX_UDS=[22 17 9E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15546) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202F TX_UDS=[22 20 2F] STATUS=REQUEST_SENT DECODER=typed
+W (15560) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x202F NRC=0x31
+I (15563) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202F TX_UDS=[22 20 2F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15581) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x40D5 TX_UDS=[22 40 D5] STATUS=REQUEST_SENT DECODER=typed
+W (15596) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x40D5 NRC=0x31
+I (15599) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x40D5 TX_UDS=[22 40 D5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15617) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] STATUS=REQUEST_SENT DECODER=typed
+W (15631) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1057 NRC=0x31
+I (15634) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15652) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x111E TX_UDS=[22 11 1E] STATUS=REQUEST_SENT DECODER=typed
+W (15667) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x111E NRC=0x31
+I (15669) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x111E TX_UDS=[22 11 1E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15687) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] STATUS=REQUEST_SENT DECODER=typed
+W (15702) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1118 NRC=0x31
+I (15705) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15723) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1219 TX_UDS=[22 12 19] STATUS=REQUEST_SENT DECODER=typed
+W (15737) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1219 NRC=0x31
+I (15740) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1219 TX_UDS=[22 12 19] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15758) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CC TX_UDS=[22 11 CC] STATUS=REQUEST_SENT DECODER=typed
+W (15774) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11CC NRC=0x31
+I (15776) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11CC TX_UDS=[22 11 CC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15794) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2BC0 TX_UDS=[22 2B C0] STATUS=REQUEST_SENT DECODER=typed
+W (15808) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2BC0 NRC=0x31
+I (15811) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2BC0 TX_UDS=[22 2B C0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (15829) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F4 TX_UDS=[22 13 F4] STATUS=REQUEST_SENT DECODER=typed
+W (15844) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13F4 NRC=0x31
+I (15846) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F4 TX_UDS=[22 13 F4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15864) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F6 TX_UDS=[22 13 F6] STATUS=REQUEST_SENT DECODER=typed
+W (15879) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13F6 NRC=0x31
+I (15882) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F6 TX_UDS=[22 13 F6] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (15900) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FC TX_UDS=[22 13 FC] STATUS=REQUEST_SENT DECODER=typed
+I (15910) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=27.05 fps total=295 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (15930) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FC NRC=0x31
+I (15933) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FC TX_UDS=[22 13 FC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=34
+I (15951) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FA TX_UDS=[22 13 FA] STATUS=REQUEST_SENT DECODER=typed
+W (15966) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FA NRC=0x31
+I (15968) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FA TX_UDS=[22 13 FA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (15986) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F9 TX_UDS=[22 13 F9] STATUS=REQUEST_SENT DECODER=typed
+W (16001) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13F9 NRC=0x31
+I (16004) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13F9 TX_UDS=[22 13 F9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16022) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FD TX_UDS=[22 13 FD] STATUS=REQUEST_SENT DECODER=typed
+W (16037) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x13FD NRC=0x31
+I (16039) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x13FD TX_UDS=[22 13 FD] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16057) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] STATUS=REQUEST_SENT DECODER=typed
+W (16072) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120E NRC=0x31
+I (16075) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120E TX_UDS=[22 12 0E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (16093) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] STATUS=REQUEST_SENT DECODER=typed
+W (16107) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1210 NRC=0x31
+I (16110) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1210 TX_UDS=[22 12 10] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16128) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] STATUS=REQUEST_SENT DECODER=typed
+W (16143) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x120F NRC=0x31
+I (16145) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16164) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1211 TX_UDS=[22 12 11] STATUS=REQUEST_SENT DECODER=typed
+W (16178) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1211 NRC=0x31
+I (16181) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1211 TX_UDS=[22 12 11] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16199) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D0 TX_UDS=[22 10 D0] STATUS=REQUEST_SENT DECODER=typed
+W (16215) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D0 NRC=0x31
+I (16216) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D0 TX_UDS=[22 10 D0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16234) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D6 TX_UDS=[22 10 D6] STATUS=REQUEST_SENT DECODER=typed
+W (16249) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D6 NRC=0x31
+I (16252) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D6 TX_UDS=[22 10 D6] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16270) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DC TX_UDS=[22 10 DC] STATUS=REQUEST_SENT DECODER=typed
+W (16284) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DC NRC=0x31
+I (16287) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DC TX_UDS=[22 10 DC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16305) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D3 TX_UDS=[22 10 D3] STATUS=REQUEST_SENT DECODER=typed
+W (16320) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D3 NRC=0x31
+I (16323) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D3 TX_UDS=[22 10 D3] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16340) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D9 TX_UDS=[22 10 D9] STATUS=REQUEST_SENT DECODER=typed
+W (16355) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D9 NRC=0x31
+I (16358) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D9 TX_UDS=[22 10 D9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16376) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DF TX_UDS=[22 10 DF] STATUS=REQUEST_SENT DECODER=typed
+W (16391) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DF NRC=0x31
+I (16393) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DF TX_UDS=[22 10 DF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16411) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D1 TX_UDS=[22 10 D1] STATUS=REQUEST_SENT DECODER=typed
+W (16426) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D1 NRC=0x31
+I (16429) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D1 TX_UDS=[22 10 D1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16447) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D2 TX_UDS=[22 10 D2] STATUS=REQUEST_SENT DECODER=typed
+W (16462) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D2 NRC=0x31
+I (16464) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D2 TX_UDS=[22 10 D2] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16482) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DD TX_UDS=[22 10 DD] STATUS=REQUEST_SENT DECODER=typed
+W (16497) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DD NRC=0x31
+I (16500) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DD TX_UDS=[22 10 DD] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16518) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D7 TX_UDS=[22 10 D7] STATUS=REQUEST_SENT DECODER=typed
+W (16532) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D7 NRC=0x31
+I (16535) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D7 TX_UDS=[22 10 D7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16553) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D8 TX_UDS=[22 10 D8] STATUS=REQUEST_SENT DECODER=typed
+W (16568) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D8 NRC=0x31
+I (16570) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D8 TX_UDS=[22 10 D8] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16588) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DE TX_UDS=[22 10 DE] STATUS=REQUEST_SENT DECODER=typed
+W (16603) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DE NRC=0x31
+I (16606) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DE TX_UDS=[22 10 DE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16624) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D4 TX_UDS=[22 10 D4] STATUS=REQUEST_SENT DECODER=typed
+W (16639) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D4 NRC=0x31
+I (16641) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D4 TX_UDS=[22 10 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16659) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DA TX_UDS=[22 10 DA] STATUS=REQUEST_SENT DECODER=typed
+W (16674) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DA NRC=0x31
+I (16677) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DA TX_UDS=[22 10 DA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16695) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10FF TX_UDS=[22 10 FF] STATUS=REQUEST_SENT DECODER=typed
+W (16709) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10FF NRC=0x31
+I (16712) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10FF TX_UDS=[22 10 FF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16730) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1105 TX_UDS=[22 11 05] STATUS=REQUEST_SENT DECODER=typed
+W (16745) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1105 NRC=0x31
+I (16747) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1105 TX_UDS=[22 11 05] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (16766) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1100 TX_UDS=[22 11 00] STATUS=REQUEST_SENT DECODER=typed
+W (16780) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1100 NRC=0x31
+I (16783) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1100 TX_UDS=[22 11 00] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16801) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1104 TX_UDS=[22 11 04] STATUS=REQUEST_SENT DECODER=typed
+W (16816) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1104 NRC=0x31
+I (16818) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1104 TX_UDS=[22 11 04] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16836) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1106 TX_UDS=[22 11 06] STATUS=REQUEST_SENT DECODER=typed
+W (16851) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1106 NRC=0x31
+I (16854) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1106 TX_UDS=[22 11 06] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (16872) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1107 TX_UDS=[22 11 07] STATUS=REQUEST_SENT DECODER=typed
+W (16886) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1107 NRC=0x31
+I (16889) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1107 TX_UDS=[22 11 07] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16907) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14CF TX_UDS=[22 14 CF] STATUS=REQUEST_SENT DECODER=typed
+W (16922) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x14CF NRC=0x31
+I (16925) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14CF TX_UDS=[22 14 CF] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (16942) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14CC TX_UDS=[22 14 CC] STATUS=REQUEST_SENT DECODER=typed
+W (16957) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x14CC NRC=0x31
+I (16960) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x14CC TX_UDS=[22 14 CC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (16978) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1139 TX_UDS=[22 11 39] STATUS=REQUEST_SENT DECODER=typed
+W (16993) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1139 NRC=0x31
+I (16995) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1139 TX_UDS=[22 11 39] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17013) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11AB TX_UDS=[22 11 AB] STATUS=REQUEST_SENT DECODER=typed
+W (17028) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11AB NRC=0x31
+I (17031) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11AB TX_UDS=[22 11 AB] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17049) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11DA TX_UDS=[22 11 DA] STATUS=REQUEST_SENT DECODER=typed
+W (17063) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11DA NRC=0x31
+I (17066) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11DA TX_UDS=[22 11 DA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17084) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1800 TX_UDS=[22 18 00] STATUS=REQUEST_SENT DECODER=typed
+W (17099) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1800 NRC=0x31
+I (17102) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1800 TX_UDS=[22 18 00] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17120) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4183 TX_UDS=[22 41 83] STATUS=REQUEST_SENT DECODER=typed
+W (17134) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4183 NRC=0x31
+I (17137) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4183 TX_UDS=[22 41 83] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (17155) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1314 TX_UDS=[22 13 14] STATUS=REQUEST_SENT DECODER=typed
+W (17170) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1314 NRC=0x31
+I (17172) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1314 TX_UDS=[22 13 14] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17191) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x163B TX_UDS=[22 16 3B] STATUS=REQUEST_SENT DECODER=typed
+W (17205) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x163B NRC=0x31
+I (17208) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x163B TX_UDS=[22 16 3B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17226) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x167D TX_UDS=[22 16 7D] STATUS=REQUEST_SENT DECODER=typed
+W (17241) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x167D NRC=0x31
+I (17243) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x167D TX_UDS=[22 16 7D] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (17261) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4649 TX_UDS=[22 46 49] STATUS=REQUEST_SENT DECODER=typed
+W (17276) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4649 NRC=0x31
+I (17279) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4649 TX_UDS=[22 46 49] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17297) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E6 TX_UDS=[22 10 E6] STATUS=REQUEST_SENT DECODER=typed
+W (17311) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E6 NRC=0x31
+I (17314) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E6 TX_UDS=[22 10 E6] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17332) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D5 TX_UDS=[22 10 D5] STATUS=REQUEST_SENT DECODER=typed
+W (17347) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10D5 NRC=0x31
+I (17350) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10D5 TX_UDS=[22 10 D5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (17368) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DB TX_UDS=[22 10 DB] STATUS=REQUEST_SENT DECODER=typed
+W (17382) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10DB NRC=0x31
+I (17385) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10DB TX_UDS=[22 10 DB] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17403) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E1 TX_UDS=[22 10 E1] STATUS=REQUEST_SENT DECODER=typed
+W (17418) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E1 NRC=0x31
+I (17420) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E1 TX_UDS=[22 10 E1] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17438) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BE TX_UDS=[22 11 BE] STATUS=REQUEST_SENT DECODER=typed
+W (17453) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11BE NRC=0x31
+I (17456) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BE TX_UDS=[22 11 BE] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17474) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1509 TX_UDS=[22 15 09] STATUS=REQUEST_SENT DECODER=typed
+W (17489) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1509 NRC=0x31
+I (17491) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1509 TX_UDS=[22 15 09] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17509) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x181A TX_UDS=[22 18 1A] STATUS=REQUEST_SENT DECODER=typed
+W (17524) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x181A NRC=0x31
+I (17527) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x181A TX_UDS=[22 18 1A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17545) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11E0 TX_UDS=[22 11 E0] STATUS=REQUEST_SENT DECODER=typed
+W (17559) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11E0 NRC=0x31
+I (17562) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11E0 TX_UDS=[22 11 E0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17580) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29D4 TX_UDS=[22 29 D4] STATUS=REQUEST_SENT DECODER=typed
+W (17595) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x29D4 NRC=0x31
+I (17597) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29D4 TX_UDS=[22 29 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17615) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4380 TX_UDS=[22 43 80] STATUS=REQUEST_SENT DECODER=typed
+W (17630) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4380 NRC=0x31
+I (17633) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4380 TX_UDS=[22 43 80] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (17651) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0458 TX_UDS=[2C 10 04 58] STATUS=REQUEST_SENT DECODER=typed
+W (17666) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0458 NRC=0x11
+I (17668) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0458 TX_UDS=[2C 10 04 58] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17687) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0AF1 TX_UDS=[2C 10 0A F1] STATUS=REQUEST_SENT DECODER=typed
+W (17702) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0AF1 NRC=0x11
+I (17705) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0AF1 TX_UDS=[2C 10 0A F1] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17723) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0406 TX_UDS=[2C 10 04 06] STATUS=REQUEST_SENT DECODER=typed
+W (17738) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0406 NRC=0x11
+I (17741) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0406 TX_UDS=[2C 10 04 06] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17759) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03EB TX_UDS=[2C 10 03 EB] STATUS=REQUEST_SENT DECODER=typed
+W (17775) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03EB NRC=0x11
+I (17777) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03EB TX_UDS=[2C 10 03 EB] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17795) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0023 TX_UDS=[2C 10 00 23] STATUS=REQUEST_SENT DECODER=typed
+W (17810) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0023 NRC=0x11
+I (17813) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0023 TX_UDS=[2C 10 00 23] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17831) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1881 TX_UDS=[2C 10 18 81] STATUS=REQUEST_SENT DECODER=typed
+W (17846) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x1881 NRC=0x11
+I (17849) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1881 TX_UDS=[2C 10 18 81] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17867) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0708 TX_UDS=[2C 10 07 08] STATUS=REQUEST_SENT DECODER=typed
+W (17882) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0708 NRC=0x11
+I (17885) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0708 TX_UDS=[2C 10 07 08] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17903) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0500 TX_UDS=[2C 10 05 00] STATUS=REQUEST_SENT DECODER=raw
+W (17918) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0500 NRC=0x11
+I (17920) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0500 TX_UDS=[2C 10 05 00] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17939) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0501 TX_UDS=[2C 10 05 01] STATUS=REQUEST_SENT DECODER=raw
+W (17954) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0501 NRC=0x11
+I (17956) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0501 TX_UDS=[2C 10 05 01] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (17975) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0502 TX_UDS=[2C 10 05 02] STATUS=REQUEST_SENT DECODER=raw
+W (17989) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0502 NRC=0x11
+I (17992) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0502 TX_UDS=[2C 10 05 02] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18011) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x07D1 TX_UDS=[2C 10 07 D1] STATUS=REQUEST_SENT DECODER=raw
+W (18025) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x07D1 NRC=0x11
+I (18028) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x07D1 TX_UDS=[2C 10 07 D1] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18046) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0641 TX_UDS=[2C 10 06 41] STATUS=REQUEST_SENT DECODER=raw
+W (18061) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0641 NRC=0x11
+I (18064) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0641 TX_UDS=[2C 10 06 41] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18082) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0644 TX_UDS=[2C 10 06 44] STATUS=REQUEST_SENT DECODER=raw
+W (18097) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0644 NRC=0x11
+I (18100) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0644 TX_UDS=[2C 10 06 44] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18118) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1388 TX_UDS=[2C 10 13 88] STATUS=REQUEST_SENT DECODER=raw
+W (18133) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x1388 NRC=0x11
+I (18136) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1388 TX_UDS=[2C 10 13 88] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18154) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1389 TX_UDS=[2C 10 13 89] STATUS=REQUEST_SENT DECODER=raw
+W (18169) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x1389 NRC=0x11
+I (18171) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x1389 TX_UDS=[2C 10 13 89] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18190) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F4 TX_UDS=[2C 10 01 F4] STATUS=REQUEST_SENT DECODER=raw
+W (18204) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01F4 NRC=0x11
+I (18207) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F4 TX_UDS=[2C 10 01 F4] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18226) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F6 TX_UDS=[2C 10 01 F6] STATUS=REQUEST_SENT DECODER=raw
+W (18240) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01F6 NRC=0x11
+I (18243) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F6 TX_UDS=[2C 10 01 F6] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18261) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F7 TX_UDS=[2C 10 01 F7] STATUS=REQUEST_SENT DECODER=raw
+W (18276) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01F7 NRC=0x11
+I (18279) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F7 TX_UDS=[2C 10 01 F7] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18297) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F8 TX_UDS=[2C 10 01 F8] STATUS=REQUEST_SENT DECODER=raw
+W (18312) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01F8 NRC=0x11
+I (18315) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F8 TX_UDS=[2C 10 01 F8] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18333) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0203 TX_UDS=[2C 10 02 03] STATUS=REQUEST_SENT DECODER=raw
+W (18348) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0203 NRC=0x11
+I (18351) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0203 TX_UDS=[2C 10 02 03] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18369) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04B0 TX_UDS=[2C 10 04 B0] STATUS=REQUEST_SENT DECODER=raw
+W (18384) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04B0 NRC=0x11
+I (18386) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04B0 TX_UDS=[2C 10 04 B0] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18405) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04CF TX_UDS=[2C 10 04 CF] STATUS=REQUEST_SENT DECODER=raw
+W (18420) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04CF NRC=0x11
+I (18422) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04CF TX_UDS=[2C 10 04 CF] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18441) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D0 TX_UDS=[2C 10 04 D0] STATUS=REQUEST_SENT DECODER=raw
+W (18456) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D0 NRC=0x11
+I (18458) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D0 TX_UDS=[2C 10 04 D0] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18476) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D1 TX_UDS=[2C 10 04 D1] STATUS=REQUEST_SENT DECODER=raw
+W (18491) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D1 NRC=0x11
+I (18494) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D1 TX_UDS=[2C 10 04 D1] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18512) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D4 TX_UDS=[2C 10 04 D4] STATUS=REQUEST_SENT DECODER=raw
+W (18527) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D4 NRC=0x11
+I (18530) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D4 TX_UDS=[2C 10 04 D4] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18548) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D5 TX_UDS=[2C 10 04 D5] STATUS=REQUEST_SENT DECODER=raw
+W (18563) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D5 NRC=0x11
+I (18566) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D5 TX_UDS=[2C 10 04 D5] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18584) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x083C TX_UDS=[2C 10 08 3C] STATUS=REQUEST_SENT DECODER=raw
+W (18599) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x083C NRC=0x11
+I (18602) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x083C TX_UDS=[2C 10 08 3C] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18620) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0385 TX_UDS=[2C 10 03 85] STATUS=REQUEST_SENT DECODER=typed
+W (18635) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0385 NRC=0x11
+I (18638) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0385 TX_UDS=[2C 10 03 85] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18656) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0547 TX_UDS=[2C 10 05 47] STATUS=REQUEST_SENT DECODER=typed
+W (18671) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0547 NRC=0x11
+I (18674) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0547 TX_UDS=[2C 10 05 47] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18692) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0772 TX_UDS=[2C 10 07 72] STATUS=REQUEST_SENT DECODER=typed
+W (18707) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0772 NRC=0x11
+I (18710) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0772 TX_UDS=[2C 10 07 72] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18728) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0420 TX_UDS=[2C 10 04 20] STATUS=REQUEST_SENT DECODER=raw
+W (18743) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0420 NRC=0x11
+I (18745) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0420 TX_UDS=[2C 10 04 20] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18764) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0C94 TX_UDS=[2C 10 0C 94] STATUS=REQUEST_SENT DECODER=raw
+W (18779) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0C94 NRC=0x11
+I (18781) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0C94 TX_UDS=[2C 10 0C 94] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18800) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03F0 TX_UDS=[2C 10 03 F0] STATUS=REQUEST_SENT DECODER=raw
+W (18815) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03F0 NRC=0x11
+I (18817) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03F0 TX_UDS=[2C 10 03 F0] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18835) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x041E TX_UDS=[2C 10 04 1E] STATUS=REQUEST_SENT DECODER=raw
+W (18850) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x041E NRC=0x11
+I (18853) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x041E TX_UDS=[2C 10 04 1E] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18871) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x042C TX_UDS=[2C 10 04 2C] STATUS=REQUEST_SENT DECODER=raw
+W (18886) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x042C NRC=0x11
+I (18889) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x042C TX_UDS=[2C 10 04 2C] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18907) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x042E TX_UDS=[2C 10 04 2E] STATUS=REQUEST_SENT DECODER=raw
+W (18922) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x042E NRC=0x11
+I (18925) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x042E TX_UDS=[2C 10 04 2E] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18943) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x041B TX_UDS=[2C 10 04 1B] STATUS=REQUEST_SENT DECODER=raw
+W (18958) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x041B NRC=0x11
+I (18961) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x041B TX_UDS=[2C 10 04 1B] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (18979) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0432 TX_UDS=[2C 10 04 32] STATUS=REQUEST_SENT DECODER=raw
+W (18994) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0432 NRC=0x11
+I (18996) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0432 TX_UDS=[2C 10 04 32] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19015) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03E0 TX_UDS=[2C 10 03 E0] STATUS=REQUEST_SENT DECODER=raw
+W (19030) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03E0 NRC=0x11
+I (19032) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03E0 TX_UDS=[2C 10 03 E0] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19051) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03EA TX_UDS=[2C 10 03 EA] STATUS=REQUEST_SENT DECODER=raw
+W (19065) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03EA NRC=0x11
+I (19068) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03EA TX_UDS=[2C 10 03 EA] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19086) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03E9 TX_UDS=[2C 10 03 E9] STATUS=REQUEST_SENT DECODER=raw
+W (19101) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03E9 NRC=0x11
+I (19104) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03E9 TX_UDS=[2C 10 03 E9] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19122) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0405 TX_UDS=[2C 10 04 05] STATUS=REQUEST_SENT DECODER=raw
+W (19137) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0405 NRC=0x11
+I (19140) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0405 TX_UDS=[2C 10 04 05] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19158) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0407 TX_UDS=[2C 10 04 07] STATUS=REQUEST_SENT DECODER=raw
+W (19173) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0407 NRC=0x11
+I (19176) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0407 TX_UDS=[2C 10 04 07] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19194) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03F3 TX_UDS=[2C 10 03 F3] STATUS=REQUEST_SENT DECODER=raw
+W (19209) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x03F3 NRC=0x11
+I (19211) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x03F3 TX_UDS=[2C 10 03 F3] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19230) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x05AA TX_UDS=[2C 10 05 AA] STATUS=REQUEST_SENT DECODER=raw
+W (19245) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x05AA NRC=0x11
+I (19247) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x05AA TX_UDS=[2C 10 05 AA] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19266) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0404 TX_UDS=[2C 10 04 04] STATUS=REQUEST_SENT DECODER=raw
+W (19280) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0404 NRC=0x11
+I (19283) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0404 TX_UDS=[2C 10 04 04] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19301) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x076F TX_UDS=[2C 10 07 6F] STATUS=REQUEST_SENT DECODER=raw
+W (19316) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x076F NRC=0x11
+I (19319) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x076F TX_UDS=[2C 10 07 6F] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19337) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x076D TX_UDS=[2C 10 07 6D] STATUS=REQUEST_SENT DECODER=raw
+W (19352) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x076D NRC=0x11
+I (19355) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x076D TX_UDS=[2C 10 07 6D] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19373) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0709 TX_UDS=[2C 10 07 09] STATUS=REQUEST_SENT DECODER=raw
+W (19388) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0709 NRC=0x11
+I (19391) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0709 TX_UDS=[2C 10 07 09] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19409) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0010 TX_UDS=[2C 10 00 10] STATUS=REQUEST_SENT DECODER=raw
+W (19424) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x0010 NRC=0x11
+I (19427) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x0010 TX_UDS=[2C 10 00 10] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19445) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x079E TX_UDS=[2C 10 07 9E] STATUS=REQUEST_SENT DECODER=raw
+W (19460) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x079E NRC=0x11
+I (19462) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x079E TX_UDS=[2C 10 07 9E] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19481) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F9 TX_UDS=[2C 10 01 F9] STATUS=REQUEST_SENT DECODER=raw
+W (19496) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01F9 NRC=0x11
+I (19498) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01F9 TX_UDS=[2C 10 01 F9] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19516) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01FA TX_UDS=[2C 10 01 FA] STATUS=REQUEST_SENT DECODER=raw
+W (19531) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x01FA NRC=0x11
+I (19534) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x01FA TX_UDS=[2C 10 01 FA] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19553) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D2 TX_UDS=[2C 10 04 D2] STATUS=REQUEST_SENT DECODER=raw
+W (19567) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D2 NRC=0x11
+I (19570) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D2 TX_UDS=[2C 10 04 D2] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19588) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D3 TX_UDS=[2C 10 04 D3] STATUS=REQUEST_SENT DECODER=raw
+W (19603) obd_client: UDS ECU index=0 negative response service=0x2C DID=0x04D3 NRC=0x11
+I (19606) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x2C IDENTIFIER=0x04D3 TX_UDS=[2C 10 04 D3] RX_UDS=[7F 2C 11] STATUS=NEGATIVE NRC=0x11 NRC_NAME=SERVICE_NOT_SUPPORTED DURATION_MS=19
+I (19624) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C4 TX_UDS=[22 11 C4] STATUS=REQUEST_SENT DECODER=typed
+W (19639) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11C4 NRC=0x31
+I (19642) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C4 TX_UDS=[22 11 C4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19660) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C5 TX_UDS=[22 11 C5] STATUS=REQUEST_SENT DECODER=typed
+W (19674) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11C5 NRC=0x31
+I (19677) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11C5 TX_UDS=[22 11 C5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19695) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E0 TX_UDS=[22 10 E0] STATUS=REQUEST_SENT DECODER=typed
+W (19710) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x10E0 NRC=0x31
+I (19712) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x10E0 TX_UDS=[22 10 E0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (19730) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BA TX_UDS=[22 11 BA] STATUS=REQUEST_SENT DECODER=typed
+W (19745) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11BA NRC=0x31
+I (19748) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11BA TX_UDS=[22 11 BA] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19766) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] STATUS=REQUEST_SENT DECODER=typed
+W (19780) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1057 NRC=0x31
+I (19783) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1057 TX_UDS=[22 10 57] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19801) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xFE47 TX_UDS=[22 FE 47] STATUS=REQUEST_SENT DECODER=typed
+W (19816) obd_client: UDS ECU index=0 negative response service=0x22 DID=0xFE47 NRC=0x31
+I (19819) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xFE47 TX_UDS=[22 FE 47] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (19837) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2029 TX_UDS=[22 20 29] STATUS=REQUEST_SENT DECODER=typed
+W (19851) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2029 NRC=0x31
+I (19854) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2029 TX_UDS=[22 20 29] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19872) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202A TX_UDS=[22 20 2A] STATUS=REQUEST_SENT DECODER=typed
+W (19887) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x202A NRC=0x31
+I (19889) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x202A TX_UDS=[22 20 2A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19908) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1798 TX_UDS=[22 17 98] STATUS=REQUEST_SENT DECODER=typed
+W (19922) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1798 NRC=0x31
+I (19925) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1798 TX_UDS=[22 17 98] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19943) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D4 TX_UDS=[22 11 D4] STATUS=REQUEST_SENT DECODER=typed
+W (19959) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11D4 NRC=0x31
+I (19960) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D4 TX_UDS=[22 11 D4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (19978) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D01 TX_UDS=[22 3D 01] STATUS=REQUEST_SENT DECODER=typed
+W (19993) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3D01 NRC=0x31
+I (19996) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3D01 TX_UDS=[22 3D 01] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20014) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x445A TX_UDS=[22 44 5A] STATUS=REQUEST_SENT DECODER=typed
+W (20028) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x445A NRC=0x31
+I (20031) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x445A TX_UDS=[22 44 5A] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20049) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B11 TX_UDS=[22 1B 11] STATUS=REQUEST_SENT DECODER=typed
+W (20064) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1B11 NRC=0x31
+I (20067) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B11 TX_UDS=[22 1B 11] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20084) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2065 TX_UDS=[22 20 65] STATUS=REQUEST_SENT DECODER=typed
+W (20099) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x2065 NRC=0x31
+I (20102) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x2065 TX_UDS=[22 20 65] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20120) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B0E TX_UDS=[22 1B 0E] STATUS=REQUEST_SENT DECODER=typed
+W (20135) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1B0E NRC=0x31
+I (20137) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1B0E TX_UDS=[22 1B 0E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20155) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x432B TX_UDS=[22 43 2B] STATUS=REQUEST_SENT DECODER=typed
+W (20170) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x432B NRC=0x31
+I (20173) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x432B TX_UDS=[22 43 2B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20191) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293E TX_UDS=[22 29 3E] STATUS=REQUEST_SENT DECODER=typed
+W (20205) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x293E NRC=0x31
+I (20208) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293E TX_UDS=[22 29 3E] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20226) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293F TX_UDS=[22 29 3F] STATUS=REQUEST_SENT DECODER=typed
+W (20241) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x293F NRC=0x31
+I (20244) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x293F TX_UDS=[22 29 3F] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20262) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1108 TX_UDS=[22 11 08] STATUS=REQUEST_SENT DECODER=typed
+W (20276) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1108 NRC=0x31
+I (20279) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1108 TX_UDS=[22 11 08] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20297) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EA9 TX_UDS=[22 3E A9] STATUS=REQUEST_SENT DECODER=typed
+W (20312) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3EA9 NRC=0x31
+I (20314) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EA9 TX_UDS=[22 3E A9] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20332) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EAC TX_UDS=[22 3E AC] STATUS=REQUEST_SENT DECODER=typed
+W (20347) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x3EAC NRC=0x31
+I (20350) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x3EAC TX_UDS=[22 3E AC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20368) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EC TX_UDS=[22 16 EC] STATUS=REQUEST_SENT DECODER=typed
+W (20383) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x16EC NRC=0x31
+I (20385) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16EC TX_UDS=[22 16 EC] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20403) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16ED TX_UDS=[22 16 ED] STATUS=REQUEST_SENT DECODER=typed
+W (20418) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x16ED NRC=0x31
+I (20421) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x16ED TX_UDS=[22 16 ED] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20439) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29C7 TX_UDS=[22 29 C7] STATUS=REQUEST_SENT DECODER=typed
+W (20453) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x29C7 NRC=0x31
+I (20456) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x29C7 TX_UDS=[22 29 C7] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20474) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D0 TX_UDS=[22 11 D0] STATUS=REQUEST_SENT DECODER=typed
+W (20489) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x11D0 NRC=0x31
+I (20491) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x11D0 TX_UDS=[22 11 D0] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (20510) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] STATUS=REQUEST_SENT DECODER=typed
+I (20524) obd_client: UDS ReadDataByIdentifier ECU index=0 DID=0xF442 positive response; raw data length=2 (no OEM decoder applied)
+I (20531) obd_client: [OEM_DID_SCAN] TIME=20273 ECU=ENGINE CAN_FORMAT=11BIT BITRATE=500 TX_CAN_ID=0x7E0 RX_CAN_ID=0x7E8 SERVICE=0x22 IDENTIFIER=0xF442 TX_UDS=[22 F4 42] RX_UDS=[37 AA] STATUS=POSITIVE DATA_LENGTH=2 DATA=[37 AA] DECODER=typed DURATION_MS=23
+I (20553) obd_client: [OEM_DID_DECODE] DID=0xF442 NAME="Control module / terminal 30 voltage" VALUE=14.250000 UNIT=V DECODE_KIND=3 FORMULA=raw*0.001+0
+I (20568) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1164 TX_UDS=[22 11 64] STATUS=REQUEST_SENT DECODER=typed
+W (20583) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1164 NRC=0x31
+I (20585) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1164 TX_UDS=[22 11 64] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (20603) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4367 TX_UDS=[22 43 67] STATUS=REQUEST_SENT DECODER=typed
+W (20618) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x4367 NRC=0x31
+I (20621) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x4367 TX_UDS=[22 43 67] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=19
+I (20639) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A4 TX_UDS=[22 39 A4] STATUS=REQUEST_SENT DECODER=typed
+W (20654) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x39A4 NRC=0x31
+I (20656) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A4 TX_UDS=[22 39 A4] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20674) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x104B TX_UDS=[22 10 4B] STATUS=REQUEST_SENT DECODER=typed
+W (20689) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x104B NRC=0x31
+I (20692) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x104B TX_UDS=[22 10 4B] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20710) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A2 TX_UDS=[22 39 A2] STATUS=REQUEST_SENT DECODER=typed
+W (20724) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x39A2 NRC=0x31
+I (20727) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A2 TX_UDS=[22 39 A2] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20745) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A5 TX_UDS=[22 39 A5] STATUS=REQUEST_SENT DECODER=typed
+W (20760) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x39A5 NRC=0x31
+I (20762) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x39A5 TX_UDS=[22 39 A5] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20781) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1356 TX_UDS=[22 13 56] STATUS=REQUEST_SENT DECODER=typed
+W (20795) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1356 NRC=0x31
+I (20798) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1356 TX_UDS=[22 13 56] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20816) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1002 TX_UDS=[22 10 02] STATUS=REQUEST_SENT DECODER=typed
+W (20831) obd_client: UDS ECU index=0 negative response service=0x22 DID=0x1002 NRC=0x31
+I (20833) obd_client: [OEM_DID_SCAN] ECU=ENGINE SERVICE=0x22 IDENTIFIER=0x1002 TX_UDS=[22 10 02] RX_UDS=[7F 22 31] STATUS=NEGATIVE NRC=0x31 NRC_NAME=REQUEST_OUT_OF_RANGE DURATION_MS=18
+I (20850) obd_client: [OEM_DID_SCAN] SUMMARY total=343 positive=35 negative=308 timeout=0
+W (20857) obd_client: [OEM_DID_SCAN] LittleFS support is unavailable in this build; file logging disabled and UART logging remains active
+I (20869) obd_client: [OEM_DID_SCAN] Started for ECU=TRANSMISSION queue_count=19 state=RUNNING
+I (20878) obd_client: [OEM_DID_SCAN] Engine phase finished; starting broad TCU candidate scan on TX=0x7E1 RX=0x7E9
+I (20894) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] STATUS=REQUEST_SENT DECODER=typed
+I (20905) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=27.56 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (21895) obd_client: UDS ECU index=1 transaction error=2
+I (21895) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (21903) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] STATUS=REQUEST_SENT DECODER=typed
+W (22904) obd_client: UDS ECU index=1 transaction error=2
+I (22904) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1118 TX_UDS=[22 11 18] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (22912) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1064 TX_UDS=[22 10 64] STATUS=REQUEST_SENT DECODER=typed
+W (23913) obd_client: UDS ECU index=1 transaction error=2
+I (23913) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1064 TX_UDS=[22 10 64] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (23921) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1079 TX_UDS=[22 10 79] STATUS=REQUEST_SENT DECODER=typed
+W (24922) obd_client: UDS ECU index=1 transaction error=2
+I (24922) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1079 TX_UDS=[22 10 79] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (24930) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x704F TX_UDS=[22 70 4F] STATUS=REQUEST_SENT DECODER=typed
+I (25906) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (25931) obd_client: UDS ECU index=1 transaction error=2
+I (25931) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x704F TX_UDS=[22 70 4F] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (25939) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x51A6 TX_UDS=[22 51 A6] STATUS=REQUEST_SENT DECODER=typed
+W (26940) obd_client: UDS ECU index=1 transaction error=2
+I (26940) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x51A6 TX_UDS=[22 51 A6] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (26948) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x4E76 TX_UDS=[22 4E 76] STATUS=REQUEST_SENT DECODER=typed
+W (27949) obd_client: UDS ECU index=1 transaction error=2
+I (27949) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x4E76 TX_UDS=[22 4E 76] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (27957) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] STATUS=REQUEST_SENT DECODER=typed
+W (28958) obd_client: UDS ECU index=1 transaction error=2
+I (28958) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x120F TX_UDS=[22 12 0F] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (28966) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x028D TX_UDS=[22 02 8D] STATUS=REQUEST_SENT DECODER=typed
+W (29967) obd_client: UDS ECU index=1 transaction error=2
+I (29967) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x028D TX_UDS=[22 02 8D] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (29975) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x0301 TX_UDS=[22 03 01] STATUS=REQUEST_SENT DECODER=typed
+I (30906) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (30976) obd_client: UDS ECU index=1 transaction error=2
+I (30976) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x0301 TX_UDS=[22 03 01] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (30984) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1010 TX_UDS=[22 10 10] STATUS=REQUEST_SENT DECODER=typed
+W (31985) obd_client: UDS ECU index=1 transaction error=2
+I (31985) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x1010 TX_UDS=[22 10 10] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (31993) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x38B2 TX_UDS=[22 38 B2] STATUS=REQUEST_SENT DECODER=typed
+W (32994) obd_client: UDS ECU index=1 transaction error=2
+I (32994) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x38B2 TX_UDS=[22 38 B2] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (33002) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x2114 TX_UDS=[22 21 14] STATUS=REQUEST_SENT DECODER=typed
+W (34003) obd_client: UDS ECU index=1 transaction error=2
+I (34003) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x2114 TX_UDS=[22 21 14] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (34011) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x38F1 TX_UDS=[22 38 F1] STATUS=REQUEST_SENT DECODER=typed
+W (35012) obd_client: UDS ECU index=1 transaction error=2
+I (35012) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x38F1 TX_UDS=[22 38 F1] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (35020) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x102B TX_UDS=[22 10 2B] STATUS=REQUEST_SENT DECODER=typed
+I (35911) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+W (36021) obd_client: UDS ECU index=1 transaction error=2
+I (36021) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x102B TX_UDS=[22 10 2B] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (36029) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x102A TX_UDS=[22 10 2A] STATUS=REQUEST_SENT DECODER=typed
+W (37030) obd_client: UDS ECU index=1 transaction error=2
+I (37030) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x102A TX_UDS=[22 10 2A] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (37038) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x18E3 TX_UDS=[22 18 E3] STATUS=REQUEST_SENT DECODER=typed
+W (38039) obd_client: UDS ECU index=1 transaction error=2
+I (38039) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x18E3 TX_UDS=[22 18 E3] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (38047) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x0303 TX_UDS=[22 03 03] STATUS=REQUEST_SENT DECODER=typed
+W (39048) obd_client: UDS ECU index=1 transaction error=2
+I (39048) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x0303 TX_UDS=[22 03 03] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (39056) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x210F TX_UDS=[22 21 0F] STATUS=REQUEST_SENT DECODER=typed
+W (40057) obd_client: UDS ECU index=1 transaction error=2
+I (40057) obd_client: [OEM_DID_SCAN] ECU=TRANSMISSION SERVICE=0x22 IDENTIFIER=0x210F TX_UDS=[22 21 0F] RX_UDS=[] STATUS=TIMEOUT DURATION_MS=1002
+I (40064) obd_client: [OEM_DID_SCAN] SUMMARY total=19 positive=0 negative=0 timeout=19
+I (40071) obd_client: [OEM_DID_SCAN] Broad powertrain sweep completed
+I (40912) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+I (45917) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+I (50922) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+I (51675) onx_display: Dashboard page 2/3
+I (52682) onx_display: Dashboard page 3/3
+I (53762) onx_display: Dashboard page 2/3
+I (54217) onx_display: Dashboard page 1/3
+I (55926) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=0.00 fps total=433 unique-IDs=2 last=STD:0x7E8/DLC=8 RXOVR0=1 RXOVR1=0
+
+
+C:\Users\hakan\Desktop\obd_vag>

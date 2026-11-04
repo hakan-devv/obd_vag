@@ -63,6 +63,14 @@ esp_err_t uds_client_start_extended_session(uds_client_t *client,
 esp_err_t uds_client_tester_present(uds_client_t *client, uint64_t now_us);
 esp_err_t uds_client_read_did(uds_client_t *client, uint16_t did,
                               uint64_t now_us);
+/* UDS 0x21 ReadDataByLocalIdentifier: request [21, local_id], response [61, local_id, data...]. */
+esp_err_t uds_client_read_local_identifier(uds_client_t *client, uint8_t local_id,
+                                            uint64_t now_us);
+/* BMW DDE convention: request [2C, 10, local_id_hi, local_id_lo],
+ * response [6C, 10, data...] (the local ID is not echoed). */
+esp_err_t uds_client_read_bmw_local_identifier(uds_client_t *client,
+                                                uint16_t local_id,
+                                                uint64_t now_us);
 uds_event_type_t uds_client_on_frame(uds_client_t *client,
                                     const can_frame_t *frame, uint64_t now_us,
                                     uds_event_t *event);

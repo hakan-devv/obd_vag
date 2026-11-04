@@ -57,6 +57,16 @@ typedef enum {
     PARAM_DECODER_TURBO_RPM_AB_DIV_4,
     PARAM_DECODER_ODOMETER_ABCD_DIV_10,
     PARAM_DECODER_PRESSURE_AB_TIMES_10,
+    /* SAE J1979 PID 24-2B: lambda = 2 * U16(A,B) / 65536; C:D = 8 * U16 / 65536 V (secondary). */
+    PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB,
+    /* SAE J1979 PID 34-3B: same lambda; C:D = U16 / 256 - 128 mA (secondary). */
+    PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB,
+    /* PID 6D: A = support flags (A0 commanded A, A1 actual A), B:C commanded, D:E actual, x10 kPa. */
+    PARAM_DECODER_FUEL_RAIL_PRESSURE_CONTROL_A,
+    /* PID 70: A = support flags (A0 commanded A, A1 actual A), B:C commanded, D:E actual, kPa / 32. */
+    PARAM_DECODER_BOOST_PRESSURE_CONTROL_A,
+    /* PID 78/79: A0..A3 = sensor present, then four U16 values (U16 / 10 - 40 C). Hottest sensor is reported. */
+    PARAM_DECODER_EGT_MAX_SUPPORTED_SENSOR,
 } parameter_decoder_t;
 
 typedef struct {
@@ -75,9 +85,14 @@ typedef struct {
     uint32_t ecu_id;
     bool extended_id;
     uint8_t pid;
-    uint8_t raw[8];
+    /* Longest standard reply handled: PID 6D = 11 bytes. */
+    uint8_t raw[11];
     uint8_t raw_length;
     float value;
+    /* Optional second channel of a multi-field PID: lambda sensor voltage (V) or
+     * current (mA), commanded rail/boost pressure. */
+    float secondary_value;
+    bool secondary_valid;
     int64_t timestamp_us;
     parameter_validity_t validity;
 } parameter_value_t;

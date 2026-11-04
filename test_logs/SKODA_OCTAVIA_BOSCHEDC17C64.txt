@@ -1,0 +1,448 @@
+
+C:\Users\hakan\Desktop\obd_vag>idf.py -p COM8 monitor
+Executing action: monitor
+Running idf_monitor in directory C:\Users\hakan\Desktop\obd_vag
+Executing "D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.5.2\tools/idf_monitor.py -p COM8 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 C:\Users\hakan\Desktop\obd_vag\build\obd_vag.elf C:\Users\hakan\Desktop\obd_vag\build\bootloader\bootloader.elf --force-color -m 'D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Espressif\frameworks\esp-idf-v5.5.2\tools\idf.py' '-p' 'COM8'"...
+--- Warning: GDB cannot open serial ports accessed as COMx
+--- Using \\.\COM8 instead...
+--- esp-idf-monitor 1.8.0 on \\.\COM8 115200
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x29 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x158c
+load:0x403c8700,len:0xd24
+--- 0x403c8700: _stext at ??:?
+load:0x403cb700,len:0x2f34
+entry 0x403c8924
+--- 0x403c8924: call_start_cpu0 at D:/Espressif/frameworks/esp-idf-v5.5.2/components/bootloader/subproject/main/bootloader_start.c:25
+I (24) boot: ESP-IDF v5.5.2 2nd stage bootloader
+I (25) boot: compile time Oct 17 2026 16:56:06
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c030020 size=11270h ( 70256) map
+I (99) esp_image: segment 1: paddr=00021298 vaddr=3fc95200 size=02c14h ( 11284) load
+I (102) esp_image: segment 2: paddr=00023eb4 vaddr=40374000 size=0c164h ( 49508) load
+I (113) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=261dch (156124) map
+I (141) esp_image: segment 4: paddr=00056204 vaddr=40380164 size=04fa8h ( 20392) load
+I (146) esp_image: segment 5: paddr=0005b1b4 vaddr=50000000 size=00020h (    32) load
+I (153) boot: Loaded app from partition at offset 0x10000
+I (153) boot: Disabling RNG early entropy source...
+I (167) cpu_start: Multicore app
+I (175) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (176) cpu_start: Pro cpu start user code
+I (176) cpu_start: cpu freq: 160000000 Hz
+I (178) app_init: Application information:
+I (181) app_init: Project name:     obd_vag
+I (185) app_init: App version:      6456204-dirty
+I (190) app_init: Compile time:     Oct 22 2026 11:19:46
+I (195) app_init: ELF file SHA256:  a9c6aa09d...
+I (199) app_init: ESP-IDF:          v5.5.2
+I (203) efuse_init: Min chip rev:     v0.0
+I (207) efuse_init: Max chip rev:     v0.99
+I (211) efuse_init: Chip rev:         v0.2
+I (215) heap_init: Initializing. RAM available for dynamic allocation:
+I (221) heap_init: At 3FCA9A08 len 0003FD08 (255 KiB): RAM
+I (226) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (231) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (236) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (243) spi_flash: detected chip: generic
+I (245) spi_flash: flash io: dio
+I (249) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (255) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (262) main_task: Started on CPU0
+I (293) main_task: Calling app_main()
+I (295) can_driver: SPI host=1 SCK=38 MOSI=39 MISO=40 CS=42 hz=1000000 mode=0
+I (308) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (309) can_driver: CNF write: 0x00 0x91 0x01
+I (309) can_driver: CNF read:  0x00 0x91 0x01
+I (313) can_driver: can_init OK; controller left in Configuration mode
+I (490) onx_display: Onboard PCF8574 reset expander initialized; LCD RST pulsed via P5
+I (490) onx_display: CST826 capacitive touch detected at I2C address 0x15 on GPIO7/GPIO8
+I (615) onx_display: ONX2432G028 ST7789 initialized: 240x320, SPI host=2 SCLK=5 MOSI=1 DC=3 CS=2 BL=6
+I (731) onx_display: CST826 touch polling task started (25 ms period); swipe horizontally to switch pages
+I (731) onx_display: ONX2432G028 LCD ready: waiting for ECU-supported PID catalog, 240x320
+I (737) app_main: MCP2515 loopback self-test skipped by configuration
+I (744) can_driver: CAN mode 1 verified by MCP2515
+W (748) can_driver: can_send rejected in mode 1
+I (753) app_main: Listen-Only TX guard passed; TXREQ clear on TXB0/TXB1/TXB2
+I (769) can_driver: CAN mode 3 verified by MCP2515
+I (769) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (772) can_driver: CNF write: 0x00 0x91 0x01
+I (776) can_driver: CNF read:  0x00 0x91 0x01
+I (780) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (788) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (796) can_driver: CAN mode 1 verified by MCP2515
+I (801) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+W (809) obd_client: Active OBD discovery is explicitly enabled: Listen-Only candidates first; TX only after valid bus traffic
+I (820) obd_client: Monitor ready: configured bitrate=500 kbps CAN IDs=11-bit; physical bus not yet verified
+I (829) obd_client: OBD response filters configured for 11-bit addressing
+I (836) obd_client: First 24 raw CAN frames log at INFO, later frames at DEBUG; OBD PIDs use the Parameter Manager and ISO-TP
+I (847) app_main: Active OBD RPM requests ENABLED by build configuration
+I (854) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (864) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (868) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (875) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (882) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (890) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (897) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (904) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (911) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (918) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (926) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (933) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (940) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (947) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (954) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (962) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (969) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (976) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (983) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (991) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (998) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1005) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1012) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1020) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+W (1031) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=1 RX1=0 (latch observations, not exact lost-frame counts)
+I (1040) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=0.00 fps total=32 unique-IDs=1 last=EXT:0x17F00010/DLC=8 RXOVR0=1 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+I (1093) can_driver: CAN mode 3 verified by MCP2515
+I (1093) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (1095) can_driver: CNF write: 0x00 0x91 0x01
+I (1099) can_driver: CNF read:  0x00 0x91 0x01
+I (1103) can_driver: CAN configuration updated: bitrate=500000 id-format=29-bit
+I (1111) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (1120) can_driver: CAN mode 1 verified by MCP2515
+I (1124) obd_client: Passive CAN candidate: 500 kbit/s 29-bit; listening for valid frames
+I (1407) can_driver: CAN mode 3 verified by MCP2515
+I (1412) can_driver: OBD RX filters verified: 29-bit 0x18DAF1xx response family, mask=0x1FFFFF00
+I (1413) can_driver: CAN mode 0 verified by MCP2515
+I (1414) obd_client: Passive traffic evidence met; sending the opt-in OBD 01 00 verification request
+I (1425) obd_client: OBD Mode 01 request transmitted: ID=0x18DB33F1 PID=0x00 (SUPPORTED PID BITMAP)
+W (1598) obd_client: OBD Mode 01 PID 0x00 response timeout after 200 ms
+W (1599) obd_client: No response for outstanding OBD request (1/3)
+W (1599) obd_client: CAN candidate rejected: timeout waiting for valid 41 00 bitmap
+I (1608) can_driver: CAN mode 3 verified by MCP2515
+I (1611) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (1620) can_driver: CNF write: 0x00 0xB1 0x85
+I (1623) can_driver: CNF read:  0x00 0xB1 0x85
+I (1627) can_driver: CAN configuration updated: bitrate=250000 id-format=11-bit
+I (1635) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (1644) can_driver: CAN mode 1 verified by MCP2515
+I (1649) obd_client: Passive CAN candidate: 250 kbit/s 11-bit; listening for valid frames
+I (1902) can_driver: CAN mode 3 verified by MCP2515
+I (1902) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (1904) can_driver: CNF write: 0x00 0xB1 0x85
+I (1908) can_driver: CNF read:  0x00 0xB1 0x85
+I (1912) can_driver: CAN configuration updated: bitrate=250000 id-format=29-bit
+I (1919) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (1929) can_driver: CAN mode 1 verified by MCP2515
+I (1933) obd_client: Passive CAN candidate: 250 kbit/s 29-bit; listening for valid frames
+W (2101) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+W (2101) obd_client: No candidate returned a valid 41 00 bitmap; will passively rescan
+W (2169) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=8 RX1=0 (latch observations, not exact lost-frame counts)
+W (3214) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=26 RX1=0 (latch observations, not exact lost-frame counts)
+W (4257) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=44 RX1=0 (latch observations, not exact lost-frame counts)
+W (5300) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=62 RX1=0 (latch observations, not exact lost-frame counts)
+I (6037) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=1381.18 fps total=6946 unique-IDs=2 last=STD:0x494/DLC=2 RXOVR0=74 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+W (6357) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=80 RX1=0 (latch observations, not exact lost-frame counts)
+I (7125) can_driver: CAN mode 3 verified by MCP2515
+I (7125) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (7127) can_driver: CNF write: 0x00 0x91 0x01
+I (7130) can_driver: CNF read:  0x00 0x91 0x01
+I (7135) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (7143) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (7152) can_driver: CAN mode 1 verified by MCP2515
+W (7156) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (7163) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+W (7392) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=97 RX1=0 (latch observations, not exact lost-frame counts)
+I (7428) can_driver: CAN mode 3 verified by MCP2515
+I (7428) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (7430) can_driver: CNF write: 0x00 0x91 0x01
+I (7433) can_driver: CNF read:  0x00 0x91 0x01
+I (7438) can_driver: CAN configuration updated: bitrate=500000 id-format=29-bit
+I (7446) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (7455) can_driver: CAN mode 1 verified by MCP2515
+I (7459) obd_client: Passive CAN candidate: 500 kbit/s 29-bit; listening for valid frames
+I (7742) can_driver: CAN mode 3 verified by MCP2515
+I (7747) can_driver: OBD RX filters verified: 29-bit 0x18DAF1xx response family, mask=0x1FFFFF00
+I (7748) can_driver: CAN mode 0 verified by MCP2515
+I (7749) obd_client: Passive traffic evidence met; sending the opt-in OBD 01 00 verification request
+I (7761) obd_client: OBD Mode 01 request transmitted: ID=0x18DB33F1 PID=0x00 (SUPPORTED PID BITMAP)
+W (7933) obd_client: OBD Mode 01 PID 0x00 response timeout after 200 ms
+W (7934) obd_client: No response for outstanding OBD request (2/3)
+W (7934) obd_client: CAN candidate rejected: timeout waiting for valid 41 00 bitmap
+I (7943) can_driver: CAN mode 3 verified by MCP2515
+I (7946) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (7954) can_driver: CNF write: 0x00 0xB1 0x85
+I (7958) can_driver: CNF read:  0x00 0xB1 0x85
+I (7962) can_driver: CAN configuration updated: bitrate=250000 id-format=11-bit
+I (7970) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (7979) can_driver: CAN mode 1 verified by MCP2515
+I (7984) obd_client: Passive CAN candidate: 250 kbit/s 11-bit; listening for valid frames
+W (8112) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+I (8122) can_driver: CAN mode 3 verified by MCP2515
+I (8122) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (8124) can_driver: CNF write: 0x00 0xB1 0x85
+I (8127) can_driver: CNF read:  0x00 0xB1 0x85
+I (8132) can_driver: CAN configuration updated: bitrate=250000 id-format=29-bit
+I (8140) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (8148) can_driver: CAN mode 1 verified by MCP2515
+W (8153) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (8160) obd_client: Passive CAN candidate: 250 kbit/s 29-bit; listening for valid frames
+W (8188) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+W (8188) obd_client: No candidate returned a valid 41 00 bitmap; will passively rescan
+W (8429) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=108 RX1=0 (latch observations, not exact lost-frame counts)
+W (9474) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=126 RX1=0 (latch observations, not exact lost-frame counts)
+
+
+C:\Users\hakan\Desktop\obd_vag>idf.py -p COM8 monitor
+Executing action: monitor
+Running idf_monitor in directory C:\Users\hakan\Desktop\obd_vag
+Executing "D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.5.2\tools/idf_monitor.py -p COM8 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 C:\Users\hakan\Desktop\obd_vag\build\obd_vag.elf C:\Users\hakan\Desktop\obd_vag\build\bootloader\bootloader.elf --force-color -m 'D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Espressif\frameworks\esp-idf-v5.5.2\tools\idf.py' '-p' 'COM8'"...
+--- Warning: GDB cannot open serial ports accessed as COMx
+--- Using \\.\COM8 instead...
+--- esp-idf-monitor 1.8.0 on \\.\COM8 115200
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x29 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x158c
+load:0x403c8700,len:0xd24
+--- 0x403c8700: _stext at ??:?
+load:0x403cb700,len:0x2f34
+entry 0x403c8924
+--- 0x403c8924: call_start_cpu0 at D:/Espressif/frameworks/esp-idf-v5.5.2/components/bootloader/subproject/main/bootloader_start.c:25
+I (24) boot: ESP-IDF v5.5.2 2nd stage bootloader
+I (25) boot: compile time Oct 17 2026 16:56:06
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c030020 size=11270h ( 70256) map
+I (99) esp_image: segment 1: paddr=00021298 vaddr=3fc95200 size=02c14h ( 11284) load
+I (102) esp_image: segment 2: paddr=00023eb4 vaddr=40374000 size=0c164h ( 49508) load
+I (113) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=261dch (156124) map
+I (141) esp_image: segment 4: paddr=00056204 vaddr=40380164 size=04fa8h ( 20392) load
+I (146) esp_image: segment 5: paddr=0005b1b4 vaddr=50000000 size=00020h (    32) load
+I (153) boot: Loaded app from partition at offset 0x10000
+I (153) boot: Disabling RNG early entropy source...
+I (167) cpu_start: Multicore app
+I (175) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (176) cpu_start: Pro cpu start user code
+I (176) cpu_start: cpu freq: 160000000 Hz
+I (178) app_init: Application information:
+I (181) app_init: Project name:     obd_vag
+I (185) app_init: App version:      6456204-dirty
+I (190) app_init: Compile time:     Oct 22 2026 11:19:46
+I (195) app_init: ELF file SHA256:  a9c6aa09d...
+I (199) app_init: ESP-IDF:          v5.5.2
+I (203) efuse_init: Min chip rev:     v0.0
+I (207) efuse_init: Max chip rev:     v0.99
+I (211) efuse_init: Chip rev:         v0.2
+I (215) heap_init: Initializing. RAM available for dynamic allocation:
+I (221) heap_init: At 3FCA9A08 len 0003FD08 (255 KiB): RAM
+I (226) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (231) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (236) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (243) spi_flash: detected chip: generic
+I (245) spi_flash: flash io: dio
+I (249) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (255) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (262) main_task: Started on CPU0
+I (293) main_task: Calling app_main()
+I (295) can_driver: SPI host=1 SCK=38 MOSI=39 MISO=40 CS=42 hz=1000000 mode=0
+I (308) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (309) can_driver: CNF write: 0x00 0x91 0x01
+I (309) can_driver: CNF read:  0x00 0x91 0x01
+I (313) can_driver: can_init OK; controller left in Configuration mode
+I (490) onx_display: Onboard PCF8574 reset expander initialized; LCD RST pulsed via P5
+I (490) onx_display: CST826 capacitive touch detected at I2C address 0x15 on GPIO7/GPIO8
+I (615) onx_display: ONX2432G028 ST7789 initialized: 240x320, SPI host=2 SCLK=5 MOSI=1 DC=3 CS=2 BL=6
+I (731) onx_display: CST826 touch polling task started (25 ms period); swipe horizontally to switch pages
+I (731) onx_display: ONX2432G028 LCD ready: waiting for ECU-supported PID catalog, 240x320
+I (737) app_main: MCP2515 loopback self-test skipped by configuration
+I (744) can_driver: CAN mode 1 verified by MCP2515
+W (748) can_driver: can_send rejected in mode 1
+I (753) app_main: Listen-Only TX guard passed; TXREQ clear on TXB0/TXB1/TXB2
+I (769) can_driver: CAN mode 3 verified by MCP2515
+I (769) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (772) can_driver: CNF write: 0x00 0x91 0x01
+I (776) can_driver: CNF read:  0x00 0x91 0x01
+I (780) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (788) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (796) can_driver: CAN mode 1 verified by MCP2515
+I (801) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+W (809) obd_client: Active OBD discovery is explicitly enabled: Listen-Only candidates first; TX only after valid bus traffic
+I (820) obd_client: Monitor ready: configured bitrate=500 kbps CAN IDs=11-bit; physical bus not yet verified
+I (829) obd_client: OBD response filters configured for 11-bit addressing
+I (836) obd_client: First 24 raw CAN frames log at INFO, later frames at DEBUG; OBD PIDs use the Parameter Manager and ISO-TP
+I (847) app_main: Active OBD RPM requests ENABLED by build configuration
+I (854) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (864) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (868) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (875) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (882) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (890) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (897) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (904) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (911) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (918) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (926) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (933) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (940) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (947) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (954) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (962) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (969) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (976) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (983) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (991) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (998) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1005) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1012) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+I (1020) obd_client: CAN RX id=0x17F00010 EXT dlc=8 data=[20 10 00 00 00 00 00 00]
+W (1031) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=1 RX1=0 (latch observations, not exact lost-frame counts)
+I (1040) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=0.00 fps total=32 unique-IDs=1 last=EXT:0x17F00010/DLC=8 RXOVR0=1 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+I (1093) can_driver: CAN mode 3 verified by MCP2515
+I (1093) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (1095) can_driver: CNF write: 0x00 0x91 0x01
+I (1099) can_driver: CNF read:  0x00 0x91 0x01
+I (1103) can_driver: CAN configuration updated: bitrate=500000 id-format=29-bit
+I (1111) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (1120) can_driver: CAN mode 1 verified by MCP2515
+I (1124) obd_client: Passive CAN candidate: 500 kbit/s 29-bit; listening for valid frames
+I (1407) can_driver: CAN mode 3 verified by MCP2515
+I (1412) can_driver: OBD RX filters verified: 29-bit 0x18DAF1xx response family, mask=0x1FFFFF00
+I (1413) can_driver: CAN mode 0 verified by MCP2515
+I (1414) obd_client: Passive traffic evidence met; sending the opt-in OBD 01 00 verification request
+I (1425) obd_client: OBD Mode 01 request transmitted: ID=0x18DB33F1 PID=0x00 (SUPPORTED PID BITMAP)
+W (1598) obd_client: OBD Mode 01 PID 0x00 response timeout after 200 ms
+W (1599) obd_client: No response for outstanding OBD request (1/3)
+W (1599) obd_client: CAN candidate rejected: timeout waiting for valid 41 00 bitmap
+I (1608) can_driver: CAN mode 3 verified by MCP2515
+I (1611) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (1620) can_driver: CNF write: 0x00 0xB1 0x85
+I (1623) can_driver: CNF read:  0x00 0xB1 0x85
+I (1627) can_driver: CAN configuration updated: bitrate=250000 id-format=11-bit
+I (1635) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (1644) can_driver: CAN mode 1 verified by MCP2515
+I (1649) obd_client: Passive CAN candidate: 250 kbit/s 11-bit; listening for valid frames
+W (1737) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+I (1747) can_driver: CAN mode 3 verified by MCP2515
+I (1747) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (1749) can_driver: CNF write: 0x00 0xB1 0x85
+I (1752) can_driver: CNF read:  0x00 0xB1 0x85
+I (1756) can_driver: CAN configuration updated: bitrate=250000 id-format=29-bit
+I (1765) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (1773) can_driver: CAN mode 1 verified by MCP2515
+W (1778) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (1785) obd_client: Passive CAN candidate: 250 kbit/s 29-bit; listening for valid frames
+W (1813) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+W (1813) obd_client: No candidate returned a valid 41 00 bitmap; will passively rescan
+W (2056) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=12 RX1=0 (latch observations, not exact lost-frame counts)
+W (3105) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=30 RX1=0 (latch observations, not exact lost-frame counts)
+W (4152) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=48 RX1=0 (latch observations, not exact lost-frame counts)
+W (5198) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=66 RX1=0 (latch observations, not exact lost-frame counts)
+I (6037) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=1483.46 fps total=7458 unique-IDs=2 last=STD:0x494/DLC=2 RXOVR0=80 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+W (6242) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=84 RX1=0 (latch observations, not exact lost-frame counts)
+I (6832) can_driver: CAN mode 3 verified by MCP2515
+I (6832) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (6834) can_driver: CNF write: 0x00 0x91 0x01
+I (6837) can_driver: CNF read:  0x00 0x91 0x01
+I (6842) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (6850) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (6859) can_driver: CAN mode 1 verified by MCP2515
+W (6863) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (6870) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+I (7153) can_driver: CAN mode 3 verified by MCP2515
+I (7153) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (7155) can_driver: CNF write: 0x00 0x91 0x01
+I (7158) can_driver: CNF read:  0x00 0x91 0x01
+I (7163) can_driver: CAN configuration updated: bitrate=500000 id-format=29-bit
+I (7171) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (7180) can_driver: CAN mode 1 verified by MCP2515
+I (7184) obd_client: Passive CAN candidate: 500 kbit/s 29-bit; listening for valid frames
+W (7281) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=100 RX1=0 (latch observations, not exact lost-frame counts)
+I (7470) can_driver: CAN mode 3 verified by MCP2515
+I (7475) can_driver: OBD RX filters verified: 29-bit 0x18DAF1xx response family, mask=0x1FFFFF00
+I (7476) can_driver: CAN mode 0 verified by MCP2515
+I (7477) obd_client: Passive traffic evidence met; sending the opt-in OBD 01 00 verification request
+I (7488) obd_client: OBD Mode 01 request transmitted: ID=0x18DB33F1 PID=0x00 (SUPPORTED PID BITMAP)
+W (7661) obd_client: OBD Mode 01 PID 0x00 response timeout after 200 ms
+W (7662) obd_client: No response for outstanding OBD request (2/3)
+W (7662) obd_client: CAN candidate rejected: timeout waiting for valid 41 00 bitmap
+I (7671) can_driver: CAN mode 3 verified by MCP2515
+I (7674) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (7682) can_driver: CNF write: 0x00 0xB1 0x85
+I (7686) can_driver: CNF read:  0x00 0xB1 0x85
+I (7690) can_driver: CAN configuration updated: bitrate=250000 id-format=11-bit
+I (7698) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 0 stale frame(s)
+I (7707) can_driver: CAN mode 1 verified by MCP2515
+I (7712) obd_client: Passive CAN candidate: 250 kbit/s 11-bit; listening for valid frames
+W (7720) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+I (7739) can_driver: CAN mode 3 verified by MCP2515
+I (7739) can_driver: CAN timing: crystal=8MHz bitrate=250000 CNF1=0x00 CNF2=0xB1 CNF3=0x85
+I (7742) can_driver: CNF write: 0x00 0xB1 0x85
+I (7745) can_driver: CNF read:  0x00 0xB1 0x85
+I (7749) can_driver: CAN configuration updated: bitrate=250000 id-format=29-bit
+I (7758) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (7766) can_driver: CAN mode 1 verified by MCP2515
+W (7771) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (7778) obd_client: Passive CAN candidate: 250 kbit/s 29-bit; listening for valid frames
+W (7806) obd_client: CAN candidate rejected: MCP2515 reported a CAN message error in Listen-Only mode
+W (7807) obd_client: No candidate returned a valid 41 00 bitmap; will passively rescan
+W (8321) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=113 RX1=0 (latch observations, not exact lost-frame counts)
+W (9364) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=131 RX1=0 (latch observations, not exact lost-frame counts)
+W (10414) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=149 RX1=0 (latch observations, not exact lost-frame counts)
+I (11038) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=1478.49 fps total=14852 unique-IDs=2 last=STD:0x494/DLC=2 RXOVR0=159 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+W (11418) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=166 RX1=0 (latch observations, not exact lost-frame counts)
+W (12462) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=184 RX1=0 (latch observations, not exact lost-frame counts)
+I (12822) can_driver: CAN mode 3 verified by MCP2515
+I (12822) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (12824) can_driver: CNF write: 0x00 0x91 0x01
+I (12828) can_driver: CNF read:  0x00 0x91 0x01
+I (12832) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (12841) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (12849) can_driver: CAN mode 1 verified by MCP2515
+W (12854) obd_client: Cleared a stale MCP2515 message-error flag before listen window
+I (12861) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+I (13112) can_driver: CAN mode 3 verified by MCP2515
+I (13113) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (13115) can_driver: CNF write: 0x00 0x91 0x01
+I (13119) can_driver: CNF read:  0x00 0x91 0x01
+I (13123) can_driver: CAN configuration updated: bitrate=500000 id-format=29-bit
+I (13131) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (13140) can_driver: CAN mode 1 verified by MCP2515
+I (13144) obd_client: Passive CAN candidate: 500 kbit/s 29-bit; listening for valid frames
+I (13416) can_driver: CAN mode 3 verified by MCP2515
+I (13422) can_driver: OBD RX filters verified: 29-bit 0x18DAF1xx response family, mask=0x1FFFFF00
+I (13422) can_driver: CAN mode 0 verified by MCP2515
+I (13424) obd_client: Passive traffic evidence met; sending the opt-in OBD 01 00 verification request
+I (13435) obd_client: OBD Mode 01 request transmitted: ID=0x18DB33F1 PID=0x00 (SUPPORTED PID BITMAP)
+
+
+C:\Users\hakan\Desktop\obd_vag>

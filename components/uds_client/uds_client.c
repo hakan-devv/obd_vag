@@ -4,7 +4,10 @@
 
 #define UDS_SERVICE_DIAGNOSTIC_SESSION_CONTROL 0x10U
 #define UDS_SERVICE_TESTER_PRESENT              0x3EU
-#define UDS_SERVICE_READ_DATA_BY_IDENTIFIER     0x22U
+#define UDS_SERVICE_READ_DATA_BY_LOCAL_IDENTIFIER 0x21U
+#define UDS_SERVICE_READ_DATA_BY_IDENTIFIER       0x22U
+#define UDS_SERVICE_BMW_LOCAL_DATA                0x2CU
+#define UDS_BMW_LOCAL_SUBFUNCTION                 0x10U
 #define UDS_NRC_RESPONSE_PENDING                0x78U
 #define UDS_DEFAULT_RESPONSE_TIMEOUT_US         1000000ULL
 #define UDS_PENDING_RESPONSE_TIMEOUT_US         5000000ULL
@@ -94,6 +97,31 @@ esp_err_t uds_client_read_did(uds_client_t *client, uint16_t did,
                          request, sizeof(request), now_us);
 }
 
+esp_err_t uds_client_read_local_identifier(uds_client_t *client, uint8_t local_id,
+                                            uint64_t now_us)
+{
+    const uint8_t request[2] = {
+        UDS_SERVICE_READ_DATA_BY_LOCAL_IDENTIFIER, local_id,
+    };
+    return start_request(client, UDS_SERVICE_READ_DATA_BY_LOCAL_IDENTIFIER, 0U,
+                         local_id, request, sizeof(request), now_us);
+}
+
+esp_err_t uds_client_read_bmw_local_identifier(uds_client_t *client,
+                                                uint16_t local_id,
+                                                uint64_t now_us)
+{
+    const uint8_t request[4] = {
+        UDS_SERVICE_BMW_LOCAL_DATA,
+        UDS_BMW_LOCAL_SUBFUNCTION,
+        (uint8_t)(local_id >> 8),
+        (uint8_t)local_id,
+    };
+    return start_request(client, UDS_SERVICE_BMW_LOCAL_DATA,
+                         UDS_BMW_LOCAL_SUBFUNCTION, local_id,
+                         request, sizeof(request), now_us);
+}
+
 static uds_event_type_t fail_response(uds_client_t *client, uds_event_t *event,
                                       uds_error_t error)
 {
@@ -158,6 +186,17 @@ static uds_event_type_t process_pdu(uds_client_t *client, const uint8_t *data,
             return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
         }
         header_length = 3U;
+    } else if (client->active_service == UDS_SERVICE_READ_DATA_BY_LOCAL_IDENTIFIER) {
+        if (length < 2U || data[1] != (uint8_t)client->active_did) {
+            return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
+        }
+        header_length = 2U;
+    } else if (client->active_service == UDS_SERVICE_BMW_LOCAL_DATA) {
+        /* BMW DDE7 0x2C/0x10 replies echo only the subfunction, not the local ID. */
+        if (length < 2U || data[1] != client->active_subfunction) {
+            return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
+        }
+        header_length = 2U;
     } else {
         return fail_response(client, event, UDS_ERROR_BAD_RESPONSE);
     }

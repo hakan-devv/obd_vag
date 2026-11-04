@@ -1,3 +1,7 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "can_driver.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -6,9 +10,78 @@
 #include "onx_display.h"
 #include "sdkconfig.h"
 
-#if !defined(CONFIG_OBD_RUN_PROTOCOL_TESTS) || !CONFIG_OBD_RUN_PROTOCOL_TESTS
 static const char *TAG = "app_main";
-#endif
+
+/* Runtime command responses use the same USB Serial/JTAG console as ESP_LOGx. */
+static void app_console_print(const char *message)
+{
+    if (message != NULL) {
+        ESP_LOGI(TAG, "%s", message);
+    }
+}
+
+static void app_handle_runtime_command(char command)
+{
+    char cmd = (char)tolower((unsigned char)command);
+    switch (cmd) {
+    case '0':
+        obd_client_set_pid_polling_enabled(false);
+        app_console_print("[PID] Polling STOPPED");
+        break;
+    case '1':
+        obd_client_set_pid_polling_enabled(true);
+        app_console_print("[PID] Polling STARTED");
+        break;
+    case '?':
+        app_console_print(obd_client_is_pid_polling_enabled() ?
+                       "[PID] Polling STATUS: ENABLED" :
+                       "[PID] Polling STATUS: DISABLED");
+        break;
+    case 'p':
+        obd_client_set_pid_polling_enabled(!obd_client_is_pid_polling_enabled());
+        app_console_print(obd_client_is_pid_polling_enabled() ?
+                       "[PID] Polling STARTED" :
+                       "[PID] Polling STOPPED");
+        break;
+    case 'v':
+        if (obd_client_vehicle_identify() == ESP_OK) {
+            app_console_print("[VEH] Vehicle identification started");
+        } else {
+            app_console_print("[VEH] Vehicle identification rejected");
+        }
+        break;
+    case 'd': {
+        if (obd_client_did_scan_powertrain_start() == ESP_OK) {
+            app_console_print("[DID] Broad engine + TCU candidate scan started (Haldex route is not enabled)");
+        } else {
+            app_console_print("[DID] Broad powertrain DID scan not started");
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void app_console_command_task(void *arg)
+{
+    (void)arg;
+
+    while (true) {
+        const int ch = getchar();
+        if (ch == EOF) {
+            vTaskDelay(pdMS_TO_TICKS(10));
+            continue;
+        }
+
+        /* IDF monitor commonly sends CRLF; commands are single characters. */
+        if (ch == '\r' || ch == '\n') {
+            continue;
+        }
+
+        app_handle_runtime_command((char)ch);
+    }
+}
 
 void app_main(void)
 {
@@ -81,6 +154,31 @@ void app_main(void)
 #else
     ESP_LOGI(TAG, "Passive Listen-Only CAN monitor active; firmware will NOT transmit or ACK CAN frames");
 #endif
+
+    ESP_LOGI(TAG, "Automatic vehicle identification and EXACT-only OEM DID gating enabled");
+
+    /*
+     * Read commands from stdin in a dedicated task. With USB Serial/JTAG selected
+     * as the primary ESP-IDF console, stdin and ESP_LOGx share the native USB
+     * connection. A dedicated task is important: getchar() may block while the
+     * OBD/CAN polling loop below must continue running.
+     */
+    setvbuf(stdin, NULL, _IONBF, 0);
+    BaseType_t task_result = xTaskCreate(app_console_command_task,
+                                         "console_cmd",
+                                         3072,
+                                         NULL,
+                                         5,
+                                         NULL);
+    if (task_result != pdPASS) {
+        ESP_LOGE(TAG, "Could not create USB console command task");
+        return;
+    }
+
+    ESP_LOGI(TAG, "USB Serial/JTAG command console ready: 0/1/?/p/v/d");
+    ESP_LOGI(TAG, "[PID] Polling STATUS: %s",
+             obd_client_is_pid_polling_enabled() ? "ENABLED" : "DISABLED");
+
     while (true) {
         obd_client_poll();
         vTaskDelay(pdMS_TO_TICKS(5));

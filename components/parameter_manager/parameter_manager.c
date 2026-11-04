@@ -25,12 +25,28 @@ static const parameter_descriptor_t CATALOG[] = {
     {0x21U, "Distance with MIL on", "km", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x22U, "Fuel rail pressure", "kPa", 2U, PARAM_DECODER_FUEL_RAIL_PRESSURE_AB, 0.0f, 5176.8f, 1000U, 6U},
     {0x23U, "Fuel rail gauge pressure", "kPa", 2U, PARAM_DECODER_PRESSURE_AB_TIMES_10, 0.0f, 655350.0f, 1000U, 6U},
+    {0x24U, "Wideband lambda S1", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 4U},
+    {0x25U, "Wideband lambda S2", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 5U},
+    {0x26U, "Wideband lambda S3", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 6U},
+    {0x27U, "Wideband lambda S4", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 7U},
+    {0x28U, "Wideband lambda S5", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 5U},
+    {0x29U, "Wideband lambda S6", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 6U},
+    {0x2AU, "Wideband lambda S7", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 7U},
+    {0x2BU, "Wideband lambda S8", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB, 0.0f, 2.0f, 500U, 7U},
     {0x2CU, "Commanded EGR", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 1000U, 6U},
     {0x2DU, "EGR error", "%", 1U, PARAM_DECODER_EGR_ERROR_A, -100.0f, 99.2f, 1000U, 6U},
     {0x2EU, "Evaporative purge", "%", 1U, PARAM_DECODER_PERCENT_A, 0.0f, 100.0f, 1000U, 7U},
     {0x2FU, "Fuel tank level input", "%", 1U, PARAM_DECODER_FUEL_LEVEL_PERCENT, 0.0f, 100.0f, 5000U, 7U},
     {0x31U, "Distance since DTC clear", "km", 2U, PARAM_DECODER_U16_AB, 0.0f, 65535.0f, 5000U, 7U},
     {0x33U, "Barometric pressure", "kPa", 1U, PARAM_DECODER_MAP_KPA, 0.0f, 255.0f, 5000U, 7U},
+    {0x34U, "Wideband lambda S1 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 4U},
+    {0x35U, "Wideband lambda S2 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 5U},
+    {0x36U, "Wideband lambda S3 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 6U},
+    {0x37U, "Wideband lambda S4 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 7U},
+    {0x38U, "Wideband lambda S5 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 5U},
+    {0x39U, "Wideband lambda S6 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 6U},
+    {0x3AU, "Wideband lambda S7 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 7U},
+    {0x3BU, "Wideband lambda S8 (I)", "lambda", 4U, PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB, 0.0f, 2.0f, 500U, 7U},
     {0x3CU, "Catalyst temperature B1S1", "C", 2U, PARAM_DECODER_CATALYST_TEMP_AB_DIV_10_MINUS_40, -40.0f, 6513.5f, 5000U, 7U},
     {0x3DU, "Catalyst temperature B2S1", "C", 2U, PARAM_DECODER_CATALYST_TEMP_AB_DIV_10_MINUS_40, -40.0f, 6513.5f, 5000U, 7U},
     {0x3EU, "Catalyst temperature B1S2", "C", 2U, PARAM_DECODER_CATALYST_TEMP_AB_DIV_10_MINUS_40, -40.0f, 6513.5f, 5000U, 7U},
@@ -56,7 +72,11 @@ static const parameter_descriptor_t CATALOG[] = {
     {0x5EU, "Engine fuel rate", "L/h", 2U, PARAM_DECODER_FUEL_RATE_AB, 0.0f, 3276.75f, 1000U, 6U},
     {0x62U, "Actual engine percent torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
     {0x63U, "Engine reference torque", "Nm", 2U, PARAM_DECODER_TORQUE_REFERENCE_AB, 0.0f, 65535.0f, 5000U, 7U},
+    {0x6DU, "Fuel rail pressure A (ctrl)", "kPa", 11U, PARAM_DECODER_FUEL_RAIL_PRESSURE_CONTROL_A, 0.0f, 655350.0f, 500U, 4U},
+    {0x70U, "Boost pressure A (ctrl)", "kPa", 10U, PARAM_DECODER_BOOST_PRESSURE_CONTROL_A, 0.0f, 2047.96875f, 250U, 3U},
     {0x74U, "Turbocharger RPM", "rpm", 2U, PARAM_DECODER_TURBO_RPM_AB_DIV_4, 0.0f, 16383.75f, 1000U, 6U},
+    {0x78U, "EGT bank 1 (hottest)", "C", 9U, PARAM_DECODER_EGT_MAX_SUPPORTED_SENSOR, -40.0f, 6513.5f, 500U, 4U},
+    {0x79U, "EGT bank 2 (hottest)", "C", 9U, PARAM_DECODER_EGT_MAX_SUPPORTED_SENSOR, -40.0f, 6513.5f, 500U, 4U},
     {0xA1U, "Driver demand engine torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
     {0xA2U, "Actual engine torque", "%", 1U, PARAM_DECODER_TORQUE_PERCENT_A_MINUS_125, -125.0f, 130.0f, 1000U, 6U},
     {0xA3U, "Engine reference torque", "Nm", 2U, PARAM_DECODER_TORQUE_REFERENCE_AB, 0.0f, 65535.0f, 5000U, 7U},
@@ -212,6 +232,8 @@ esp_err_t parameter_manager_decode_obd(uint32_t ecu_id, bool extended_id,
     }
 
     float decoded;
+    float secondary_decoded = 0.0f;
+    bool secondary_valid = false;
     switch (descriptor->decoder) {
     case PARAM_DECODER_PERCENT_A:
     case PARAM_DECODER_ETHANOL_PERCENT_A:
@@ -286,6 +308,44 @@ esp_err_t parameter_manager_decode_obd(uint32_t ecu_id, bool extended_id,
     case PARAM_DECODER_PRESSURE_AB_TIMES_10:
         decoded = (float)read_u16(data) * 10.0f;
         break;
+    case PARAM_DECODER_WIDEBAND_LAMBDA_VOLTAGE_AB:
+        decoded = (float)read_u16(data) * (2.0f / 65536.0f);
+        secondary_decoded = (float)read_u16(&data[2]) * (8.0f / 65536.0f);
+        secondary_valid = true;
+        break;
+    case PARAM_DECODER_WIDEBAND_LAMBDA_CURRENT_AB:
+        decoded = (float)read_u16(data) * (2.0f / 65536.0f);
+        secondary_decoded = (float)read_u16(&data[2]) / 256.0f - 128.0f;
+        secondary_valid = true;
+        break;
+    case PARAM_DECODER_FUEL_RAIL_PRESSURE_CONTROL_A:
+    case PARAM_DECODER_BOOST_PRESSURE_CONTROL_A: {
+        const bool rail = descriptor->decoder == PARAM_DECODER_FUEL_RAIL_PRESSURE_CONTROL_A;
+        const float scale = rail ? 10.0f : (1.0f / 32.0f);
+        const bool commanded = (data[0] & 0x01U) != 0U;
+        const bool actual = (data[0] & 0x02U) != 0U;
+        if (!commanded && !actual) return ESP_ERR_INVALID_RESPONSE;
+        const float commanded_value = (float)read_u16(&data[1]) * scale;
+        const float actual_value = (float)read_u16(&data[3]) * scale;
+        decoded = actual ? actual_value : commanded_value;
+        if (actual && commanded) {
+            secondary_decoded = commanded_value;
+            secondary_valid = true;
+        }
+        break;
+    }
+    case PARAM_DECODER_EGT_MAX_SUPPORTED_SENSOR: {
+        bool found_sensor = false;
+        decoded = 0.0f;
+        for (uint8_t sensor = 0U; sensor < 4U; ++sensor) {
+            if ((data[0] & (uint8_t)(1U << sensor)) == 0U) continue;
+            const float temperature = (float)read_u16(&data[1U + sensor * 2U]) / 10.0f - 40.0f;
+            if (!found_sensor || temperature > decoded) decoded = temperature;
+            found_sensor = true;
+        }
+        if (!found_sensor) return ESP_ERR_INVALID_RESPONSE;
+        break;
+    }
     default:
         return ESP_ERR_NOT_SUPPORTED;
     }
@@ -301,6 +361,8 @@ esp_err_t parameter_manager_decode_obd(uint32_t ecu_id, bool extended_id,
         .pid = pid,
         .raw_length = (uint8_t)length,
         .value = decoded,
+        .secondary_value = secondary_decoded,
+        .secondary_valid = secondary_valid,
         .timestamp_us = timestamp_us,
         .validity = PARAM_VALIDITY_VALID,
     };

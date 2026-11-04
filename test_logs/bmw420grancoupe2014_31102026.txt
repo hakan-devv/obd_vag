@@ -1,0 +1,799 @@
+
+C:\Users\hakan\Desktop\obd_vag>idf.py -p COM14 monitor
+Executing action: monitor
+Running idf_monitor in directory C:\Users\hakan\Desktop\obd_vag
+Executing "D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe D:\Espressif\frameworks\esp-idf-v5.5.2\tools/idf_monitor.py -p COM14 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 C:\Users\hakan\Desktop\obd_vag\build\obd_vag.elf C:\Users\hakan\Desktop\obd_vag\build\bootloader\bootloader.elf --force-color -m 'D:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'D:\Espressif\frameworks\esp-idf-v5.5.2\tools\idf.py' '-p' 'COM14'"...
+--- Warning: GDB cannot open serial ports accessed as COMx
+--- Using \\.\COM14 instead...
+--- esp-idf-monitor 1.8.0 on \\.\COM14 115200
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x28 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x158c
+load:0x403c8700,len:0xd24
+--- 0x403c8700: _stext at ??load:0x403cb700,len:0x2f34
+:?
+entry 0x403c8924
+--- 0x403c8924: call_start_cpu0 at D:/Espressif/frameworks/esp-idf-v5.5.2/components/bootloader/subproject/main/bootloader_start.c:25
+I (24) boot: ESP-IDF v5.5.2 2nd stage bootloader
+I (25) boot: compile time Oct 17 2026 16:56:06
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c030020 size=112e0h ( 70368) map
+I (99) esp_image: segment 1: paddr=00021308 vaddr=3fc95200 size=02c14h ( 11284) load
+I (102) esp_image: segment 2: paddr=00023f24 vaddr=40374000 size=0c0f4h ( 49396) load
+I (113) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=26268h (156264) map
+I (141) esp_image: segment 4: paddr=00056290 vaddr=403800f4 size=05018h ( 20504) load
+I (146) esp_image: segment 5: paddr=0005b2b0 vaddr=50000000 size=00020h (    32) load
+I (153) boot: Loaded app from partition at offset 0x10000
+I (153) boot: Disabling RNG early entropy source...
+I (167) cpu_start: Multicore app
+I (175) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (176) cpu_start: Pro cpu start user code
+I (176) cpu_start: cpu freq: 160000000 Hz
+I (178) app_init: Application information:
+I (181) app_init: Project name:     obd_vag
+I (185) app_init: App version:      51958f6
+I (189) app_init: Compile time:     Oct 25 2026 12:20:30
+I (194) app_init: ELF file SHA256:  bb621989b...
+I (199) app_init: ESP-IDF:          v5.5.2
+I (202) efuse_init: Min chip rev:     v0.0
+I (206) efuse_init: Max chip rev:     v0.99
+I (210) efuse_init: Chip rev:         v0.2
+I (214) heap_init: Initializing. RAM available for dynamic allocation:
+I (220) heap_init: At 3FCA9A08 len 0003FD08 (255 KiB): RAM
+I (226) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (231) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (236) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (242) spi_flash: detected chip: generic
+I (245) spi_flash: flash io: dio
+I (248) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (254) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (261) main_task: Started on CPU0
+I (292) main_task: Calling app_main()
+I (294) can_driver: SPI host=1 SCK=38 MOSI=39 MISO=40 CS=42 hz=1000000 mode=0
+I (307) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (308) can_driver: CNF write: 0x00 0x91 0x01
+I (308) can_driver: CNF read:  0x00 0x91 0x01
+I (312) can_driver: can_init OK; controller left in Configuration mode
+I (489) onx_display: Onboard PCF8574 reset expander initialized; LCD RST pulsed via P5
+I (489) onx_display: CST826 capacitive touch detected at I2C address 0x15 on GPIO7/GPIO8
+I (614) onx_display: ONX2432G028 ST7789 initialized: 240x320, SPI host=2 SCLK=5 MOSI=1 DC=3 CS=2 BL=6
+I (730) onx_display: CST826 touch polling task started (25 ms period); swipe horizontally to switch pages
+I (730) onx_display: ONX2432G028 LCD ready: waiting for ECU-supported PID catalog, 240x320
+I (736) app_main: MCP2515 loopback self-test skipped by configuration
+I (743) can_driver: CAN mode 1 verified by MCP2515
+W (747) can_driver: can_send rejected in mode 1
+I (752) app_main: Listen-Only TX guard passed; TXREQ clear on TXB0/TXB1/TXB2
+I (758) can_driver: CAN mode 3 verified by MCP2515
+I (763) can_driver: CAN timing: crystal=8MHz bitrate=500000 CNF1=0x00 CNF2=0x91 CNF3=0x01
+I (771) can_driver: CNF write: 0x00 0x91 0x01
+I (775) can_driver: CNF read:  0x00 0x91 0x01
+I (779) can_driver: CAN configuration updated: bitrate=500000 id-format=11-bit
+I (787) can_driver: CAN discovery RX enabled: accepting standard + extended CAN IDs; flushed 2 stale frame(s)
+I (795) can_driver: CAN mode 1 verified by MCP2515
+I (800) obd_client: Passive CAN candidate: 500 kbit/s 11-bit; listening for valid frames
+W (808) obd_client: Active OBD discovery is explicitly enabled: Listen-Only candidates first; TX only after valid bus traffic
+I (819) obd_client: Monitor ready: configured bitrate=500 kbps CAN IDs=11-bit; physical bus not yet verified
+I (828) obd_client: OBD response filters configured for 11-bit addressing
+I (835) obd_client: First 24 raw CAN frames log at INFO, later frames at DEBUG; OBD PIDs use the Parameter Manager and ISO-TP
+I (846) app_main: Active OBD RPM requests ENABLED by build configuration
+I (853) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (863) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (865) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (871) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (877) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (883) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (889) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (895) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (901) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (906) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (913) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (918) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (924) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (930) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (937) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (942) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (948) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (954) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (960) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (967) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (972) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (978) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (984) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+I (990) obd_client: CAN RX id=0x130 STD dlc=5 data=[05 F0 FC FF FF]
+W (1000) obd_client: RX overflow latched flags=0x40; cleared. Cumulative observations: RX0=1 RX1=0 (latch observations, not exact lost-frame counts)
+I (1009) obd_client: MCP2515 diag: CANSTAT=0x62 EFLG=0x40 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=YES; RXavg=0.00 fps total=32 unique-IDs=1 last=STD:0x130/DLC=5 RXOVR0=1 RXOVR1=0; TEC/REC inactive in Listen-Only; not bitrate evidence
+I (1081) can_driver: CAN mode 3 verified by MCP2515
+I (1086) can_driver: OBD RX filters verified: 11-bit 0x7E8-0x7EF response family, mask=0x000007F8
+I (1087) can_driver: CAN mode 0 verified by MCP2515
+I (1088) obd_client: Bus alive at 500 kbit/s (11-bit IDs); probing OBD with 01 00
+I (1098) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x00 (SUPPORTED PID BITMAP)
+W (1110) parameter_manager: ECU 0x7E8 supports standard PID 0x01; decoder not implemented
+W (1112) parameter_manager: ECU 0x7E8 supports standard PID 0x13; decoder not implemented
+W (1120) parameter_manager: ECU 0x7E8 supports standard PID 0x1C; decoder not implemented
+I (1128) parameter_manager: PID bitmap cached ECU=STD:0x7E8 page=0x00 continuation=yes
+I (1135) obd_client: CAN/OBD verified by ECU 0x7E8: 500 kbit/s 11-bit and valid 41 00 bitmap
+W (1155) parameter_manager: ECU 0x7E9 supports standard PID 0x01; decoder not implemented
+W (1156) parameter_manager: ECU 0x7E9 supports standard PID 0x1C; decoder not implemented
+I (1160) parameter_manager: PID bitmap cached ECU=STD:0x7E9 page=0x00 continuation=yes
+I (1354) obd_client: Supported-PID discovery advancing to bitmap 0x20
+I (1356) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x20 (SUPPORTED PID BITMAP)
+W (1363) parameter_manager: ECU 0x7E8 supports standard PID 0x24; decoder not implemented
+W (1365) parameter_manager: ECU 0x7E8 supports standard PID 0x30; decoder not implemented
+I (1373) parameter_manager: PID bitmap cached ECU=STD:0x7E8 page=0x20 continuation=yes
+W (1565) parameter_manager: ECU 0x7E9 supports standard PID 0x30; decoder not implemented
+I (1566) parameter_manager: PID bitmap cached ECU=STD:0x7E9 page=0x20 continuation=yes
+I (1777) obd_client: Supported-PID discovery advancing to bitmap 0x40
+I (1779) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x40 (SUPPORTED PID BITMAP)
+W (1791) parameter_manager: ECU 0x7E8 supports standard PID 0x41; decoder not implemented
+I (1791) parameter_manager: PID bitmap cached ECU=STD:0x7E8 page=0x40 continuation=no
+I (1988) parameter_manager: PID bitmap cached ECU=STD:0x7E9 page=0x40 continuation=no
+I (2201) obd_client: Supported-PID discovery complete at bitmap 0x40
+I (2208) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (2411) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #1)
+I (2437) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (2449) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (2451) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (2464) obd_client: Calculated engine load: 25.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (2485) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (2490) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (2493) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (2500) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #1)
+I (2521) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (2533) obd_client: Intake manifold absolute pressure: 102.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (2536) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (2543) obd_client: Mass air flow: 10.05 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (2547) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (2556) obd_client: Intake air temperature: 33.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (2561) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (2570) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (2575) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (2584) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (2589) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (2603) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (2606) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (2613) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (2618) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (2627) obd_client: Fuel rail gauge pressure: 28510.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (2632) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (2642) obd_client: Commanded EGR: 16.86 % (ECU CAN ID 0x7E8; raw length=1)
+I (2645) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (2655) obd_client: EGR error: 22.66 % (ECU CAN ID 0x7E8; raw length=1)
+I (2659) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x42
+I (2672) obd_client: Control module voltage: 14.12 V (ECU CAN ID 0x7E8; raw length=2)
+I (2676) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x1F
+I (2681) obd_client: Run time since engine start: 164.00 s (ECU CAN ID 0x7E8; raw length=2)
+I (2686) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x21
+I (2696) obd_client: Distance with MIL on: 0.00 km (ECU CAN ID 0x7E8; raw length=2)
+I (2700) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x31
+I (2710) obd_client: Distance since DTC clear: 14057.00 km (ECU CAN ID 0x7E8; raw length=2)
+I (2715) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x33
+I (2724) obd_client: Barometric pressure: 99.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (2728) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x3C
+I (2743) obd_client: Catalyst temperature B1S1: 137.70 C (ECU CAN ID 0x7E8; raw length=2)
+I (2746) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x46
+I (2752) obd_client: Ambient air temperature: 13.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (2757) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (2767) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #2)
+I (2790) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (2800) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (2803) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (2814) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (2857) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (2863) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #3)
+I (2892) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (2902) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (2955) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (2961) obd_client: Calculated engine load: 24.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (2985) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (2990) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #4)
+I (2997) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3002) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3025) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (3030) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (3037) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (3042) obd_client: Mass air flow: 9.99 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (3054) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (3059) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (3062) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (3073) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (3077) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (3082) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (3087) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3097) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #5)
+I (3120) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (3131) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (3133) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3139) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3143) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (3154) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (3187) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3192) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #6)
+I (3235) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3240) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3288) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3304) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #7)
+I (3331) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (3341) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (3344) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3349) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3388) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3403) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #8)
+I (3446) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3451) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3459) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (3471) obd_client: Calculated engine load: 23.53 % (ECU CAN ID 0x7E8; raw length=1)
+I (3491) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3502) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #9)
+I (3529) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (3539) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #2)
+I (3542) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (3552) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (3555) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (3563) obd_client: Mass air flow: 4.91 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (3566) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3575) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3579) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (3589) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (3593) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (3602) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (3607) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (3617) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (3622) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (3631) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (3635) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3645) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #10)
+I (3672) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (3682) obd_client: Fuel rail gauge pressure: 27310.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (3685) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (3692) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (3696) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (3706) obd_client: Commanded EGR: 17.65 % (ECU CAN ID 0x7E8; raw length=1)
+I (3709) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (3720) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (3724) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (3733) obd_client: EGR error: -7.81 % (ECU CAN ID 0x7E8; raw length=1)
+I (3736) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3746) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3750) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3759) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #11)
+I (3837) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3842) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3855) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3861) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #12)
+I (3886) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (3891) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (3939) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (3950) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (3957) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (3962) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #13)
+I (3964) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (3971) obd_client: Calculated engine load: 23.92 % (ECU CAN ID 0x7E8; raw length=1)
+I (4039) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4049) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4052) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (4063) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (4066) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (4073) obd_client: Mass air flow: 5.19 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (4076) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4087) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #14)
+I (4111) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (4121) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (4124) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (4131) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (4139) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (4149) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (4152) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4159) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4177) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4182) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #15)
+I (4189) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (4199) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (4211) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (4221) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (4253) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4263) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4281) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4292) obd_client: Engine RPM: 778 rpm (ECU CAN ID 0x7E8; response #16)
+I (4357) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4362) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4381) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4391) obd_client: Engine RPM: 778 rpm (ECU CAN ID 0x7E8; response #17)
+I (4394) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (4399) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (4458) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4473) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4477) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (4483) obd_client: Calculated engine load: 23.53 % (ECU CAN ID 0x7E8; raw length=1)
+I (4504) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4510) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #18)
+I (4533) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (4543) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #3)
+I (4556) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (4561) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (4564) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4572) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4575) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (4585) obd_client: Mass air flow: 11.19 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (4588) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (4603) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (4606) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4612) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #19)
+I (4615) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (4625) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (4630) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (4639) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (4644) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (4653) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (4662) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x42
+I (4673) obd_client: Control module voltage: 14.14 V (ECU CAN ID 0x7E8; raw length=2)
+I (4676) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4682) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4686) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (4695) obd_client: Fuel rail gauge pressure: 29700.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (4700) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (4711) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (4715) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (4724) obd_client: Commanded EGR: 18.82 % (ECU CAN ID 0x7E8; raw length=1)
+I (4728) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4743) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #20)
+I (4766) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (4772) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (4774) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (4781) obd_client: EGR error: 3.91 % (ECU CAN ID 0x7E8; raw length=1)
+I (4784) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4793) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4832) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4842) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #21)
+I (4884) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (4889) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (4896) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (4901) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (4934) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (4939) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #22)
+I (4981) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (4992) obd_client: Calculated engine load: 24.31 % (ECU CAN ID 0x7E8; raw length=1)
+I (5013) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5023) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5037) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5043) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #23)
+I (5068) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (5083) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (5086) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (5094) obd_client: Mass air flow: 11.58 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (5116) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5121) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5124) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (5129) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (5135) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (5145) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (5149) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5163) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #24)
+I (5166) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (5171) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (5200) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (5210) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (5217) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5223) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5249) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5260) obd_client: Engine RPM: 778 rpm (ECU CAN ID 0x7E8; response #25)
+I (5284) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (5289) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (5321) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5331) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5349) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5359) obd_client: Engine RPM: 778 rpm (ECU CAN ID 0x7E8; response #26)
+I (5416) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (5421) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (5424) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5431) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5454) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5460) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #27)
+I (5486) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (5491) obd_client: Calculated engine load: 24.31 % (ECU CAN ID 0x7E8; raw length=1)
+I (5524) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5530) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5536) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (5541) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #4)
+I (5555) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5560) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #28)
+I (5573) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (5583) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (5586) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (5593) obd_client: Mass air flow: 12.16 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (5597) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (5607) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (5625) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (5630) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (5633) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5639) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5643) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (5653) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (5657) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5668) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #29)
+I (5691) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (5701) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (5704) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (5710) obd_client: Fuel rail gauge pressure: 25210.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (5715) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (5724) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (5729) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (5743) obd_client: Commanded EGR: 16.86 % (ECU CAN ID 0x7E8; raw length=1)
+I (5746) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5751) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5760) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5771) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #30)
+I (5778) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (5793) obd_client: EGR error: 14.84 % (ECU CAN ID 0x7E8; raw length=1)
+I (5796) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (5801) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (5850) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5860) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5863) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5874) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #31)
+I (5944) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (5949) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (5952) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (5963) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (5966) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (5971) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #32)
+I (5989) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (5999) obd_client: Calculated engine load: 24.31 % (ECU CAN ID 0x7E8; raw length=1)
+I (6001) obd_client: MCP2515 diag: CANSTAT=0x02 EFLG=0x00 TEC=0 REC=0 TXREQ-mask=0x0 RX-overflow=no; RXavg=59.19 fps total=328 unique-IDs=3 last=STD:0x7E8/DLC=8 RXOVR0=3 RXOVR1=0
+I (6054) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6059) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6072) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6084) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #33)
+I (6107) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (6112) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (6115) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (6123) obd_client: Mass air flow: 12.44 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (6126) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (6136) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6145) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (6151) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (6155) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6164) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6172) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6182) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #34)
+I (6195) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (6201) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6219) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (6229) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (6257) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6272) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6275) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6281) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #35)
+I (6306) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (6312) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (6358) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6373) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6376) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6382) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #36)
+I (6449) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (6460) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6462) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6473) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6480) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6492) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #37)
+I (6516) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (6522) obd_client: Calculated engine load: 23.14 % (ECU CAN ID 0x7E8; raw length=1)
+I (6544) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (6549) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #5)
+I (6567) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6572) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6585) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6590) obd_client: Engine RPM: 782 rpm (ECU CAN ID 0x7E8; response #38)
+I (6597) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (6602) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (6610) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (6620) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (6623) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (6630) obd_client: Mass air flow: 10.80 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (6634) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (6644) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6648) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (6662) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (6665) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x42
+I (6673) obd_client: Control module voltage: 14.12 V (ECU CAN ID 0x7E8; raw length=2)
+I (6676) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6686) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6690) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6700) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #39)
+I (6724) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (6729) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6732) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (6743) obd_client: Fuel rail gauge pressure: 27310.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (6747) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (6753) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (6758) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (6773) obd_client: Commanded EGR: 17.65 % (ECU CAN ID 0x7E8; raw length=1)
+I (6780) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6790) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6794) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (6800) obd_client: EGR error: -6.25 % (ECU CAN ID 0x7E8; raw length=1)
+I (6802) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6811) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #40)
+I (6814) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (6824) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (6883) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6888) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (6906) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (6912) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #41)
+I (6977) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (6982) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (6985) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (6991) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7010) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7021) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #42)
+I (7048) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (7064) obd_client: Calculated engine load: 23.53 % (ECU CAN ID 0x7E8; raw length=1)
+I (7086) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7091) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7114) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7119) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #43)
+I (7122) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (7133) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (7136) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (7142) obd_client: Mass air flow: 1.02 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (7146) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (7156) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (7161) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (7170) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (7189) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7199) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7217) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7223) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #44)
+I (7249) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (7259) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (7262) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (7273) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (7290) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7300) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7318) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (7333) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (7336) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7342) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #45)
+I (7395) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7400) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7438) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7449) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #46)
+I (7497) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7502) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7505) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (7510) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (7540) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7550) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #47)
+I (7553) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (7558) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #6)
+I (7561) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (7572) obd_client: Calculated engine load: 23.14 % (ECU CAN ID 0x7E8; raw length=1)
+I (7601) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7611) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7614) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (7619) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (7624) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (7634) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (7639) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (7648) obd_client: Mass air flow: 7.11 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (7652) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7662) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #48)
+I (7685) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (7690) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (7693) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (7699) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (7705) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x1F
+I (7714) obd_client: Run time since engine start: 169.00 s (ECU CAN ID 0x7E8; raw length=2)
+I (7719) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x21
+I (7728) obd_client: Distance with MIL on: 0.00 km (ECU CAN ID 0x7E8; raw length=2)
+I (7733) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x31
+I (7742) obd_client: Distance since DTC clear: 14057.00 km (ECU CAN ID 0x7E8; raw length=2)
+I (7747) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7757) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7761) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x33
+I (7770) obd_client: Barometric pressure: 99.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (7774) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x3C
+I (7784) obd_client: Catalyst temperature B1S1: 137.70 C (ECU CAN ID 0x7E8; raw length=2)
+I (7788) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (7798) obd_client: Fuel rail gauge pressure: 30000.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (7803) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x46
+I (7813) obd_client: Ambient air temperature: 13.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (7817) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7827) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #49)
+I (7852) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (7863) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (7865) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (7870) obd_client: Commanded EGR: 18.43 % (ECU CAN ID 0x7E8; raw length=1)
+I (7875) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (7884) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (7889) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (7898) obd_client: EGR error: 5.47 % (ECU CAN ID 0x7E8; raw length=1)
+I (7901) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (7912) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (7916) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (7925) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (7929) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (7938) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #50)
+I (8016) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8021) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8034) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8040) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #51)
+I (8064) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (8070) obd_client: Calculated engine load: 24.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8102) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (8112) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8119) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8130) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8132) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (8138) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (8143) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8153) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #52)
+I (8156) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (8166) obd_client: Mass air flow: 12.80 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (8189) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (8200) obd_client: Relative throttle position: 5.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (8202) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (8208) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (8223) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8228) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8246) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8252) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #53)
+I (8324) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8330) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8347) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8352) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #54)
+I (8355) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (8360) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8379) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (8389) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (8401) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (8411) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (8428) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8438) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8451) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8462) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #55)
+I (8528) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8538) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8551) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8561) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #56)
+I (8564) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (8569) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #7)
+I (8573) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (8583) obd_client: Calculated engine load: 25.10 % (ECU CAN ID 0x7E8; raw length=1)
+I (8606) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (8612) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8615) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (8620) obd_client: Intake air temperature: 34.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (8630) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8641) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8643) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (8648) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (8655) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8664) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #57)
+I (8688) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (8698) obd_client: Mass air flow: 12.80 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (8701) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x42
+I (8711) obd_client: Control module voltage: 14.12 V (ECU CAN ID 0x7E8; raw length=2)
+I (8714) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (8720) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8726) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (8734) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (8739) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8750) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8757) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8762) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #58)
+I (8791) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (8801) obd_client: Fuel rail gauge pressure: 29900.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (8843) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8853) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8860) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (8871) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (8874) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8880) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #59)
+I (8906) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (8911) obd_client: Commanded EGR: 15.29 % (ECU CAN ID 0x7E8; raw length=1)
+I (8914) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (8919) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (8924) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (8934) obd_client: EGR error: 8.59 % (ECU CAN ID 0x7E8; raw length=1)
+I (8937) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (8946) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (8951) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (8961) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (8975) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (8980) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #60)
+I (9052) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9062) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9075) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (9081) obd_client: Calculated engine load: 24.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9102) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9113) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #61)
+I (9137) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (9142) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9145) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (9151) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (9157) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9166) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9190) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (9200) obd_client: Mass air flow: 12.94 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (9203) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9208) obd_client: Engine RPM: 781 rpm (ECU CAN ID 0x7E8; response #62)
+I (9216) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (9221) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9226) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (9236) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (9260) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9270) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9307) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9323) obd_client: Engine RPM: 780 rpm (ECU CAN ID 0x7E8; response #63)
+I (9362) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9372) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9390) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (9400) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9408) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9420) obd_client: Engine RPM: 783 rpm (ECU CAN ID 0x7E8; response #64)
+I (9443) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+I (9449) obd_client: Accelerator pedal position E: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (9451) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4C
+I (9463) obd_client: Commanded throttle actuator: 0.00 % (ECU CAN ID 0x7E8; raw length=1)
+I (9466) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9472) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9510) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9520) obd_client: Engine RPM: 783 rpm (ECU CAN ID 0x7E8; response #65)
+I (9567) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x05
+I (9582) obd_client: Coolant temperature: 86 C (ECU CAN ID 0x7E8; response #8)
+I (9585) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9590) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9594) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x04
+I (9604) obd_client: Calculated engine load: 23.53 % (ECU CAN ID 0x7E8; raw length=1)
+I (9626) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9632) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #66)
+I (9655) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0F
+I (9660) obd_client: Intake air temperature: 35.00 C (ECU CAN ID 0x7E8; raw length=1)
+I (9663) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (9669) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9673) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0B
+I (9684) obd_client: Intake manifold absolute pressure: 101.00 kPa (ECU CAN ID 0x7E8; raw length=1)
+I (9688) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9698) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9702) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x10
+I (9711) obd_client: Mass air flow: 7.02 g/s (ECU CAN ID 0x7E8; raw length=2)
+I (9719) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x45
+I (9730) obd_client: Relative throttle position: 4.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9732) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x49
+I (9738) obd_client: Accelerator pedal position D: 14.51 % (ECU CAN ID 0x7E8; raw length=1)
+I (9743) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9753) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #67)
+I (9791) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9801) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9804) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x23
+I (9809) obd_client: Fuel rail gauge pressure: 29900.00 kPa (ECU CAN ID 0x7E8; raw length=2)
+I (9844) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0C
+I (9849) obd_client: Engine RPM: 779 rpm (ECU CAN ID 0x7E8; response #68)
+I (9892) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x0D
+I (9902) obd_client: Vehicle speed: 0.00 km/h (ECU CAN ID 0x7E8; raw length=1)
+I (9909) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2C
+I (9920) obd_client: Commanded EGR: 18.43 % (ECU CAN ID 0x7E8; raw length=1)
+I (9923) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x11
+I (9928) obd_client: Throttle position: 84.71 % (ECU CAN ID 0x7E8; raw length=1)
+I (9932) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x2D
+I (9942) obd_client: EGR error: -15.62 % (ECU CAN ID 0x7E8; raw length=1)
+I (9945) obd_client: OBD Mode 01 request transmitted: ID=0x7DF PID=0x4A
+
+
+C:\Users\hakan\Desktop\obd_vag>

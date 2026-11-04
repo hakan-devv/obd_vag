@@ -419,7 +419,9 @@ VAG'a özgü parametreler profil bazlı tasarlanacak.
 
 DID'ler ECU ailesi, ECU software versiyonu ve diagnostik tanımına göre değişebilir.
 
-DID uydurma. Doğrulanmamış her DID `UNKNOWN/TODO` olarak işaretlenmeli ve varsayılan olarak gönderilmemeli.
+DID uydurma yok. Doğrulanmamış bir DID hiçbir zaman otomatik olarak gönderilmez, görüntülenmez veya çözümlenmez; yalnızca uygun model/ECU belgeleri ve gerçek cevaplarla doğrulanan DID'ler aktif hale gelir.
+
+Mevcut uygulama, `oem_diagnostics` katmanında tamamen deny-by-default bir güvenlik politikası uygular. Katalogda yer alan her DID sadece `profile_id`, `validation` ve `auto_query_allowed` koşulları sağlandığında planlanabilir. Hiçbir DID otomatik olarak başlatılmaz; `auto_query_allowed=false` veya non-source-backed bir giriş, dosyasının `session_required` durumuna bakılmaksızın reddedilir. Bu proje, üretim için güvenli bir OEM DID listesi eklenene kadar tanımsız veriyi "gösterir" veya "bilir" gibi davranmaz.
 
 Security Access gerekiyorsa bu projede bypass etme. Yazma, kodlama, programming veya actuator-control servisleri ekleme.
 
@@ -668,7 +670,7 @@ Doğru formülü doğrulanmamış parametreyi implement edilmiş gibi gösterme.
 - Tek bir doğrulanmış ECU ailesi.
 - DID'ler gerçek dokümantasyon veya test cevabıyla doğrulanacak.
 - DID/profile decoder sistemi.
-- Bilinmeyen DID yok; doğrulanmamışlar `UNKNOWN/TODO`.
+- Bilinmeyen DID'ler otomatik olarak eklenmez; yalnızca bahsi geçen ECU ailesi için doğrulanmış ve belge edilmiş değerler kullanılır.
 
 ### Faz 6 — ONX2432G028 UI genişletme
 

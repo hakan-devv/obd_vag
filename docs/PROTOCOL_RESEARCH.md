@@ -80,7 +80,8 @@ and [decoders.py](https://github.com/brendan-w/python-OBD/blob/a378bdd81d58c67d0
   changes at boot.
 - No VAG- or BMW-specific DID is enabled by default. A DID must be associated
   with a named ECU family and documented encoding before it can be exposed as a
-  decoded parameter. Unknown values remain `UNKNOWN/TODO`.
+  decoded parameter. Unknown values are not invented or auto-decoded; they are
+  left raw or excluded until explicit model-specific documentation is added.
 
 ## MCP2515 bit timing and SPI
 

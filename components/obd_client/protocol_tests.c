@@ -3,6 +3,7 @@
 
 #include "esp_log.h"
 #include "can_discovery.h"
+#include "did_profile.h"
 #include "isotp.h"
 #include "obd_client_test.h"
 #include "obd_client.h"
@@ -357,6 +358,43 @@ static bool test_extended_standard_pid_decoders(void)
     return true;
 }
 
+static bool test_added_competitor_pid_decoders(void)
+{
+    parameter_value_t value = {0};
+    const uint8_t lambda_voltage_type[4] = {0x80U, 0x00U, 0x40U, 0x00U};
+    const uint8_t lambda_current_type[4] = {0x40U, 0x00U, 0x80U, 0x00U};
+    const uint8_t rail[11] = {0x03U, 0x13U, 0x88U, 0x0FU, 0xA0U, 0U, 0U, 0U, 0U, 0U, 0U};
+    const uint8_t boost[10] = {0x03U, 0x10U, 0x00U, 0x0FU, 0xA0U, 0U, 0U, 0U, 0U, 0U};
+    const uint8_t boost_cmd_only[10] = {0x01U, 0x10U, 0x00U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};
+    const uint8_t egt[9] = {0x05U, 0x04U, 0xD2U, 0x00U, 0x00U, 0x07U, 0xD0U, 0U, 0U};
+    const uint8_t egt_none[9] = {0U};
+
+    parameter_manager_init();
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x24U, lambda_voltage_type,
+        sizeof(lambda_voltage_type), 100U, &value) == ESP_OK);
+    CHECK(value.value == 1.0f && value.secondary_valid && value.secondary_value == 2.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x3BU, lambda_current_type,
+        sizeof(lambda_current_type), 200U, &value) == ESP_OK);
+    CHECK(value.value == 0.5f && value.secondary_valid && value.secondary_value == 0.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x6DU, rail, sizeof(rail),
+        300U, &value) == ESP_OK);
+    CHECK(value.value == 40000.0f && value.secondary_valid && value.secondary_value == 50000.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x6DU, rail, 10U, 301U, &value) ==
+          ESP_ERR_INVALID_SIZE);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x70U, boost, sizeof(boost),
+        400U, &value) == ESP_OK);
+    CHECK(value.value == 125.0f && value.secondary_valid && value.secondary_value == 128.0f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x70U, boost_cmd_only,
+        sizeof(boost_cmd_only), 410U, &value) == ESP_OK);
+    CHECK(value.value == 128.0f && !value.secondary_valid);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x78U, egt, sizeof(egt),
+        500U, &value) == ESP_OK);
+    CHECK(value.value > 159.9f && value.value < 160.1f);
+    CHECK(parameter_manager_decode_obd(0x7E8U, false, 0x79U, egt_none, sizeof(egt_none),
+        600U, &value) == ESP_ERR_INVALID_RESPONSE);
+    return true;
+}
+
 static bool test_ecu_simulator_supported_pid_set(void)
 {
     static const uint8_t simulator_pids[] = {
@@ -689,6 +727,86 @@ static bool test_uds_extended_session_and_pending_timeout(void)
     return true;
 }
 
+static bool test_did_profile_pool_and_nrc_pruning(void)
+{
+    CHECK(did_profile_brand_from_vin("WVWZZZAAZ") == DID_BRAND_VW);
+    CHECK(did_profile_brand_from_vin("VSSZZZ") == DID_BRAND_SEAT);
+    CHECK(did_profile_brand_from_vin("WBA12345") == DID_BRAND_BMW);
+    CHECK(did_profile_brand_from_vin("XXX") == DID_BRAND_UNKNOWN);
+
+    const char *pool[DID_PROFILE_POOL_MAX] = {0};
+    CHECK(did_profile_pool(DID_BRAND_BMW, NULL, pool) == 0U);
+    CHECK(did_profile_pool(DID_BRAND_BMW, "DDE7.1 N47", pool) == 1U);
+    CHECK(strcmp(pool[0], "bmw-n47-dde7") == 0);
+    const size_t seat_n = did_profile_pool(DID_BRAND_SEAT, NULL, pool);
+    CHECK(seat_n >= 6U);
+    CHECK(strcmp(pool[0], "seat-mii-engine") == 0);
+    CHECK(did_profile_pool(DID_BRAND_UNKNOWN, NULL, pool) == 0U);
+
+    static did_poll_set_t set;
+    const size_t count = did_poll_set_build(&set, DIAG_ECU_ROLE_ENGINE, pool, seat_n);
+    CHECK(count > 0U);
+    for (size_t i = 0; i < set.count; ++i) {
+        for (size_t j = i + 1U; j < set.count; ++j) {
+            CHECK(set.entries[i].descriptor->did != set.entries[j].descriptor->did ||
+                  set.entries[i].descriptor->service != set.entries[j].descriptor->service);
+        }
+    }
+    CHECK(did_poll_count(&set, DID_POLL_UNTESTED) == count);
+
+    CHECK(count >= 3U);
+    did_poll_record_negative(&set, 0U, 0x31U, 1000);
+    CHECK(set.entries[0].state == DID_POLL_EXCLUDED);
+    did_poll_record_negative(&set, 1U, 0x22U, 1000);
+    CHECK(set.entries[1].state == DID_POLL_NOT_READY);
+    did_poll_record_positive(&set, 2U, 1000);
+    CHECK(set.entries[2].state == DID_POLL_SUPPORTED);
+    CHECK(did_poll_next_untested(&set) == 3);
+    /* excluded DIDs are never due again; not-ready/supported ones are */
+    CHECK(did_poll_next_due(&set, 0) == -1);
+    CHECK(did_poll_next_due(&set, 10000000) >= 1);
+    CHECK(did_poll_next_due(&set, 10000000) != 0);
+    did_poll_record_timeout(&set, 3U, 0);
+    CHECK(set.entries[3].state == DID_POLL_UNTESTED);
+    did_poll_record_timeout(&set, 3U, 0);
+    CHECK(set.entries[3].state == DID_POLL_EXCLUDED);
+    return true;
+}
+
+static bool test_community_vag_did_decoders(void)
+{
+    const uds_did_descriptor_t *d = uds_did_catalog_find(0x200AU, DIAG_ECU_ROLE_ENGINE);
+    double v = 0.0;
+    CHECK(d != NULL);
+    CHECK(strcmp(d->profile_id, "vag-engine-community") == 0);
+    const uint8_t kw[] = {0x80U};
+    CHECK(uds_did_catalog_decode(d, kw, sizeof(kw), &v));
+    CHECK(v == 0.0);
+    d = uds_did_catalog_find(0x179CU, DIAG_ECU_ROLE_ENGINE);
+    CHECK(d != NULL);
+    const uint8_t oil[] = {0x0CU, 0x95U};
+    CHECK(uds_did_catalog_decode(d, oil, sizeof(oil), &v));
+    CHECK(v > 38.9 && v < 39.1);
+    d = uds_did_catalog_find(0x136EU, DIAG_ECU_ROLE_ENGINE);
+    CHECK(d != NULL);
+    const uint8_t cam[] = {0x03U, 0xE8U};
+    CHECK(uds_did_catalog_decode(d, cam, sizeof(cam), &v));
+    CHECK(v > 7.99 && v < 8.01);
+    return true;
+}
+
+static bool test_identity_decode(void)
+{
+    char out[48];
+    const uint8_t vin[] = {'W','V','W','Z','Z','Z','A','A','Z','J','D','0','0','0','0','0','1'};
+    did_profile_decode_identity(0xF190U, vin, sizeof(vin), out, sizeof(out));
+    CHECK(strcmp(out, "WVWZZZAAZJD000001") == 0);
+    const uint8_t cvn[] = {0x12U, 0x34U, 0xABU, 0xCDU};
+    did_profile_decode_identity(0xF806U, cvn, sizeof(cvn), out, sizeof(out));
+    CHECK(strcmp(out, "12 34 AB CD") == 0);
+    return true;
+}
+
 void obd_client_run_protocol_tests(void)
 {
     unsigned total = 0U;
@@ -708,6 +826,7 @@ void obd_client_run_protocol_tests(void)
     RUN_TEST(test_pid_timeout_status_and_recovery);
     RUN_TEST(test_obd_negative_response_and_missing_response_timeout);
     RUN_TEST(test_extended_standard_pid_decoders);
+    RUN_TEST(test_added_competitor_pid_decoders);
     RUN_TEST(test_ecu_simulator_supported_pid_set);
     RUN_TEST(test_pid_scheduler_fairness);
     RUN_TEST(test_swipe_gesture_direction_and_threshold);
@@ -719,6 +838,9 @@ void obd_client_run_protocol_tests(void)
     RUN_TEST(test_uds_read_did_round_trip);
     RUN_TEST(test_uds_ignores_unrelated_positive_response);
     RUN_TEST(test_uds_extended_session_and_pending_timeout);
+    RUN_TEST(test_did_profile_pool_and_nrc_pruning);
+    RUN_TEST(test_identity_decode);
+    RUN_TEST(test_community_vag_did_decoders);
 
     if (failed == 0U) {
         ESP_LOGI(TAG, "Protocol tests passed: %u/%u", total, total);
